@@ -1,0 +1,58 @@
+
+CASO DE ESTUDIO A
+
+CASO METALNOVA: FÁBRICA CON DATOS PERO SIN CONTROL
+Fecha de elaboración: 10/09/2026
+
+**1. Contexto Empresarial y Problema**
+*   **La Empresa:** "MetalNova" fabrica componentes automotrices en tres plantas con 52 máquinas críticas. Dispone de sensores IoT, MES, sistema de mantenimiento CMMS, ERP y registros de calidad, pero cada área analiza sus datos por separado.
+*   **El Desafío Operacional:** El OEE global cayó de 78% a 66% en seis meses. El downtime no planificado aumentó 31%, el scrap pasó de 3,8% a 6,1% y el consumo energético por unidad creció 14%. Producción atribuye el problema a mantenimiento; Mantenimiento afirma que existen cambios de producto y microparadas no registradas correctamente.
+*   **Impacto Financiero:** La pérdida estimada por menor throughput, scrap y horas improductivas supera USD 540.000 mensuales. La planta con peor desempeño también incumple fechas de entrega a clientes Tier-1.
+*   **Objetivo del Caso Complejo:** Diseñar y desarrollar el prototipo "MetalNova Smart Factory BI" con información histórica y señales cercanas al tiempo real, capaz de medir OEE de forma consistente, localizar pérdidas de disponibilidad/rendimiento/calidad y priorizar acciones de mantenimiento y producción.
+
+**2. Metodología y Desarrollo Requerido**
+
+**a. Planificación y Alcance (Business Understanding)**
+*   **Pregunta Principal:** ¿Qué activos, turnos, productos y causas de parada explican la caída del OEE y cuál es su impacto en throughput, scrap y costo?
+*   **Fuentes Mínimas:** IoT/SCADA, MES, CMMS, ERP de producción, laboratorio/calidad y calendario de turnos.
+*   **Datos para el Prototipo:** Generar, si es necesario, al menos 200.000 eventos de máquina, órdenes de producción, paradas, mantenimientos y controles de calidad para un periodo mínimo de 90 días.
+*   **Requisito de Tiempo:** Diseñar una arquitectura donde los eventos de máquina puedan visualizarse con latencia inferior a 10 minutos, manteniendo además una capa histórica validada.
+
+**b. Modelado Dimensional y Preparación de Datos**
+*   **Modelo Dimensional:** Fact_Produccion por orden-máquina-turno, Fact_Parada por evento de downtime, Fact_Mantenimiento por intervención y Fact_Calidad por lote/inspección.
+    Dimensiones conformadas de Máquina, Planta, Turno, Producto, Causa, Tiempo y Técnico.
+*   **Jerarquías:** Planta → Línea → Máquina y Familia → Producto; justificar cómo permitir drill-down sin duplicar medidas.
+*   **Transformaciones:** Construir tiempo planificado, runtime, ideal cycle time, good count, total count y downtime planificado/no planificado. Normalizar unidades y distinguir microparadas de fallas.
+*   **Datos IoT:** Definir tratamiento de eventos duplicados, desordenados, lecturas faltantes y timestamps fuera de rango. Documentar qué dato se considera fuente de verdad para inicio/fin de una parada.
+
+
+**c. Desarrollo del Aplicativo / Prototipo BI**
+*   **Aplicativo/Prototipo BI:** Crear vistas Executive Plant Performance, OEE & Loss Tree, Maintenance Reliability y Quality/Energy.
+*   **Interactividad:** Filtros por planta, línea, máquina, producto y turno; drill-through a historial de una máquina; tooltips con última intervención, MTBF y MTTR; navegación desde pérdida de OEE hacia causa.
+*   **Visualización Operativa:** Incluir al menos una serie temporal con límites/umbrales, un Pareto de downtime y una matriz máquina-turno con formato condicional.
+*   **Alerta:** Definir una regla de excepción para máquina crítica basada en OEE, MTBF, temperatura o downtime acumulado y explicar por qué es accionable.
+
+**d. Dashboard e Indicadores KPI Obligatorios**
+*   **OEE:** Disponibilidad × Rendimiento × Calidad.
+*   **Disponibilidad:** runtime / tiempo de producción planificado.
+*   **Rendimiento:** (ideal cycle time × total count) / runtime.
+*   **Calidad:** good count / total count.
+*   **MTBF:** tiempo operativo / número de fallas.
+*   **MTTR:** tiempo total de reparación / número de reparaciones.
+*   **Downtime no planificado:** minutos no planificados / tiempo planificado.
+*   **Scrap Rate:** unidades rechazadas / unidades producidas.
+*   **First Pass Yield:** unidades que pasan sin retrabajo / unidades procesadas.
+*   **Energía por Unidad Buena:** kWh consumidos / unidades buenas.
+
+**e. Análisis y Descubrimiento**
+*   **Loss Tree:** Cuantificar qué componente de OEE explica la mayor pérdida y descomponerlo por activo/turno/producto.
+*   **Confiabilidad:** Identificar máquinas con alto downtime pero también aquellas con fallas frecuentes de corta duración que no aparecen en el promedio.
+*   **Calidad:** Relacionar scrap con cambios de producto, turno y condiciones de operación sin afirmar causalidad no demostrada.
+*   **Priorización:** Proponer un ranking de intervenciones usando impacto económico y criticidad operacional.
+
+**f. Producto Esperado y Criterios Mínimos de Aceptación**
+1.  Fórmulas de OEE y componentes reconciliadas con los datos base.
+2.  Modelo con múltiples hechos y dimensiones conformadas correctamente relacionadas.
+3.  Prototipo con mínimo 4 vistas, 9 KPIs y navegación máquina → detalle.
+4.  Manejo explícito de calidad y temporalidad de eventos IoT.
+5.  Plan de mejora priorizado y cuantificado.

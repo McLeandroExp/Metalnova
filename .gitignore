@@ -1,0 +1,36 @@
+# --- Entorno y secretos ---
+.env
+
+# --- Datos generados (volumen local, no versionados) ---
+data/raw/*
+data/processed/*
+data/exports/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/exports/.gitkeep
+
+# --- Logs ---
+logs/*
+!logs/.gitkeep
+
+# --- Backups de base de datos ---
+backups/*
+!backups/.gitkeep
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Power BI: temporales y cachés locales ---
+~$*.pbix
+~$*.pbip
+*.pbix.tmp
+powerbi/.pbi/
+*.pbiip
+.pbi/
