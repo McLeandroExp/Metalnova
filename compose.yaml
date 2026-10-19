@@ -1,0 +1,62 @@
+name: metalnova
+
+services:
+  # --- Almacén analítico -------------------------------------------------
+  db:
+    image: postgres:16.4-alpine
+    container_name: metalnova_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?define POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD en .env}
+      POSTGRES_DB: ${POSTGRES_DB:?define POSTGRES_DB en .env}
+      TZ: ${TZ:-UTC}
+      PGTZ: ${TZ:-UTC}
+    ports:
+      # Publicado SOLO en loopback: no queda accesible desde la red.
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - metalnova_pgdata:/var/lib/postgresql/data
+      # Los scripts de initdb solo se ejecutan con un directorio de datos vacío.
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    networks:
+      - metalnova_net
+
+  # --- Generación, carga y simulación (se invoca on-demand) --------------
+  ingestor:
+    build:
+      context: ./python
+    image: metalnova/ingestor:local
+    container_name: metalnova_ingestor
+    profiles: ["tools"]
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      TZ: ${TZ:-UTC}
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./sql:/app/sql:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - metalnova_net
+
+networks:
+  metalnova_net:
+    driver: bridge
+
+volumes:
+  metalnova_pgdata:
+    name: metalnova_pgdata

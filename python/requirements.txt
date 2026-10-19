@@ -1,0 +1,3 @@
+# Dependencias del pipeline. Versiones fijadas.
+# Se amplían en los incrementos 003 (generación) y 004 (ingesta continua).
+psycopg[binary]==3.2.9
