@@ -3,10 +3,11 @@
 ## Diseño
 
 ```text
-compose.yaml            # servicios db + ingestor, volumen, healthcheck, red
-.env.example            # plantilla sin secretos
+compose.yaml            # servicios db + pgadmin + ingestor, volúmenes, healthcheck, red
+.env.example            # plantilla sin secretos (PostgreSQL + pgAdmin)
 .env                    # local, ignorado por Git
 docker/postgres/init/   # reservado para scripts de inicialización (ver regla 13)
+docker/pgadmin/servers.json  # servidor pre-registrado en pgAdmin
 python/Dockerfile
 python/requirements.txt
 python/src/check_connection.py
@@ -21,6 +22,9 @@ README.md
 - **Healthcheck:** `pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"`.
 - **ingestor:** servicio de perfil separado para carga/simulación; por defecto no queda en bucle,
   se ejecuta con `docker compose run --rm ingestor <comando>`.
+- **pgAdmin:** `dpage/pgadmin4:9.18` (versión fija), `PGADMIN_CONFIG_SERVER_MODE=False` y sin
+  master password para uso local; volumen nombrado `metalinova_pgadmin`; servidor pre-registrado
+  desde `servers.json`. Se accede en `http://127.0.0.1:5050`.
 - **initdb:** `docker/postgres/init/` queda reservado; se documenta que solo corre con volumen vacío.
 - **Conexión desde Windows (Power BI):** `127.0.0.1:5432`.
 

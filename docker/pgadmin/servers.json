@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "MetalNova PostgreSQL",
+      "Group": "MetalNova",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "metalinova",
+      "Username": "metalinova",
+      "SSLMode": "prefer",
+      "Comment": "Servidor local del prototipo MetalNova. La contrasena esta en .env (POSTGRES_PASSWORD)."
+    }
+  }
+}

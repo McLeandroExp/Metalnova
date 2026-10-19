@@ -43,3 +43,17 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
 - **Decisión:** pendiente de prueba en el incremento 006.
 - **Criterios:** ver Constitución §9.
 - **Estado:** pendiente.
+
+## D-006 · pgAdmin como cliente de base de datos
+
+- **Decisión:** incluir `dpage/pgadmin4:9.18` en el Compose, accesible en `http://127.0.0.1:5050`,
+  con volumen propio `metalinova_pgadmin` y servidor PostgreSQL pre-registrado.
+- **Alternativas:** no incluirlo y usar solo `psql` (recomendación original del Documento Maestro
+  por la RAM); instalar un cliente nativo en Windows.
+- **Motivo:** el propietario quiere verificar visualmente que existan los elementos de la base
+  (servidor, base de datos, tablas y vistas).
+- **Consecuencias:** +200–300 MB de RAM; un puerto local más; credenciales de pgAdmin separadas de
+  las de PostgreSQL en `.env`. No es dependencia del pipeline: si se detiene, nada más se rompe.
+- **Detalles:** modo servidor (login obligatorio); email `admin@metalinova.com` porque el validador
+  rechaza dominios `.local`; el volumen `metalinova_pgadmin` solo guarda configuración.
+- **Estado:** aceptada.

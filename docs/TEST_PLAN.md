@@ -21,6 +21,7 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-013 | DirectQuery vs Import | 006 | mediciones | decisión documentada | — | — | pendiente |
 | P-014 | Evento nuevo visible en informe | 007 | escenario reproducible | cambio visible | — | — | pendiente |
 | P-015 | Backup y restauración | 007 | `pg_dump` / `pg_restore` | recuentos coinciden | — | — | pendiente |
+| P-016 | pgAdmin operativo | 001 | `curl http://127.0.0.1:5050/login` + login | HTTP 200 y login OK | `/login` 200 · POST 302 · `/browser/` 200 | 2026-10-19 | superada |
 
 ## Plantilla de resultado
 

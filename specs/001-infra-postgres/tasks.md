@@ -16,3 +16,9 @@
 | T-112 | Confirmar `.env` fuera de Git | AC-107 | hecha |
 | T-113 | Documentar comandos reales en `README.md` | FR-109 | hecha |
 | T-114 | Commit `feat: infraestructura postgres en docker` | — | hecha |
+| T-115 | Añadir credenciales de pgAdmin a `.env.example` y `.env` | FR-112 | hecha |
+| T-116 | Añadir servicio `pgadmin` al Compose (imagen fija, loopback, volumen) | FR-111 | hecha |
+| T-117 | Crear `docker/pgadmin/servers.json` con el servidor pre-registrado | FR-113 | hecha |
+| T-118 | Levantar pgAdmin y verificar HTTP en `127.0.0.1:5050` | AC-108 | hecha |
+| T-119 | Verificar login y visibilidad de la base `metalinova` | AC-109, AC-110 | hecha |
+| T-120 | Actualizar documentación y commit `feat: cliente pgadmin` | — | hecha |

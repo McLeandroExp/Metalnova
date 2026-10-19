@@ -46,6 +46,7 @@ specs/                       especificaciones SDD (fuente de verdad)
 docs/                        arquitectura, diccionario, pruebas, runbook
 docs/reference/              insumos académicos originales (no normativos)
 docker/postgres/init/        scripts de initdb (solo corren con volumen vacío)
+docker/pgadmin/servers.json  servidor PostgreSQL pre-registrado en pgAdmin
 python/                      Dockerfile del pipeline + código
 sql/                         esquema, vistas, índices y validaciones
 data/                        CSV/Parquet generados (no versionados)
@@ -134,6 +135,34 @@ Resultado observado (2026-10-19): `filas=1` tras el reinicio.
 
 ---
 
+## Cliente de base de datos (pgAdmin)
+
+Con `docker compose up -d` también arranca **pgAdmin**:
+
+| Dato | Valor |
+|---|---|
+| URL | `http://127.0.0.1:5050` |
+| Email | el definido en `.env` (`PGADMIN_DEFAULT_EMAIL`) |
+| Contraseña | la definida en `.env` (`PGADMIN_DEFAULT_PASSWORD`) |
+
+El servidor **«MetalNova PostgreSQL»** aparece pre-registrado (grupo *MetalNova*). Al abrirlo por
+primera vez pedirá la contraseña de PostgreSQL: es `POSTGRES_PASSWORD` del `.env`.
+
+```powershell
+# Ver el estado de pgAdmin
+docker compose ps pgadmin
+
+# Logs
+docker compose logs --tail 50 pgadmin
+```
+
+> ℹ️ pgAdmin importa `docker/pgadmin/servers.json` **solo al inicializar su volumen**. Si cambias
+> ese archivo y quieres reimportarlo: `docker compose rm -sf pgadmin`, elimina el volumen
+> `metalinova_pgadmin` (contiene solo configuración de pgAdmin, **no** datos de la base) y vuelve
+> a arrancar.
+
+---
+
 ## Conexión desde herramientas externas
 
 | Parámetro | Valor |
@@ -159,6 +188,8 @@ Pendiente de implementar y probar en el incremento 007.
 | Síntoma | Causa probable | Acción |
 |---|---|---|
 | `db` nunca llega a `healthy` | puerto ocupado o volumen corrupto | `docker compose logs db`; revisar `netstat -ano \| findstr :5432` |
+| pgAdmin no responde en 5050 | contenedor arrancando o puerto ocupado | `docker compose logs pgadmin`; `netstat -ano \| findstr :5050` |
+| pgAdmin no muestra el servidor | volumen inicializado antes de existir `servers.json` | recrear el volumen de pgAdmin (ver sección pgAdmin) |
 | `failed to connect to the docker API` | Docker Desktop detenido | arrancar Docker Desktop |
 | La conexión falla con `Faltan variables` | `.env` ausente | `Copy-Item .env.example .env` |
 | PowerShell muestra error pero el servicio corre | progreso de Docker en stderr | verificar con `docker compose ps` |

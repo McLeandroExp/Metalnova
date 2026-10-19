@@ -15,9 +15,11 @@
 │  │  simulate_events.py       │   │  127.0.0.1:5432              │   │
 │  └───────────────────────────┘   └───────────────┬──────────────┘   │
 │                                                  │                  │
-│  ┌───────────────┐                               │                  │
-│  │ data/ (vol.)  │ CSV / Parquet                 │                  │
-│  └───────────────┘                               │                  │
+│  ┌───────────────┐              ┌────────────────┴──────────────┐   │
+│  │ data/ (vol.)  │              │ pgadmin (cliente web)         │   │
+│  └───────────────┘              │  127.0.0.1:5050               │   │
+│                                 └───────────────────────────────┘   │
+│                                                  │                  │
 │                                                  ▼                  │
 │                                    Power BI Desktop (Import/DirectQuery)
 │                                      4 páginas · 9 KPIs              │
@@ -37,7 +39,9 @@
 | Elemento | Valor |
 |---|---|
 | Puerto PostgreSQL | `127.0.0.1:5432` (solo loopback) |
+| Puerto pgAdmin | `127.0.0.1:5050` (solo loopback) |
 | Volumen de datos | `metalinova_pgdata` |
+| Volumen de pgAdmin | `metalinova_pgadmin` |
 | Carpeta montada | `./data` → contenedor |
 | Logs | `./logs` |
 
@@ -46,5 +50,6 @@
 | Servicio | Responsabilidad |
 |---|---|
 | `db` | Almacén analítico; esquema, hechos, dimensiones y vistas |
+| `pgadmin` | Cliente web para inspeccionar la base (verificación manual) |
 | `ingestor` | Generación, carga y simulación; se ejecuta por comando, no en bucle |
 | Power BI Desktop | Visualización (fuera de Docker) |

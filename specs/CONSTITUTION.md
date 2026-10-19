@@ -89,6 +89,7 @@ Toda divergencia con `docs/reference/MetalNova_Documento_Maestro_Agentes.md` que
 | §6/§8 IoT (solo duplicados e idempotencia) | Se añaden reglas para eventos **desordenados, faltantes, fuera de rango** y **tabla de cuarentena** + precedencia de fuentes (sección 7) | **G5** — criterio de aceptación f.4 del caso |
 | §7 microparadas sin criterio numérico | Umbral configurable `microparada_min = 5` y criterio falla/microparada (sección 7) | **G6** — el caso exige distinguir microparadas de fallas |
 | §4 propuesta de carpetas | Se añade `specs/` y `AGENTS.md`; la raíz del proyecto es el repositorio actual | Congruencia SDD y anti-confusión entre sesiones |
+| §9 herramienta de administración opcional, desaconsejada en 8 GB | Se incluye **pgAdmin 9.18** como cliente de verificación, en loopback | El propietario lo requiere para inspeccionar la base; se vigila el consumo |
 | §3 objetivo 200 000 eventos / 90 días | Se mantiene el **mínimo** del caso y se fija objetivo de diseño 300 000 / 180 días | El caso es un mínimo; se supera con margen |
 
 Todo lo demás del Documento Maestro permanece vigente y se considera incorporado por referencia.
@@ -220,10 +221,12 @@ Generador Python ─▶ CSV/Parquet (data/) ─▶ Carga por lotes ─▶ Postgr
                                                                    ▲
 Simulador Python ──────────────────────────────────────────────────┘
                                                                    │
+                                     pgAdmin (verificación) ───────┤
+                                                                   │
                                               Vistas estables ─────┴──▶ Power BI Desktop
 ```
 
-- Docker Compose orquesta `db` (PostgreSQL) e `ingestor` (Python).
+- Docker Compose orquesta `db` (PostgreSQL), `pgadmin` (cliente web de verificación) e `ingestor` (Python).
 - Power BI Desktop se ejecuta en Windows y se conecta al puerto local publicado.
 - Modo de conexión **pendiente de prueba**: empezar con DirectQuery sobre vistas; cambiar a
   Import si el rendimiento o la fiabilidad de la demo no cumplen. La decisión y sus mediciones

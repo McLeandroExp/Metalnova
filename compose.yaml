@@ -28,6 +28,30 @@ services:
     networks:
       - metalnova_net
 
+  # --- Cliente de base de datos ------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:9.18
+    container_name: metalnova_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?define PGADMIN_DEFAULT_EMAIL en .env}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?define PGADMIN_DEFAULT_PASSWORD en .env}
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      PGADMIN_DISABLE_POSTFIX: "True"
+      TZ: ${TZ:-UTC}
+    ports:
+      # Interfaz web publicada SOLO en loopback.
+      - "127.0.0.1:${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - metalnova_pgadmin:/var/lib/pgadmin
+      # Servidor pre-registrado; se importa al inicializar el volumen de pgAdmin.
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - metalnova_net
+
   # --- Generación, carga y simulación (se invoca on-demand) --------------
   ingestor:
     build:
@@ -60,3 +84,5 @@ networks:
 volumes:
   metalnova_pgdata:
     name: metalnova_pgdata
+  metalnova_pgadmin:
+    name: metalnova_pgadmin
