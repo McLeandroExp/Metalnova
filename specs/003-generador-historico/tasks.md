@@ -2,7 +2,7 @@
 
 | ID | Tarea | Requisito | Estado |
 |---|---|---|---|
-| T-301 | Catálogos base (plantas, líneas, máquinas, familias, productos, turnos, causas, técnicos) | FR-303 | pendiente |
+| T-301 | Validar y ampliar el catálogo de referencia sembrado en 002 | FR-303 | pendiente |
 | T-302 | Motor de simulación por transición de estado | FR-304 | pendiente |
 | T-303 | `generate_history.py` con parámetros y semilla | FR-301,302 | pendiente |
 | T-304 | Escenarios base y degradado | FR-309 | pendiente |

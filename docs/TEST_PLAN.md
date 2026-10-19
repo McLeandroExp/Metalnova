@@ -10,8 +10,8 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-002 | Base saludable | 001 | `docker compose ps` | `db healthy` | `Up (healthy)` | 2026-10-18 | superada |
 | P-003 | Conectividad Python | 001 | `check_connection.py` | `SELECT 1 -> 1` | `SELECT 1 -> 1` + `Conexión OK` | 2026-10-18 | superada |
 | P-004 | Persistencia tras reinicio | 001 | `down` → `up -d` | datos intactos | `filas=1` | 2026-10-18 | superada |
-| P-005 | Esquema idempotente | 002 | re-ejecutar DDL | sin duplicados | — | — | pendiente |
-| P-006 | Integridad referencial | 002 | `sql/validation/01_integridad.sql` | 0 huérfanos | — | — | pendiente |
+| P-005 | Esquema idempotente | 002 | re-ejecutar DDL | sin duplicados | solo NOTICE; recuentos idénticos | 2026-10-19 | superada |
+| P-006 | Integridad referencial | 002 | `sql/validation/01_integridad.sql` | 0 huérfanos | 21 chequeos con 0 incidencias | 2026-10-19 | superada |
 | P-007 | Recuento mínimo de eventos | 003 | `SELECT count(*)` | ≥ 200 000 | — | — | pendiente |
 | P-008 | Cobertura 180 días | 003 | min/max fecha | 180 días | — | — | pendiente |
 | P-009 | Reproducibilidad | 003 | regenerar misma semilla | recuentos idénticos | — | — | pendiente |

@@ -10,6 +10,8 @@ python/src/common/               # catálogos, modelo de máquina, utilidades RN
 
 ## Modelo de simulación
 
+- El catálogo estático (plantas, líneas, 52 máquinas, familias, productos, turnos, causas,
+  técnicos, calendario) ya está sembrado por el incremento 002.
 - Máquinas con tiempo de ciclo ideal por producto; estados `RUNNING`, `IDLE`, `DOWN`, `MAINT`.
 - Eventos por **transición de estado** (arranque, parada, fin de reparación).
 - Fallas con distribución por máquina (Machine-specific failure rate).

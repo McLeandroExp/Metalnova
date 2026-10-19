@@ -19,6 +19,8 @@ services:
       - metalnova_pgdata:/var/lib/postgresql/data
       # Los scripts de initdb solo se ejecutan con un directorio de datos vacío.
       - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+      # Scripts versionados para aplicar de forma explícita e idempotente.
+      - ./sql:/sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s

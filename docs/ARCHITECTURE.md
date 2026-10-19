@@ -28,11 +28,22 @@
 
 ## Flujo de datos
 
-1. `generate_history.py` produce 180 días de eventos sintéticos en `data/`.
-2. `load_history.py` carga por lotes en PostgreSQL (idempotente).
-3. `simulate_events.py` genera eventos nuevos cada minuto y los inserta idempotentemente.
-4. Las vistas `v_*` exponen KPIs con contrato estable.
-5. Power BI Desktop consume las vistas.
+1. `sql/apply_all.sql` crea el esquema y el catálogo de referencia (idempotente).
+2. `generate_history.py` produce 180 días de eventos sintéticos en `data/`.
+3. `load_history.py` carga por lotes en PostgreSQL (idempotente).
+4. `simulate_events.py` genera eventos nuevos cada minuto y los inserta idempotentemente.
+5. Las vistas `v_*` exponen KPIs con contrato estable.
+6. Power BI Desktop consume las vistas.
+
+## Modelo de datos
+
+| Grupo | Objetos |
+|---|---|
+| Dimensiones | `dim_planta`, `dim_linea`, `dim_maquina`, `dim_familia`, `dim_producto`, `dim_turno`, `dim_causa`, `dim_tecnico`, `dim_tiempo`, `dim_orden` |
+| Hechos | `fact_produccion`, `fact_parada`, `fact_mantenimiento`, `fact_calidad`, `fact_evento`, `fact_evento_rechazado` |
+| Vistas base | `v_produccion_detalle`, `v_parada_detalle`, `v_mantenimiento_detalle`, `v_calidad_detalle` |
+
+Jerarquías: `dim_planta → dim_linea → dim_maquina` y `dim_familia → dim_producto`.
 
 ## Puertos y volúmenes
 
@@ -43,6 +54,7 @@
 | Volumen de datos | `metalinova_pgdata` |
 | Volumen de pgAdmin | `metalinova_pgadmin` |
 | Carpeta montada | `./data` → contenedor |
+| Scripts SQL | `./sql` → `/sql` (solo lectura) |
 | Logs | `./logs` |
 
 ## Responsabilidades por servicio

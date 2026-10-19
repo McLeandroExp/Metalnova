@@ -57,3 +57,30 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
 - **Detalles:** modo servidor (login obligatorio); email `admin@metalinova.com` porque el validador
   rechaza dominios `.local`; el volumen `metalinova_pgadmin` solo guarda configuración.
 - **Estado:** aceptada.
+
+## D-007 · Catálogo de referencia sembrado en el incremento 002
+
+- **Decisión:** el incremento 002 siembra plantas, líneas, 52 máquinas, familias, productos, turnos,
+  causas, técnicos y 1095 días de calendario. El 003 genera los hechos.
+- **Alternativas:** sembrar todo en 003 junto con la generación de eventos.
+- **Motivo:** el esquema queda verificable de inmediato en pgAdmin y las pruebas de integridad
+  tienen datos de referencia reales.
+- **Consecuencias:** los catálogos son estáticos y reproducibles; el 003 puede ampliarlos.
+- **Estado:** aceptada.
+
+## D-008 · Constraints inline y `03_comentarios.sql`
+
+- **Decisión:** PK, FK, UNIQUE y CHECK se declaran dentro de `CREATE TABLE IF NOT EXISTS`. El
+  archivo previsto `03_constraints.sql` pasa a `03_comentarios.sql` (documentación del grano).
+- **Alternativas:** `ALTER TABLE ... ADD CONSTRAINT` con bloques `DO` para idempotencia.
+- **Motivo:** la creación es atómica, la re-ejecución es trivialmente segura y se evita el
+  *boilerplate* de comprobar `pg_constraint`.
+- **Consecuencias:** los cambios futuros de constraints requerirán una migración explícita.
+- **Estado:** aceptada.
+
+## D-009 · FK compuesta orden–producto
+
+- **Decisión:** `fact_produccion` referencia `dim_orden (id_orden, id_producto)`.
+- **Motivo:** impide que un hecho registre un producto distinto al de su orden.
+- **Consecuencias:** `dim_orden` declara `UNIQUE (id_orden, id_producto)`.
+- **Estado:** aceptada.

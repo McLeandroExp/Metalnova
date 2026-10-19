@@ -48,7 +48,7 @@ docs/reference/              insumos académicos originales (no normativos)
 docker/postgres/init/        scripts de initdb (solo corren con volumen vacío)
 docker/pgadmin/servers.json  servidor PostgreSQL pre-registrado en pgAdmin
 python/                      Dockerfile del pipeline + código
-sql/                         esquema, vistas, índices y validaciones
+sql/                         esquema, vistas, índices y validaciones (montado en /sql)
 data/                        CSV/Parquet generados (no versionados)
 logs/                        logs del pipeline (no versionados)
 powerbi/                     informe .pbix / .pbip
@@ -132,6 +132,30 @@ docker compose exec -T db psql -U metalinova -d metalinova `
 ```
 
 Resultado observado (2026-10-19): `filas=1` tras el reinicio.
+
+---
+
+## Esquema de la base de datos
+
+El esquema es versionado e idempotente (incremento 002). Se aplica explícitamente:
+
+```powershell
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/apply_all.sql
+```
+
+Verificación de integridad:
+
+```powershell
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/01_integridad.sql
+```
+
+Todas las filas deben mostrar `estado = OK`.
+
+Objetos creados: 10 dimensiones, 6 tablas de hechos, 18 índices y 4 vistas base. El catálogo
+sintético incluye 3 plantas, 6 líneas, 52 máquinas, 3 familias, 12 productos, 3 turnos, 12 causas,
+12 técnicos y 1095 días de calendario (2025-01-01 → 2027-12-31).
+
+Detalle completo en `docs/DATA_DICTIONARY.md`.
 
 ---
 

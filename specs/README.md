@@ -8,7 +8,7 @@ Estados: `propuesto` · `en curso` · `hecho` · `bloqueado`.
 | Incremento | Título | Depende de | Estado |
 |---|---|---|---|
 | 001 | Infraestructura PostgreSQL en Docker | — | hecho |
-| 002 | Modelo dimensional SQL | 001 | propuesto |
+| 002 | Modelo dimensional SQL | 001 | hecho |
 | 003 | Generador histórico (180 días) | 002 | propuesto |
 | 004 | Ingesta continua simulada | 003 | propuesto |
 | 005 | Vistas KPI y validación | 003 | propuesto |

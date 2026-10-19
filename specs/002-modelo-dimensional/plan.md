@@ -3,13 +3,19 @@
 ## Organización de scripts
 
 ```text
-sql/schema/       01_dimensiones.sql   02_hechos.sql   03_constraints.sql
+sql/schema/       01_dimensiones.sql   02_hechos.sql   03_comentarios.sql   04_catalogo_referencia.sql
 sql/indexes/      01_indices.sql
 sql/views/        01_vistas_base.sql
 sql/validation/   01_integridad.sql
+sql/apply_all.sql
 ```
 
-Los scripts se numeran y se ejecutan en orden. Cada uno es idempotente.
+Los scripts se numeran y se ejecutan en orden mediante `sql/apply_all.sql`. Cada uno es idempotente.
+
+**Decisión de implementación:** las constraints (PK, FK, UNIQUE, CHECK) se declaran **inline** en
+`CREATE TABLE IF NOT EXISTS` para que la creación sea atómica. `03_constraints.sql` del plan
+original pasa a ser `03_comentarios.sql` (documentación del grano en el propio esquema). El
+directorio `sql/` se monta en el contenedor `db` como `/sql` (solo lectura).
 
 ## Grano de los hechos
 
@@ -42,10 +48,17 @@ Los scripts se numeran y se ejecutan en orden. Cada uno es idempotente.
 
 ## Idempotencia
 
-- Dimensiones: `INSERT ... ON CONFLICT (pk) DO UPDATE`.
+- Dimensiones: `INSERT ... ON CONFLICT DO NOTHING`.
 - Hechos crudos: `ON CONFLICT (source_system, source_event_id) DO NOTHING`.
-- DDL: `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`.
+- DDL: `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, `CREATE OR REPLACE VIEW`.
 - Nada de `DROP` destructivo sin confirmación.
+
+## Catálogo de referencia
+
+El incremento 002 siembra el catálogo **estático**: 3 plantas, 6 líneas, 52 máquinas, 3 familias,
+12 productos, 3 turnos, 12 causas, 12 técnicos y la dimensión tiempo (2025-01-01 a 2027-12-31).
+Así el esquema es verificable de inmediato en pgAdmin. El incremento 003 genera los hechos
+(órdenes, producción, paradas, mantenimientos, calidad) y amplía el catálogo si hiciera falta.
 
 ## Riesgos
 
