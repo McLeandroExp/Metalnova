@@ -1,6 +1,6 @@
 # Incremento 003 — Generador histórico (180 días)
 
-Estado: propuesto · Depende de: 002 · Habilita: 004, 005
+Estado: hecho · Depende de: 002 · Habilita: 004, 005
 
 ## Contexto
 

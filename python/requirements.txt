@@ -1,3 +1,4 @@
 # Dependencias del pipeline. Versiones fijadas.
-# Se amplían en los incrementos 003 (generación) y 004 (ingesta continua).
+# El generador del 003 usa solo la biblioteca estándar (csv, random, json).
+# Se ampliarán en el 004 (ingesta continua) si hiciera falta.
 psycopg[binary]==3.2.9

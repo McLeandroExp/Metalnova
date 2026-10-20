@@ -84,3 +84,34 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
 - **Motivo:** impide que un hecho registre un producto distinto al de su orden.
 - **Consecuencias:** `dim_orden` declara `UNIQUE (id_orden, id_producto)`.
 - **Estado:** aceptada.
+
+## D-010 · Histórico en CSV y generación en streaming
+
+- **Decisión:** exportar el histórico a CSV en `data/raw/` y escribirlo en streaming, sin mantener
+  las filas en memoria. Se descarta Parquet en la v1.
+- **Alternativas:** Parquet (requiere `pyarrow`, +~100 MB de imagen); cargar directo a PostgreSQL
+  sin archivos intermedios.
+- **Motivo:** CSV es suficiente para el volumen (≈99 MB), no añade dependencias y permite
+  inspección manual; el streaming mantiene el pico de memoria en ~43 MB.
+- **Consecuencias:** el cargador usa `COPY` CSV a una tabla temporal y luego
+  `INSERT … ON CONFLICT DO NOTHING`.
+- **Estado:** aceptada.
+
+## D-011 · `run_id` determinista y guardia contra mezcla de ejecuciones
+
+- **Decisión:** `run_id = hist-<hash>` donde el hash cubre versión del generador, semilla, días,
+  fechas, escenario, intensidad, plantas y máquinas. La carga exige `--reset` si la base contiene
+  otro `run_id`.
+- **Alternativas:** borrar y recargar siempre; usar un `run_id` con marca de tiempo.
+- **Motivo:** la misma semilla produce el mismo `run_id` y una recarga idempotente; una ejecución
+  distinta no se mezcla en silencio con la anterior.
+- **Consecuencias:** `--reset` vacía hechos y `dim_orden` (nunca el catálogo ni el volumen).
+- **Estado:** aceptada.
+
+## D-012 · Escenario por defecto `degradado`
+
+- **Decisión:** el generador usa `degradado` por defecto; `base` queda disponible por parámetro.
+- **Motivo:** el caso de estudio gira en torno a la caída de OEE y la priorización de pérdidas.
+- **Consecuencias:** 180 días degradados producen OEE 0,91 → 0,78; el escenario base, 0,92 → 0,89.
+  Las cifras no se fuerzan a las del enunciado (Constitución §12).
+- **Estado:** aceptada.

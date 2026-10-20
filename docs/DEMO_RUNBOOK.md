@@ -21,7 +21,8 @@
 1. Arrancar Docker Desktop (si no está activo)
 2. docker compose up -d
 3. Verificar: docker compose ps  →  db healthy
-4. (si hace falta) cargar histórico
+4. (si hace falta) generar y cargar histórico:
+   generate_history.py --seed 42  →  load_history.py  →  verify_history.py
 5. Iniciar simulación
 6. Abrir powerbi/MetalNova.pbix y refrescar según el modo validado
 ```

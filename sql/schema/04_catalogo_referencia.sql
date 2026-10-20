@@ -1,7 +1,7 @@
 -- ============================================================================
 -- 04_catalogo_referencia.sql — Catálogo estático de referencia (sintético)
 -- Datos sintéticos del prototipo: 3 plantas, 6 líneas, 52 máquinas, 3 familias,
--- 12 productos, 3 turnos, 12 causas y 12 técnicos. La dimensión tiempo cubre
+-- 12 productos, 3 turnos, 13 causas y 12 técnicos. La dimensión tiempo cubre
 -- 2025-01-01 .. 2027-12-31 para no depender de la fecha de ejecución.
 -- Idempotente: INSERT ... ON CONFLICT DO NOTHING.
 -- ============================================================================
@@ -83,7 +83,8 @@ INSERT INTO dim_causa (id_causa, codigo, descripcion, categoria, es_planificada)
     (9,  'MANT-PREV',  'Mantenimiento preventivo',    'Mantenimiento',      true),
     (10, 'CALIDAD',    'Parada por calidad',          'Calidad',            false),
     (11, 'SETUP',      'Setup inicial de turno',      'Cambio',             true),
-    (12, 'OTRO',       'Otra causa',                  'Otro',               false)
+    (12, 'OTRO',       'Otra causa',                  'Otro',               false),
+    (13, 'DESCANSO',   'Descanso de turno',           'Descanso',           true)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO dim_tecnico (id_tecnico, codigo, nombre, especialidad) VALUES

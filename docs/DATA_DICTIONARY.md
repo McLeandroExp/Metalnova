@@ -91,8 +91,8 @@ Se distinguen tres marcas temporales: `event_time` (ocurrió), `generated_at` (s
 | `id_causa` | `integer` | PK | |
 | `codigo` | `text` | UNIQUE | |
 | `descripcion` | `text` | | |
-| `categoria` | `text` | | Falla, Cambio, Ajuste, Logística, Microparada, Mantenimiento, Calidad, Otro |
-| `es_planificada` | `boolean` | | `true` = parada planificada |
+| `categoria` | `text` | | Falla, Cambio, Ajuste, Logística, Microparada, Mantenimiento, Calidad, Descanso, Otro |
+| `es_planificada` | `boolean` | | `true` = parada planificada (incluye `DESCANSO`, causa 13) |
 
 ### `dim_tecnico` — grano: un técnico
 
@@ -182,6 +182,10 @@ good_count <= total_count  y  scrap_count <= total_count
 
 **Unicidad:** `(id_maquina, inicio_at)`.
 
+**Regla de clasificación:** una parada es microparada si dura `< 5 min` y no tiene orden CMMS;
+es falla si tiene orden CMMS o dura `>= 5 min`. Los descansos de turno se registran como parada
+planificada con causa `DESCANSO`, de modo que el downtime planificado del turno queda trazado.
+
 ### `fact_mantenimiento` — grano: una orden de trabajo
 
 | Columna | Tipo | Clave | Notas |
@@ -258,6 +262,24 @@ good_count <= total_count  y  scrap_count <= total_count
 | `v_parada_detalle` | `fact_parada` + máquina, línea, planta, turno, tiempo, causa |
 | `v_mantenimiento_detalle` | `fact_mantenimiento` + máquina, técnico, causa, turno, tiempo |
 | `v_calidad_detalle` | `fact_calidad` + máquina, producto, familia, turno, tiempo, causa |
+
+---
+
+## Volumen del histórico sintético (incremento 003)
+
+Ejecución canónica: semilla 42, 180 días (2026-04-22 → 2026-10-18), escenario `degradado`.
+
+| Tabla | Filas |
+|---|---:|
+| `dim_orden` | 28.080 |
+| `fact_produccion` | 28.080 |
+| `fact_parada` | 76.827 |
+| `fact_mantenimiento` | 4.400 |
+| `fact_calidad` | 28.080 |
+| `fact_evento` | 405.995 |
+
+El detalle de la ejecución y sus hashes están en
+`specs/003-generador-historico/verification.md`.
 
 ---
 

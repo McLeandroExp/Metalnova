@@ -1,6 +1,7 @@
 # Arquitectura — MetalNova Smart Factory BI
 
-> Estado: borrador inicial (incremento 001). Se completa a medida que avanzan los incrementos.
+> Estado: incrementos 001–003 cerrados. El histórico sintético ya está disponible en PostgreSQL;
+> las vistas KPI y Power BI corresponden a los incrementos 005 y 006.
 
 ## Diagrama de componentes
 
@@ -29,11 +30,16 @@
 ## Flujo de datos
 
 1. `sql/apply_all.sql` crea el esquema y el catálogo de referencia (idempotente).
-2. `generate_history.py` produce 180 días de eventos sintéticos en `data/`.
-3. `load_history.py` carga por lotes en PostgreSQL (idempotente).
-4. `simulate_events.py` genera eventos nuevos cada minuto y los inserta idempotentemente.
-5. Las vistas `v_*` exponen KPIs con contrato estable.
-6. Power BI Desktop consume las vistas.
+2. `generate_history.py` produce 180 días de eventos sintéticos en `data/raw/` y el manifiesto en
+   `data/processed/manifest.json` (streaming, semilla explícita).
+3. `load_history.py` carga por lotes en PostgreSQL con `COPY` + `ON CONFLICT DO NOTHING`
+   (idempotente por `run_id`; exige `--reset` para reemplazar otra ejecución).
+4. `verify_history.py` y `sql/validation/02_historico.sql` comprueban volumen, cobertura,
+   coherencia de fechas, huérfanos y reglas de parada.
+5. `simulate_events.py` (incremento 004) generará eventos nuevos y los insertará
+   idempotentemente.
+6. Las vistas `v_*` (incremento 005) expondrán KPIs con contrato estable.
+7. Power BI Desktop (incremento 006) consume las vistas.
 
 ## Modelo de datos
 

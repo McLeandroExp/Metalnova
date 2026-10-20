@@ -14,7 +14,11 @@ El directorio `sql/` está montado en el contenedor `db` como `/sql` (solo lectu
 ## Validar integridad
 
 ```powershell
+# Modelo (siempre)
 docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/01_integridad.sql
+
+# Histórico cargado (incremento 003)
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/02_historico.sql
 ```
 
 Todas las filas deben mostrar `estado = OK` e `incidencias = 0`.

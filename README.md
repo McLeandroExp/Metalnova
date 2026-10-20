@@ -16,8 +16,8 @@ más una simulación de eventos cercanos al tiempo real.
 | Incremento | Estado |
 |---|---|
 | 001 · Infraestructura PostgreSQL en Docker | **hecho** |
-| 002 · Modelo dimensional SQL | propuesto |
-| 003 · Generador histórico (180 días) | propuesto |
+| 002 · Modelo dimensional SQL | **hecho** |
+| 003 · Generador histórico (180 días) | **hecho** |
 | 004 · Ingesta continua simulada | propuesto |
 | 005 · Vistas KPI y validación | propuesto |
 | 006 · Informe Power BI (4 páginas) | propuesto |
@@ -48,8 +48,11 @@ docs/reference/              insumos académicos originales (no normativos)
 docker/postgres/init/        scripts de initdb (solo corren con volumen vacío)
 docker/pgadmin/servers.json  servidor PostgreSQL pre-registrado en pgAdmin
 python/                      Dockerfile del pipeline + código
+python/src/generate_history.py  generador del histórico sintético
+python/src/load_history.py      carga por lotes a PostgreSQL
+python/src/verify_history.py    verificación post-carga
 sql/                         esquema, vistas, índices y validaciones (montado en /sql)
-data/                        CSV/Parquet generados (no versionados)
+data/                        CSV generados y manifiestos (no versionados)
 logs/                        logs del pipeline (no versionados)
 powerbi/                     informe .pbix / .pbip
 ```
@@ -152,10 +155,77 @@ docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/01
 Todas las filas deben mostrar `estado = OK`.
 
 Objetos creados: 10 dimensiones, 6 tablas de hechos, 18 índices y 4 vistas base. El catálogo
-sintético incluye 3 plantas, 6 líneas, 52 máquinas, 3 familias, 12 productos, 3 turnos, 12 causas,
-12 técnicos y 1095 días de calendario (2025-01-01 → 2027-12-31).
+sintético incluye 3 plantas, 6 líneas, 52 máquinas, 3 familias, 12 productos, 3 turnos, 13 causas,
+12 técnicos y 1095 días de calendario (2025-01-01 → 2027-12-31). El incremento 003 añade la
+causa planificada `DESCANSO`.
 
 Detalle completo en `docs/DATA_DICTIONARY.md`.
+
+---
+
+## Histórico sintético (incremento 003)
+
+Genera **180 días** de datos sintéticos (52 máquinas × 3 turnos) y los carga en PostgreSQL.
+
+> Si modificas el código de `python/src/`, reconstruye la imagen antes de ejecutar:
+> `docker compose build ingestor`.
+
+```powershell
+# 1. Generar CSV + manifiesto reproducible
+docker compose run --rm ingestor python src/generate_history.py --seed 42
+
+# 2. Cargar por lotes (idempotente para la misma ejecución)
+docker compose run --rm ingestor python src/load_history.py
+
+# 3. Verificar integridad, cobertura y recuentos
+docker compose run --rm ingestor python src/verify_history.py
+
+# Alternativa SQL (24 chequeos; todos deben dar estado = OK)
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/02_historico.sql
+```
+
+Parámetros principales de `generate_history.py`:
+
+| Parámetro | Default | Descripción |
+|---|---|---|
+| `--seed` | `42` | Semilla; misma semilla ⇒ mismos archivos |
+| `--days` | `180` | Días de histórico |
+| `--end-date` | ayer (UTC) | Último día; el rango es `end-date − days + 1` … `end-date` |
+| `--escenario` | `degradado` | `base` (degradación leve) o `degradado` (OEE decreciente marcado) |
+| `--intensidad` | `1.0` | Multiplicador de fallas, microparadas y excursiones térmicas |
+| `--plantas` | `3` | Plantas incluidas |
+| `--maquinas` | `52` | Máximo de máquinas incluidas |
+
+Salidas:
+
+- `data/raw/*.csv`: `dim_orden`, `fact_produccion`, `fact_parada`, `fact_mantenimiento`,
+  `fact_calidad`, `fact_evento` (no versionados).
+- `data/processed/manifest.json`: semilla, parámetros, `run_id`, recuentos por tabla, tamaños,
+  duración, memoria pico y serie diaria de OEE.
+- `data/processed/load_manifest.json`: filas leídas/insertadas/omitidas y tiempos de carga.
+
+Resultado observado con los valores por defecto (2026-10-19):
+
+```text
+run_id            hist-h55dac4e285
+eventos de origen 405.995
+dim_orden         28.080     fact_produccion   28.080
+fact_parada       76.827     fact_mantenimiento 4.400
+fact_calidad      28.080     fact_evento       405.995
+generación        16,98 s · pico 43,0 MB
+carga             75,89 s · pico 61,4 MB · CSV ≈ 98,8 MB
+OEE 7 primeros días 0,9141 → 7 últimos 0,7772
+```
+
+Reproducibilidad: dos ejecuciones con la misma semilla y parámetros producen los seis CSV con
+SHA-256 idéntico y el mismo `run_id`.
+
+> ⚠️ **Cambiar la semilla o los parámetros cambia el `run_id`.** Si la base ya contiene otra
+> ejecución, `load_history.py` se detiene para no mezclar datos. Para reemplazarlos de forma
+> explícita usa `--reset` (vacía hechos y `dim_orden`; no toca el catálogo ni el volumen).
+
+> ⚠️ Los datos son **sintéticos**. El generador no pretende reproducir las cifras exactas del
+> enunciado; la tendencia de OEE se controla con el escenario elegido.
 
 ---
 
@@ -216,6 +286,8 @@ Pendiente de implementar y probar en el incremento 007.
 | pgAdmin no muestra el servidor | volumen inicializado antes de existir `servers.json` | recrear el volumen de pgAdmin (ver sección pgAdmin) |
 | `failed to connect to the docker API` | Docker Desktop detenido | arrancar Docker Desktop |
 | La conexión falla con `Faltan variables` | `.env` ausente | `Copy-Item .env.example .env` |
+| `load_history.py` aborta por «datos de otra ejecución» | la base contiene otro `run_id` | revisar y usar `--reset` de forma consciente |
+| `generate_history.py` pide la causa `DESCANSO` | catálogo 002 sin la causa 13 | ejecutar `sql/apply_all.sql` |
 | PowerShell muestra error pero el servicio corre | progreso de Docker en stderr | verificar con `docker compose ps` |
 
 ---

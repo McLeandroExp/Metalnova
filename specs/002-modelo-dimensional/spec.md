@@ -1,6 +1,6 @@
 # Incremento 002 — Modelo dimensional SQL
 
-Estado: propuesto · Depende de: 001 · Habilita: 003
+Estado: hecho · Depende de: 001 · Habilita: 003
 
 ## Contexto
 
