@@ -69,6 +69,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       TZ: ${TZ:-UTC}
       PYTHONUNBUFFERED: "1"
+      # Ingesta continua (004): valores por defecto, sobreescribibles en .env
+      SIM_INTERVAL_SECONDS: ${SIM_INTERVAL_SECONDS:-60}
+      SIM_SEED: ${SIM_SEED:-42}
+      SIM_INTENSITY: ${SIM_INTENSITY:-1.0}
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs

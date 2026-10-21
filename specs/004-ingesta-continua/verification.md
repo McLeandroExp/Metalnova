@@ -177,4 +177,10 @@ muestrear 52 filas por minuto.
   intencional (ingesta en vivo, no *backfill*); el histórico cubre el pasado.
 - Con `--interval` pequeño la probabilidad por ciclo también baja; para una demo con muchos
   eventos usar `--intensity` > 1 y documentar que es un escenario de prueba.
+- **Configuración por entorno (FR-401):** `compose.yaml` propaga `SIM_INTERVAL_SECONDS`,
+  `SIM_SEED` y `SIM_INTENSITY` (por defecto `60`, `42`, `1.0`) y `.env.example` los documenta.
+  Verificado el 2026-10-21 con `SIM_INTERVAL_SECONDS=15 SIM_SEED=7 SIM_INTENSITY=2.5` y
+  `--once --dry-run --at 2026-10-21T00:20:00Z`: el log mostró
+  `intervalo_s=15 seed=7 intensidad=2.5` y el proceso terminó con código 0. Un flag explícito
+  de la CLI sigue teniendo precedencia sobre la variable de entorno.
 - Todos los eventos y paradas son **sintéticos** y no representan telemetría real.
