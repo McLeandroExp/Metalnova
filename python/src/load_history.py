@@ -224,7 +224,11 @@ def _check_run(conn, run_tag: str, reset: bool) -> list[str]:
     interrumpida antes de insertar eventos tampoco se mezcla con otra ejecución.
     """
     with conn.cursor() as cur:
-        cur.execute("SELECT DISTINCT run_id FROM fact_evento WHERE run_id IS NOT NULL")
+        # Los run_id de la ingesta simulada (`sim-`) no son ejecuciones del
+        # histórico y no deben bloquear una recarga (incremento 004).
+        cur.execute(
+            "SELECT DISTINCT run_id FROM fact_evento WHERE run_id LIKE 'hist-%'"
+        )
         tags = set()
         for row in cur.fetchall():
             value = row[0]

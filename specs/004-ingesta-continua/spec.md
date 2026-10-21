@@ -1,6 +1,6 @@
 # Incremento 004 — Ingesta continua simulada
 
-Estado: propuesto · Depende de: 003 · Habilita: 006
+Estado: hecho (2026-10-21) · Depende de: 003 · Habilita: 006
 
 ## Contexto
 

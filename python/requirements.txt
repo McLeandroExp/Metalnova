@@ -1,4 +1,4 @@
 # Dependencias del pipeline. Versiones fijadas.
-# El generador del 003 usa solo la biblioteca estándar (csv, random, json).
-# Se ampliarán en el 004 (ingesta continua) si hiciera falta.
+# El generador del 003 y el simulador del 004 usan la biblioteca estándar
+# (csv, random, json, logging) más psycopg.
 psycopg[binary]==3.2.9

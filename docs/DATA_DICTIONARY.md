@@ -178,7 +178,7 @@ good_count <= total_count  y  scrap_count <= total_count
 | `duracion_min` | `integer` | CHECK ≥ 0 | |
 | `es_planificada` | `boolean` | | |
 | `es_microparada` | `boolean` | | |
-| `causa_detalle` | `text` | | |
+| `causa_detalle` | `text` | | descripción; `Ingesta 004: …` identifica paradas simuladas |
 
 **Unicidad:** `(id_maquina, inicio_at)`.
 
@@ -234,7 +234,7 @@ planificada con causa `DESCANSO`, de modo que el downtime planificado del turno 
 | `event_time` | `timestamptz` | | hora del evento |
 | `generated_at` | `timestamptz` | | hora de generación |
 | `ingested_at` | `timestamptz` | | hora de persistencia |
-| `run_id` | `text` | | identificador de ejecución |
+| `run_id` | `text` | | `hist-<hash>` (003) o `sim-<timestamp>-<sufijo>` (004) |
 | `estado` | `text` | | RUNNING / IDLE / DOWN / MAINT |
 | `temperatura_c` | `numeric(6,2)` | CHECK −20..150 | |
 | `energia_kwh` | `numeric(12,4)` | CHECK ≥ 0 | |
@@ -251,6 +251,27 @@ planificada con causa `DESCANSO`, de modo que el downtime planificado del turno 
 | `motivo` | `text` | causa del rechazo |
 | `payload` | `jsonb` | evento original |
 | `recibido_at` | `timestamptz` | |
+
+---
+
+## Ingesta continua simulada (incremento 004)
+
+El simulador inserta eventos **por transición** desde `source_system = 'iot'`:
+
+| `tipo_evento` | Cuándo | `estado` | `payload` |
+|---|---|---|---|
+| `transicion_estado` | arranque de una parada, fin de una parada o cambio de estado | `DOWN` / `RUNNING` | `transicion`, `causa`, `origen` |
+| `parada` | inicio de un episodio | `DOWN` | `causa`, `duracion_min`, `planificada`, `microparada`, `origen` |
+
+- `source_event_id` es estable: `sim-<down|parada|up|sc-down|sc-parada>-<máquina>-<epoch>`.
+  La clave única `(source_system, source_event_id)` y `ON CONFLICT DO NOTHING` hacen la ingesta
+  idempotente.
+- `event_time` es el inicio del slot simulado; `generated_at` es el instante real de generación e
+  `ingested_at` el de persistencia. La latencia de pipeline es `ingested_at − generated_at`.
+- Las paradas se escriben en `fact_parada` con `causa_detalle = 'Ingesta 004: …'` (microparada
+  simulada, falla simulada o escenario). El escenario `stop` usa 20 min y causa `F-MEC`.
+- No se añadió `run_id` a `fact_parada`: el marcador en `causa_detalle` es suficiente para
+  trazabilidad y evita cambiar el esquema del 002.
 
 ---
 

@@ -1,8 +1,8 @@
 # Arquitectura — MetalNova Smart Factory BI
 
-> Estado: incrementos 001, 002, 003 y 005 cerrados. El histórico sintético y las 20 vistas KPI
-> ya están disponibles en PostgreSQL; la ingesta continua (004) queda propuesta y Power BI
-> corresponde al incremento 006.
+> Estado: incrementos 001, 002, 003, 004 y 005 cerrados. El histórico sintético, la ingesta
+> continua y las 20 vistas KPI ya están disponibles en PostgreSQL; Power BI corresponde al
+> incremento 006.
 
 ## Diagrama de componentes
 
@@ -15,7 +15,8 @@
 │  │  generate_history.py      │──▶│  esquema + hechos            │   │
 │  │  load_history.py          │   │  + 20 vistas KPI             │   │
 │  │  validate_data.py         │   │  volumen metalinova_pgdata   │   │
-│  │  simulate_events.py (004) │   │  127.0.0.1:5432              │   │
+│  │  simulate_events.py       │   │  127.0.0.1:5432              │   │
+│  │  ingest.py                │   │                              │   │
 │  └───────────────────────────┘   └───────────────┬──────────────┘   │
 │                                                  │                  │
 │  ┌───────────────┐              ┌────────────────┴──────────────┐   │
@@ -39,11 +40,31 @@
    (idempotente por `run_id`; exige `--reset` para reemplazar otra ejecución).
 4. `verify_history.py` y `sql/validation/02_historico.sql` comprueban volumen, cobertura,
    coherencia de fechas, huérfanos y reglas de parada.
-5. `simulate_events.py` (incremento 004, propuesto) generará eventos nuevos y los insertará
-   idempotentemente.
+5. `simulate_events.py` (incremento 004) emite eventos por transición y los inserta de forma
+   idempotente a través de `ingest.py` (`ON CONFLICT` sobre la clave estable, transacciones por
+   lote y reintentos con *backoff*). `--scenario stop M-001` provoca una parada observable en los
+   KPI.
 6. `validate_data.py` (incremento 005) recalcula los KPI desde los hechos crudos, comprueba
    aditividad y casos borde, y compara contra las vistas con tolerancia `1e-9`.
 7. Power BI Desktop (incremento 006) consume las vistas KPI como contrato estable.
+
+## Capa de ingesta continua (incremento 004)
+
+| Elemento | Detalle |
+|---|---|
+| Componentes | `simulate_events.py` (bucle y decisiones) + `ingest.py` (escritura y métricas) |
+| Grano | evento por transición de estado; parada por episodio |
+| Idempotencia | `(source_system, source_event_id)` y `(id_maquina, inicio_at)` con `ON CONFLICT DO NOTHING` |
+| Reloj | slot alineado a `--interval`; `--at` para pruebas reproducibles |
+| `run_id` | `sim-<timestamp>-<sufijo>` (separado del histórico `hist-*`) |
+| Latencia | `ingested_at − generated_at`; objetivo < 10 min |
+| Escenario | `--scenario stop M-001` (20 min, causa `F-MEC`) |
+| Logs | `logs/simulate_events.log` + un JSON por ejecución |
+| Reintentos | 3 por defecto con *backoff* exponencial; código de salida 2 si se agotan |
+
+El simulador no rellena huecos si estuvo detenido: retoma el slot actual. Las paradas que genera
+quedan marcadas con `causa_detalle = 'Ingesta 004: …'`, de modo que se distinguen del histórico
+sin añadir columnas al esquema del 002.
 
 ## Modelo de datos
 

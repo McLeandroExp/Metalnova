@@ -23,14 +23,38 @@
 3. Verificar: docker compose ps  →  db healthy
 4. (si hace falta) generar y cargar histórico:
    generate_history.py --seed 42  →  load_history.py  →  verify_history.py
-5. Iniciar simulación
+5. Iniciar simulación:
+   docker compose --profile tools run --rm ingestor python src/simulate_events.py
 6. Abrir powerbi/MetalNova.pbix y refrescar según el modo validado
 ```
 
 ## Escenario reproducible
 
-Pendiente de implementación (incremento 004): parada de 20 min en una máquina designada para que
-la demostración no dependa de eventos aleatorios.
+Implementado en el incremento 004. La parada de 20 min no depende del azar:
+
+```powershell
+# Parada de 20 min en M-001 (causa F-MEC) en el turno actual
+docker compose --profile tools run --rm ingestor python src/simulate_events.py `
+  --scenario stop M-001 --once
+```
+
+Comprobación del cambio en los KPI:
+
+```powershell
+docker compose exec -T db psql -U metalinova -d metalinova -c "
+SELECT fecha, turno_codigo, downtime_no_planificado_min, fallas, mtbf_h
+FROM v_kpi_mantenimiento_maquina_turno
+WHERE maquina_codigo = 'M-001'
+ORDER BY fecha DESC, turno_codigo DESC
+LIMIT 3;"
+```
+
+Antes del escenario, el turno actual de M-001 no tiene fila; después aparece con
+`downtime_no_planificado_min = 20`, `fallas = 1` y `mtbf_h = NULL`. Repetir el mismo comando con el
+mismo `--at` no duplica la parada (idempotencia por `(id_maquina, inicio_at)`).
+
+Para una demostración con más actividad, usar `--intensity 2` o dejar el bucle corriendo varios
+minutos. Todos los eventos son sintéticos.
 
 ## Recuperación ante errores
 

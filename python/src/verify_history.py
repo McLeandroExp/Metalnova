@@ -82,17 +82,24 @@ def main(argv: list[str] | None = None) -> int:
         print(f"desde: {start_date}  hasta: {end_date}  días distintos: {distinct_days}")
 
         if manifest_run:
+            # Solo las ejecuciones del histórico comparten el run_id del
+            # manifiesto; la ingesta simulada (004) usa run_id `sim-...`.
             cur.execute(
-                "SELECT DISTINCT run_id FROM fact_evento WHERE run_id IS NOT NULL"
+                "SELECT DISTINCT run_id FROM fact_evento WHERE run_id LIKE 'hist-%'"
             )
             db_runs = sorted(row[0] for row in cur.fetchall())
             checks.append(
                 (
-                    "Manifiesto y base comparten el mismo run_id",
+                    "Manifiesto y base comparten el mismo run_id histórico",
                     f"base={db_runs} manifiesto={manifest_run}",
                     db_runs == [manifest_run],
                 )
             )
+            sim_events = _scalar(
+                cur,
+                "SELECT count(*) FROM fact_evento WHERE run_id LIKE 'sim-%'",
+            )
+            print(f"eventos de ingesta simulada (004): {sim_events:,}".replace(",", "."))
 
         checks.append(
             (

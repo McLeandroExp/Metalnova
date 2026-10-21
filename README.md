@@ -18,7 +18,7 @@ más una simulación de eventos cercanos al tiempo real.
 | 001 · Infraestructura PostgreSQL en Docker | **hecho** |
 | 002 · Modelo dimensional SQL | **hecho** |
 | 003 · Generador histórico (180 días) | **hecho** |
-| 004 · Ingesta continua simulada | propuesto (diferido) |
+| 004 · Ingesta continua simulada | **hecho** |
 | 005 · Vistas KPI y validación | **hecho** |
 | 006 · Informe Power BI (4 páginas) | propuesto |
 | 007 · Integración, demo y plan de mejora | propuesto |
@@ -51,6 +51,8 @@ python/                      Dockerfile del pipeline + código
 python/src/generate_history.py  generador del histórico sintético
 python/src/load_history.py      carga por lotes a PostgreSQL
 python/src/verify_history.py    verificación post-carga
+python/src/ingest.py            inserción idempotente y métricas de ingesta (004)
+python/src/simulate_events.py   simulador de ingesta continua (004)
 python/src/validate_data.py     validación independiente de los KPI (005)
 sql/                         esquema, vistas, índices y validaciones (montado en /sql)
 sql/views/                   4 vistas base + 20 vistas KPI (005)
@@ -231,6 +233,88 @@ SHA-256 idéntico y el mismo `run_id`.
 
 ---
 
+## Ingesta continua simulada (incremento 004)
+
+Simula la llegada de eventos **por transición** (arranque/parada) para las 52 máquinas y los
+inserta en PostgreSQL. No muestrea una fila por máquina y minuto: cada ciclo decide qué máquinas
+cambian de estado y emite únicamente esos eventos, más el arranque de las paradas que terminan en
+el ciclo.
+
+```powershell
+# Bucle continuo: un ciclo cada 60 s hasta Ctrl+C
+docker compose --profile tools run --rm ingestor python src/simulate_events.py
+
+# Un solo ciclo (verificación rápida)
+docker compose --profile tools run --rm ingestor python src/simulate_events.py --once
+
+# Escenario reproducible para la demo: parada de 20 min en M-001
+docker compose --profile tools run --rm ingestor python src/simulate_events.py --scenario stop M-001 --once
+
+# Reloj fijo: repetir el mismo comando no inserta duplicados
+docker compose --profile tools run --rm ingestor python src/simulate_events.py --once --at 2026-10-21T00:10:00Z
+```
+
+Parámetros principales:
+
+| Parámetro | Default | Descripción |
+|---|---|---|
+| `--interval` | `60` (`SIM_INTERVAL_SECONDS`) | Segundos entre ciclos (mínimo 5) |
+| `--cycles` | `0` | Número de ciclos; `0` = indefinido |
+| `--once` | — | Un solo ciclo y termina (sin esperas) |
+| `--at` | ahora (UTC) | Reloj fijo ISO-8601 para pruebas reproducibles |
+| `--seed` | `42` (`SIM_SEED`) | Semilla de las decisiones por máquina y slot |
+| `--intensity` | `1.0` (`SIM_INTENSITY`) | Multiplicador de la probabilidad de parada |
+| `--scenario stop M-001` | — | Parada inducida para la demo |
+| `--stop-duration-min` | `20` | Duración del escenario |
+| `--dry-run` | — | Genera y registra sin insertar |
+| `--max-attempts` / `--retry-delay` | `3` / `1.0` | Reintentos y *backoff* ante error de base |
+
+Salidas:
+
+- `logs/simulate_events.log`: log UTC con `run_id`, ciclo, eventos generados/insertados,
+  duración, latencia y errores (sin credenciales).
+- `logs/simulate_events_<run_id>.json`: métricas por ejecución (`run_id`, ciclos, recuentos,
+  latencia media/máxima, cobertura de máquinas/plantas, motivo de salida).
+- `fact_evento` y `fact_parada`: eventos y episodios de parada.
+
+**Idempotencia.** Cada ciclo se alinea a una rejilla temporal y las decisiones se derivan de
+`SHA-256(seed, máquina, slot)`. Los `source_event_id` son estables (`sim-down-…`, `sim-parada-…`,
+`sim-up-…`) y la inserción usa `ON CONFLICT` sobre `(source_system, source_event_id)`; la parada usa
+`(id_maquina, inicio_at)`. Reiniciar el proceso o repetir un ciclo no duplica filas. Las paradas
+simuladas se identifican con `fact_parada.causa_detalle LIKE 'Ingesta 004:%'`.
+
+**Latencia.** Se mide `ingested_at − generated_at` (latencia de pipeline). Resultado observado:
+entre **4 ms y 36 ms** en las ejecuciones de verificación, muy por debajo del objetivo de 10 min.
+`ingested_at − event_time` se registra aparte como desfase de evento porque `event_time` es el
+inicio del slot simulado.
+
+**Cierre limpio.** `Ctrl+C` (o `docker kill -s INT`) registra `interrupción recibida`, escribe el
+JSON de métricas y termina con código 0. Si la base no responde tras los reintentos, registra el
+error y termina con código 2.
+
+**Escenario de la demo.** `--scenario stop M-001` inserta una parada de 20 min con causa fija
+`F-MEC` en el turno actual. El cambio se observa en las vistas KPI de mantenimiento:
+
+```sql
+SELECT fecha, turno_codigo, downtime_no_planificado_min, fallas, mtbf_h
+FROM v_kpi_mantenimiento_maquina_turno
+WHERE maquina_codigo = 'M-001'
+ORDER BY fecha DESC, turno_codigo DESC
+LIMIT 3;
+```
+
+Resultado observado (2026-10-21): M-001 pasó de no tener fila en el turno C del 2026-10-20 a
+`downtime_no_planificado_min = 20`, `fallas = 1`, `mtbf_h = NULL`; la planta P-NORTE pasó de
+5 a 25 min de downtime y de 0 a 1 falla. Si el turno elegido ya tiene producción histórica, la
+vista de downtime prioriza `fact_produccion` y el simulador emite una advertencia.
+
+> ℹ️ Los `run_id` de la ingesta usan el prefijo `sim-` y no interfieren con el histórico `hist-*`:
+> `load_history.py` y `verify_history.py` los ignoran al comparar la ejecución histórica.
+
+Evidencia completa: `specs/004-ingesta-continua/verification.md` y `logs/ingest_004_*.txt`.
+
+---
+
 ## Vistas KPI y validación (incremento 005)
 
 Las 20 vistas KPI son el contrato analítico para Power BI. Se aplican junto con el esquema:
@@ -259,6 +343,7 @@ Resultado observado (2026-10-20): **49/49 comprobaciones OK**, diferencia máxim
 (tolerancia `1e-9`). Resumen global: disponibilidad `0,9857`, rendimiento `0,8851`, calidad
 `0,9683`, OEE `0,8447`; MTBF `49,46 h`; MTTR `17,45 min`; 23.403 turnos sin alerta, 4.528 en
 alerta y 149 críticos. El OEE de octubre (0,7811) coincide con el histórico verificado en 003.
+La validación se repitió el 2026-10-21 después de la ingesta simulada: **49/49 OK** de nuevo.
 
 Reglas: los porcentajes se agregan con `SUM(numerador) / SUM(denominador)`, nunca promediando
 porcentajes; las razones indefinidas devuelven `NULL` (D-014). Umbrales y definiciones completas
@@ -325,6 +410,10 @@ Pendiente de implementar y probar en el incremento 007.
 | La conexión falla con `Faltan variables` | `.env` ausente | `Copy-Item .env.example .env` |
 | `load_history.py` aborta por «datos de otra ejecución» | la base contiene otro `run_id` | revisar y usar `--reset` de forma consciente |
 | `generate_history.py` pide la causa `DESCANSO` | catálogo 002 sin la causa 13 | ejecutar `sql/apply_all.sql` |
+| `simulate_events.py` rechaza `--at` por futuro | el rango válido termina en `ahora + 5 min` | usar una hora pasada o quitar `--at` |
+| El simulador no genera eventos en un ciclo | es normal: solo emite transiciones | esperar más ciclos o subir `--intensity` |
+| Repetir un ciclo inserta 0 filas | idempotencia esperada | verificar que no haya duplicados; es correcto |
+| El escenario no cambia el downtime | el turno ya tiene producción histórica | usar un turno actual fuera del histórico (ver advertencia en el log) |
 | PowerShell muestra error pero el servicio corre | progreso de Docker en stderr | verificar con `docker compose ps` |
 
 ---

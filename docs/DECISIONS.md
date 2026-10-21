@@ -157,3 +157,41 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
   la vista, el diccionario y la validación. La temperatura es una aproximación por muestreo, no una
   serie continua.
 - **Estado:** aceptada.
+
+## D-016 · Ingesta simulada determinista por slot e idempotente
+
+- **Decisión:** alinear cada ciclo a una rejilla temporal (`slot = floor(t / intervalo)`) y derivar
+  las decisiones de `SHA-256(seed, máquina, slot)`. Cada evento recibe un `source_event_id` estable
+  y la inserción usa `ON CONFLICT DO NOTHING`. `--at` fija el reloj para pruebas reproducibles.
+- **Alternativas:** UUID aleatorio por evento con deduplicación por contenido; mantener el estado
+  solo en memoria; borrar y recargar la tabla en cada arranque.
+- **Motivo:** reiniciar o reintentar un lote no debe duplicar filas, y una prueba debe poder repetir
+  exactamente el mismo ciclo. El estado en memoria no sobrevive a un reinicio.
+- **Consecuencias:** misma semilla + mismo slot ⇒ mismos eventos; el simulador no rellena huecos si
+  estuvo detenido; `--at` se limita a `ahora + 5 min` (Constitución §7.1).
+- **Estado:** aceptada.
+
+## D-017 · El escenario de parada escribe en `fact_parada`
+
+- **Decisión:** `--scenario stop M-001` inserta una parada de 20 min con causa fija `F-MEC` en
+  `fact_parada` y sus eventos IoT, en el turno que contiene el instante del escenario.
+- **Alternativas:** emitir solo un evento en `fact_evento` (no altera ningún KPI); modificar
+  `fact_produccion` (distorsiona conteos y requiere una orden).
+- **Motivo:** AC-406 exige un cambio observable en un KPI. Las vistas de mantenimiento calculan el
+  downtime desde `fact_parada` cuando no hay producción para esa máquina/turno/día.
+- **Consecuencias:** el cambio se ve en `v_kpi_mantenimiento_maquina_turno`,
+  `v_kpi_mantenimiento_planta_dia` y en la condición de downtime de la alerta. Si el turno ya tiene
+  producción histórica, la vista prioriza `fact_produccion` y el simulador advierte en el log.
+- **Estado:** aceptada.
+
+## D-018 · Separar `run_id` de la ingesta (`sim-`) del histórico (`hist-`)
+
+- **Decisión:** la ingesta usa `run_id = sim-<timestamp>-<sufijo>`; `load_history.py` y
+  `verify_history.py` filtran `hist-%` al comparar la ejecución histórica.
+- **Alternativas:** reutilizar el `run_id` histórico (mezclaría procedencias); añadir una columna
+  `origen` al esquema (cambio innecesario).
+- **Motivo:** los eventos en vivo no deben bloquear una recarga idempotente del histórico ni hacer
+  fallar la comprobación manifiesto↔base.
+- **Consecuencias:** el chequeo de duplicados sigue siendo global; la ingesta se identifica por el
+  prefijo y las paradas por `causa_detalle`.
+- **Estado:** aceptada.
