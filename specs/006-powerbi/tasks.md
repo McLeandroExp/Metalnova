@@ -16,4 +16,5 @@
 | T-612 | Serie temporal con umbrales | FR-609 | pendiente |
 | T-613 | Navegación pérdida OEE→causa y alerta crítica | FR-612,613 | pendiente |
 | T-614 | Verificar 4 páginas y 9 KPIs; guardar `.pbix`/`.pbip` | AC-601,605,607 | pendiente |
+| T-616 | Optimizar `v_alerta_maquina_critica` (índice o materialización) | FR-601, AC-606 | pendiente |
 | T-615 | Commit `feat: informe power bi` | — | pendiente |
