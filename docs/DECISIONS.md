@@ -115,3 +115,45 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
 - **Consecuencias:** 180 días degradados producen OEE 0,91 → 0,78; el escenario base, 0,92 → 0,89.
   Las cifras no se fuerzan a las del enunciado (Constitución §12).
 - **Estado:** aceptada.
+
+## D-013 · Las vistas KPI son el contrato único y la agregación es ponderada
+
+- **Decisión:** exponer los KPI en vistas SQL (`sql/views/02..08`) y usarlas como contrato para
+  Power BI, Python y validación. Los porcentajes se agregan sumando numeradores y denominadores;
+  nunca se promedian porcentajes.
+- **Alternativas:** calcular los KPI en DAX directamente desde los hechos; crear una tabla ancha
+  materializada por cada grano.
+- **Motivo:** una sola definición verificable, sin divergencia entre SQL, Python y DAX; el OEE de
+  una planta debe ponderar por tiempo/unidades, no promediar máquinas.
+- **Consecuencias:** cada vista de grano superior recalcula A/P/Q con `SUM/SUM`; la validación
+  independiente compara los numeradores, los denominadores y el resultado. Cambiar una fórmula
+  exige cambiar la vista, el diccionario y la prueba.
+- **Estado:** aceptada.
+
+## D-014 · División por cero: `NULL` intencional, nunca `NaN`
+
+- **Decisión:** toda razón con denominador cero devuelve `NULL`; no se usa `0` como sustituto porque
+  ocultaría la ausencia de base de cálculo. La alerta trata `NULL` como condición no cumplida.
+- **Alternativas:** devolver `0`; excluir la fila; usar un valor centinela.
+- **Motivo:** `NULL` distingue “no definido” de un cero real (por ejemplo, MTBF de una máquina sin
+  fallas o FPY sin inspecciones) y evita `NaN` en Power BI. El caso borde queda documentado y
+  probado con una transacción revertida en `validate_data.py`.
+- **Consecuencias:** los visuales muestran celdas en blanco para métricas no definidas; el informe
+  debe usar `COALESCE`/`DIVIDE` solo cuando la regla de negocio lo justifique.
+- **Estado:** aceptada.
+
+## D-015 · Umbrales de falla corta, temperatura y ventana de alerta
+
+- **Decisión:** falla corta = falla con duración < 30 min. Temperatura alta = lectura > 85 °C; como
+  el histórico muestrea cada 15 min, se exigen al menos dos lecturas altas en el turno para
+  representar 15 min. La alerta se evalúa por máquina × turno × fecha; `es_ultimo_turno_maquina`
+  permite mostrar el turno actual de cada máquina.
+- **Alternativas:** usar el mismo umbral de microparada (5 min); evaluar solo el último día global;
+  usar un promedio diario de temperatura.
+- **Motivo:** la Constitución §8 fija 85 °C/15 min y la ventana por turno, pero no fija el umbral de
+  “falla corta” ni el muestreo. Estos valores quedan centralizados en `v_kpi_parametros` y
+  documentados para que sean auditables.
+- **Consecuencias:** los umbrales son visibles en la vista de parámetros; cambiarlos exige revisar
+  la vista, el diccionario y la validación. La temperatura es una aproximación por muestreo, no una
+  serie continua.
+- **Estado:** aceptada.

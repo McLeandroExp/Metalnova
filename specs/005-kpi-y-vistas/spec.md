@@ -1,6 +1,6 @@
 # Incremento 005 — Vistas KPI y validación
 
-Estado: propuesto · Depende de: 003 · Habilita: 006
+Estado: hecho · Depende de: 003 · Habilita: 006
 
 ## Contexto
 

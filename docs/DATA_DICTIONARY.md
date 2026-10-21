@@ -265,6 +265,95 @@ planificada con causa `DESCANSO`, de modo que el downtime planificado del turno 
 
 ---
 
+## Vistas KPI (incremento 005)
+
+Las vistas KPI son el **contrato analítico** para Power BI. Se aplican con
+`sql/apply_all.sql` y viven en `sql/views/02_kpi_base.sql` a
+`08_alerta_maquina_critica.sql`. Todas son idempotentes (`CREATE OR REPLACE VIEW`).
+
+**Regla de agregación:** los porcentajes nunca se promedian. Cada vista agrega
+sumando numeradores y denominadores y recién divide al final. Por eso el OEE de
+una planta no es el promedio de los OEE de sus máquinas.
+
+### Parámetros de reglas (`v_kpi_parametros`)
+
+| Parámetro | Valor | Uso |
+|---|---:|---|
+| `microparada_min` | 5 | duración máxima de una microparada |
+| `falla_corta_min` | 30 | duración máxima de una falla corta |
+| `mtbf_umbral_h` | 20 | umbral de alerta de MTBF |
+| `oee_umbral` | 0.55 | umbral de alerta de OEE (55 %) |
+| `downtime_umbral_min` | 120 | umbral de downtime no planificado por turno |
+| `temperatura_umbral_c` | 85 | temperatura máxima admisible |
+| `temperatura_ventana_min` | 15 | intervalo de muestreo histórico |
+| `temperatura_lecturas_min` | 2 | lecturas altas consecutivas para 15 min |
+
+### Vistas base de hechos
+
+| Vista | Grano | Contenido |
+|---|---|---|
+| `v_kpi_produccion` | fila de `fact_produccion` | dimensiones + A/P/Q/OEE, scrap, energía/unidad buena, downtime |
+| `v_kpi_calidad` | inspección | dimensiones + tasa de defectos, retrabajo y FPY |
+| `v_kpi_parada` | parada | dimensiones + regla G6 (`es_falla`, `es_microparada_regla`, `es_falla_corta`) |
+| `v_kpi_mantenimiento` | orden de trabajo | dimensiones + tipo/estado + `es_correctivo_cerrado` |
+
+### OEE
+
+| Vista | Grano |
+|---|---|
+| `v_kpi_oee_planta_dia` | fecha × planta |
+| `v_kpi_oee_linea_dia` | fecha × línea |
+| `v_kpi_oee_maquina_dia` | fecha × máquina |
+| `v_kpi_oee_maquina_turno` | fecha × máquina × turno |
+| `v_kpi_oee_producto_dia` | fecha × producto |
+
+Todas exponen `tiempo_planificado_min`, `tiempo_operativo_min`,
+`downtime_no_planificado_min`, `total_count`, `good_count`, `scrap_count`,
+`minutos_ideales`, `disponibilidad`, `rendimiento`, `calidad`, `oee`,
+`scrap_rate`, `energia_por_unidad_buena` y
+`downtime_no_planificado_pct`.
+
+### Mantenimiento y confiabilidad
+
+| Vista | Grano | Contenido |
+|---|---|---|
+| `v_kpi_mantenimiento_maquina_turno` | fecha × máquina × turno | MTBF, MTTR, downtime, fallas, microparadas, fallas cortas |
+| `v_kpi_mantenimiento_maquina_dia` | fecha × máquina | agregado diario |
+| `v_kpi_mantenimiento_maquina_mes` | mes × máquina | agregado mensual |
+| `v_kpi_mantenimiento_planta_dia` | fecha × planta | vista ejecutiva |
+| `v_kpi_confiabilidad_apoyo_maquina_dia` | fecha × máquina | microparadas y fallas cortas por 100 h |
+
+`v_kpi_mantenimiento_maquina_turno` incluye claves con producción, parada o
+mantenimiento. Así, una parada de la ingesta 004 sin fila de producción aparece
+con `tiempo_operativo_min = 0`, `mtbf_h = NULL` y el downtime medido desde
+`fact_parada`.
+
+### Calidad y energía
+
+| Vista | Grano | Contenido |
+|---|---|---|
+| `v_kpi_calidad_maquina_dia` | fecha × máquina | scrap, FPY, defectos, retrabajo, energía/unidad buena |
+| `v_kpi_calidad_producto_dia` | fecha × producto | ídem por producto/familia |
+
+### Loss Tree
+
+| Vista | Grano | Contenido |
+|---|---|---|
+| `v_loss_tree` | fila de producción | pérdidas de disponibilidad, rendimiento y calidad en minutos equivalentes |
+| `v_loss_tree_maquina_mes` | mes × máquina | agregado para Pareto y drill-down |
+
+### Alerta de máquina crítica
+
+| Vista | Grano | Contenido |
+|---|---|---|
+| `v_alerta_maquina_critica` | fecha × máquina × turno | cuatro condiciones, severidad, acciones, responsables y `es_ultimo_turno_maquina` |
+
+La vista evalúa el turno completo. El informe filtra `severidad <> 'sin_alerta'`
+y puede usar `es_ultimo_turno_maquina = true` para mostrar solo el último turno
+con actividad de cada máquina.
+
+---
+
 ## Volumen del histórico sintético (incremento 003)
 
 Ejecución canónica: semilla 42, 180 días (2026-04-22 → 2026-10-18), escenario `degradado`.
@@ -291,16 +380,36 @@ El detalle de la ejecución y sus hashes están en
 | Disponibilidad | `tiempo_operativo_min / tiempo_planificado_min` | excluye descansos y paradas planificadas |
 | Rendimiento | `(ciclo_ideal_segundos × total_count / 60) / tiempo_operativo_min` | ciclo en segundos, tiempo en minutos |
 | Calidad | `good_count / total_count` | |
-| MTBF | tiempo operativo / nº de fallas | fallas = paradas no planificadas según regla |
-| MTTR | suma de `duracion_min` de mantenimiento correctivo cerrado / nº de reparaciones | |
-| Downtime no planificado | `downtime_no_planificado_min / tiempo_planificado_min` | |
+| MTBF | `(tiempo_operativo_min / 60) / fallas` | fallas = paradas no planificadas según regla G6; `NULL` si no hay runtime o fallas |
+| MTTR | `SUM(duracion_min de correctivo cerrado) / nº reparaciones` | `NULL` si no hay reparaciones |
+| Downtime no planificado | `downtime_no_planificado_min / tiempo_planificado_min` | desde `fact_produccion`; si no hay producción, la vista de mantenimiento usa los minutos de `fact_parada` |
 | Scrap Rate | `scrap_count / total_count` | |
-| FPY | `(unidades_inspeccionadas − unidades_retrabajo) / unidades_inspeccionadas` | |
-| Energía por Unidad Buena | `energia_kwh / good_count` | |
-| Microparadas | conteo y duración donde `es_microparada` | indicador de apoyo |
+| FPY | `(unidades_inspeccionadas − unidades_retrabajo) / unidades_inspeccionadas` | `NULL` si no hay inspecciones |
+| Energía por Unidad Buena | `energia_kwh / good_count` | `NULL` si no hay unidades buenas |
+| Microparadas | conteo y `SUM(duracion_min)` de paradas no planificadas con duración < 5 min y sin CMMS | indicador de apoyo |
+| Microparadas por 100 h | `100 × microparadas / (tiempo_operativo_min / 60)` | normaliza por horas operativas |
+| Fallas cortas | fallas con `duracion_min < 30` | frecuencia de fallas breves |
+| MTBF corto | `(tiempo_operativo_min / 60) / fallas_cortas` | `NULL` si no hay fallas cortas |
+| Fallas cortas por 100 h | `100 × fallas_cortas / (tiempo_operativo_min / 60)` | frecuencia normalizada |
+| Loss Tree — disponibilidad | `downtime_no_planificado_min` | minutos equivalentes perdidos |
+| Loss Tree — rendimiento | `GREATEST(tiempo_operativo_min − minutos_ideales, 0)` | minutos equivalentes perdidos |
+| Loss Tree — calidad | `scrap_count × ciclo_ideal_segundos / 60` | minutos equivalentes perdidos |
+| Loss Tree — participación | `pérdida_categoría / minutos_perdidos_total` | `NULL` si el total es 0 |
+| Alerta de máquina crítica | OEE < 55 % **o** MTBF < 20 h **o** temperatura > 85 °C durante ≥ 15 min **o** downtime > 120 min/turno | severidad `critica` si se cumplen ≥ 2 condiciones |
 
-**Casos borde:** división por cero ⇒ `NULL`/0 documentado; turno sin producción se excluye de los
-promedios ponderados; máquina sin fallas ⇒ MTBF no definido (se reporta como `NULL`, no como 0).
+**Ventana de la alerta:** un turno (máquina × turno × fecha). La temperatura se
+muestrea cada 15 min en el histórico; se exigen al menos dos lecturas > 85 °C en
+el turno, que equivalen a 15 min entre la primera y la segunda muestra. La vista
+expone `minutos_temp_alta_estimados = lecturas × 15`.
+
+**Casos borde:** toda división por cero devuelve `NULL` de forma intencional y
+documentada; no se propaga `NaN`. Un turno sin producción no genera filas en las
+vistas OEE y queda excluido de los promedios ponderados. Una máquina sin fallas
+tiene MTBF `NULL`; sin reparaciones, MTTR `NULL`; sin fallas cortas, MTBF corto
+`NULL`; sin inspecciones, FPY `NULL`. En el Loss Tree, si no hay pérdidas, las
+participaciones son `NULL`. La alerta trata una métrica indefinida como condición
+no cumplida. Estos casos se ejercitan en `python/src/validate_data.py` con una
+transacción de prueba que se revierte.
 
 ---
 
@@ -310,7 +419,25 @@ promedios ponderados; máquina sin fallas ⇒ MTBF no definido (se reporta como 
 |---|---|
 | Microparada | duración < 5 min **y** sin orden CMMS asociada |
 | Falla | con orden CMMS **o** duración ≥ 5 min |
+| Falla corta | falla con duración < 30 min |
 | Parada planificada | `dim_causa.es_planificada = true` (mantenimiento preventivo, cambio de producto, setup) |
+| Temperatura alta | lectura > 85 °C; ≥ 2 lecturas en el turno para la regla de alerta |
+
+## Trazabilidad KPI ↔ vista (AC-505)
+
+| KPI / regla | Vista de contrato | Fuente primaria |
+|---|---|---|
+| OEE, A, P, Q | `v_kpi_oee_*` | `fact_produccion` |
+| Scrap Rate, energía/unidad buena | `v_kpi_oee_*`, `v_kpi_calidad_*` | `fact_produccion` |
+| FPY, defectos, retrabajo | `v_kpi_calidad_*` | `fact_calidad` |
+| MTBF, MTTR, downtime | `v_kpi_mantenimiento_*` | `fact_produccion`, `fact_parada`, `fact_mantenimiento` |
+| Microparadas y fallas cortas | `v_kpi_confiabilidad_apoyo_maquina_dia` | `fact_parada` |
+| Loss Tree | `v_loss_tree*` | `fact_produccion` |
+| Alerta de máquina crítica | `v_alerta_maquina_critica` | `fact_produccion`, `fact_parada`, `fact_mantenimiento`, `fact_evento` |
+
+La validación independiente `python src/validate_data.py` recalcula estos KPI
+desde los hechos y compara con las vistas con tolerancia `1e-9` (más estricta
+que el 0,1 % del spec).
 
 ## Latencia
 

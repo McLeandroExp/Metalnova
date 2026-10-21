@@ -10,8 +10,8 @@ Estados: `propuesto` · `en curso` · `hecho` · `bloqueado`.
 | 001 | Infraestructura PostgreSQL en Docker | — | hecho |
 | 002 | Modelo dimensional SQL | 001 | hecho |
 | 003 | Generador histórico (180 días) | 002 | hecho |
-| 004 | Ingesta continua simulada | 003 | propuesto |
-| 005 | Vistas KPI y validación | 003 | propuesto |
+| 004 | Ingesta continua simulada | 003 | propuesto (diferido) |
+| 005 | Vistas KPI y validación | 003 | hecho |
 | 006 | Informe Power BI (4 páginas) | 004, 005 | propuesto |
 | 007 | Integración, demo y plan de mejora | 006 | propuesto |
 

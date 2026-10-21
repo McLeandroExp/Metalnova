@@ -17,8 +17,11 @@ python/src/validate_data.py       # validación independiente (contra las vistas
 
 - Prefijo `v_` para vistas analíticas; sufijo de grano (`_planta`, `_maquina_turno`).
 - Fórmulas con nombres explícitos: `disponibilidad`, `rendimiento`, `calidad`, `oee`.
-- División segura: `NULLIF(denominador, 0)` con `COALESCE(..., 0)` documentado.
+- División segura: `NULLIF(denominador, 0)`; una razón indefinida devuelve `NULL`
+  (D-014), nunca `NaN` ni un cero que oculte la falta de base.
 - OEE siempre ponderado por denominador, nunca promedio de porcentajes.
+- Umbrales centralizados en `v_kpi_parametros` (microparada 5 min, falla corta 30 min,
+  MTBF 20 h, OEE 0,55, downtime 120 min, temperatura 85 °C/15 min/2 lecturas).
 
 ## Validación independiente
 

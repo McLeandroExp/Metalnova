@@ -18,8 +18,8 @@ más una simulación de eventos cercanos al tiempo real.
 | 001 · Infraestructura PostgreSQL en Docker | **hecho** |
 | 002 · Modelo dimensional SQL | **hecho** |
 | 003 · Generador histórico (180 días) | **hecho** |
-| 004 · Ingesta continua simulada | propuesto |
-| 005 · Vistas KPI y validación | propuesto |
+| 004 · Ingesta continua simulada | propuesto (diferido) |
+| 005 · Vistas KPI y validación | **hecho** |
 | 006 · Informe Power BI (4 páginas) | propuesto |
 | 007 · Integración, demo y plan de mejora | propuesto |
 
@@ -51,7 +51,9 @@ python/                      Dockerfile del pipeline + código
 python/src/generate_history.py  generador del histórico sintético
 python/src/load_history.py      carga por lotes a PostgreSQL
 python/src/verify_history.py    verificación post-carga
+python/src/validate_data.py     validación independiente de los KPI (005)
 sql/                         esquema, vistas, índices y validaciones (montado en /sql)
+sql/views/                   4 vistas base + 20 vistas KPI (005)
 data/                        CSV generados y manifiestos (no versionados)
 logs/                        logs del pipeline (no versionados)
 powerbi/                     informe .pbix / .pbip
@@ -154,7 +156,7 @@ docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/01
 
 Todas las filas deben mostrar `estado = OK`.
 
-Objetos creados: 10 dimensiones, 6 tablas de hechos, 18 índices y 4 vistas base. El catálogo
+Objetos creados: 10 dimensiones, 6 tablas de hechos, 18 índices, 4 vistas base y 20 vistas KPI. El catálogo
 sintético incluye 3 plantas, 6 líneas, 52 máquinas, 3 familias, 12 productos, 3 turnos, 13 causas,
 12 técnicos y 1095 días de calendario (2025-01-01 → 2027-12-31). El incremento 003 añade la
 causa planificada `DESCANSO`.
@@ -226,6 +228,41 @@ SHA-256 idéntico y el mismo `run_id`.
 
 > ⚠️ Los datos son **sintéticos**. El generador no pretende reproducir las cifras exactas del
 > enunciado; la tendencia de OEE se controla con el escenario elegido.
+
+---
+
+## Vistas KPI y validación (incremento 005)
+
+Las 20 vistas KPI son el contrato analítico para Power BI. Se aplican junto con el esquema:
+
+```powershell
+docker compose exec -T db psql -U metalinova -d metalinova -v ON_ERROR_STOP=1 -f /sql/apply_all.sql
+```
+
+| Grupo | Vistas |
+|---|---|
+| Base de hechos | `v_kpi_produccion`, `v_kpi_calidad`, `v_kpi_parada`, `v_kpi_mantenimiento` |
+| OEE | `v_kpi_oee_planta_dia`, `_linea_dia`, `_maquina_dia`, `_maquina_turno`, `_producto_dia` |
+| Mantenimiento | `v_kpi_mantenimiento_maquina_turno`, `_maquina_dia`, `_maquina_mes`, `_planta_dia` |
+| Confiabilidad | `v_kpi_confiabilidad_apoyo_maquina_dia` |
+| Calidad/energía | `v_kpi_calidad_maquina_dia`, `v_kpi_calidad_producto_dia` |
+| Loss Tree | `v_loss_tree`, `v_loss_tree_maquina_mes` |
+| Alerta | `v_alerta_maquina_critica` |
+
+Validación independiente (recalcula los KPI desde los hechos y compara con las vistas):
+
+```powershell
+docker compose --profile tools run --rm ingestor python src/validate_data.py
+```
+
+Resultado observado (2026-10-20): **49/49 comprobaciones OK**, diferencia máxima `4,37e-11`
+(tolerancia `1e-9`). Resumen global: disponibilidad `0,9857`, rendimiento `0,8851`, calidad
+`0,9683`, OEE `0,8447`; MTBF `49,46 h`; MTTR `17,45 min`; 23.403 turnos sin alerta, 4.528 en
+alerta y 149 críticos. El OEE de octubre (0,7811) coincide con el histórico verificado en 003.
+
+Reglas: los porcentajes se agregan con `SUM(numerador) / SUM(denominador)`, nunca promediando
+porcentajes; las razones indefinidas devuelven `NULL` (D-014). Umbrales y definiciones completas
+en `docs/DATA_DICTIONARY.md`; evidencia en `specs/005-kpi-y-vistas/verification.md`.
 
 ---
 
