@@ -1,7 +1,7 @@
 # Verificación — Incremento 004
 
-Estado: **hecho** · Fecha: 2026-10-21 · Entorno: PostgreSQL 16.4-alpine en Docker
-(`metalinova_db`, healthy), histórico `hist-h55dac4e285` (180 días) + ingesta simulada
+Estado: **hecho** · Fecha: 2026-10-21 · Commit: `773913a` · Entorno: PostgreSQL 16.4-alpine
+en Docker (`metalinova_db`, healthy), histórico `hist-h55dac4e285` (180 días) + ingesta simulada
 `sim-*`. Reloj de las pruebas: UTC. Todos los datos son **sintéticos**.
 
 ## Comandos ejecutados
@@ -161,6 +161,12 @@ muestrear 52 filas por minuto.
 
 ## Observaciones y límites
 
+- **`processed_at`:** no aplica en la v1 porque no existe una etapa de procesamiento separada entre
+  la ingesta y las vistas. El ciclo completo queda descrito por `event_time` (ocurrió),
+  `generated_at` (se generó) e `ingested_at` (se persistió).
+- **Transacciones y lotes (FR-410):** cada ciclo inserta sus paradas y eventos con `executemany`
+  dentro de una sola transacción (`conn.transaction()`). Si el lote falla, no queda parcialmente
+  confirmado; el reintento completo es seguro por las claves únicas.
 - Los `run_id` de la ingesta llevan prefijo `sim-` para separarlos del histórico `hist-*`.
   `load_history.py` y `verify_history.py` se ajustaron para no tratar esos `run_id` como una
   ejecución histórica distinta.
