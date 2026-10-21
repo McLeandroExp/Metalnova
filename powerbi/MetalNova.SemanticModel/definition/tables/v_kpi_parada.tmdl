@@ -1,0 +1,317 @@
+table v_kpi_parada
+	lineageTag: a8046d4a-fab1-4710-b005-6557cfe6da55
+
+	column id_parada
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: a2980658-d778-42e5-9c6f-689f3d68f42d
+		summarizeBy: sum
+		sourceColumn: id_parada
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_maquina
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 6400fd4f-93ad-4dce-9918-a3de885fa487
+		summarizeBy: sum
+		sourceColumn: id_maquina
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2fa8cce9-d05a-4dd7-9d0f-538375776e4c
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 86d73f3e-dbcc-4a47-a52c-58c4c8193c59
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_tipo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 97be549c-38a4-4137-8c28-7e09df687782
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_criticidad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 83e3c26d-e406-4c76-b4cb-d53fcfbdcd2b
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_planta
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 0524b53e-c96b-4cad-860e-36c545c26733
+		summarizeBy: sum
+		sourceColumn: id_planta
+
+		annotation SummarizationSetBy = Automatic
+
+	column planta_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: e5ca756c-af20-4a02-92ba-22c17ccd3713
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_linea
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 3e8e7039-0470-457c-b2bb-df0c826d94fe
+		summarizeBy: sum
+		sourceColumn: id_linea
+
+		annotation SummarizationSetBy = Automatic
+
+	column linea_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 729a59d2-9aba-4281-b947-c68edd9ee5bf
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_turno
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 57a09ad1-0007-4b01-ba62-9cd30dc6629f
+		summarizeBy: sum
+		sourceColumn: id_turno
+
+		annotation SummarizationSetBy = Automatic
+
+	column turno_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 6daf7eeb-79f6-4caa-bf09-e13f4122ec0d
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_tiempo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: aae4f019-566f-4bba-bc62-0d0ef02a8fe5
+		summarizeBy: sum
+		sourceColumn: id_tiempo
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: 3f991c55-cf79-4d7c-a0ef-9f5adcff601c
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column anio_mes
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: a9e3272d-3816-4527-9f89-aebc7a8930d8
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_causa
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: e79efe8b-7fc5-43df-983f-1774e7276998
+		summarizeBy: sum
+		sourceColumn: id_causa
+
+		annotation SummarizationSetBy = Automatic
+
+	column causa_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8e87dfbe-fe7d-4796-8894-841d4ff54303
+		summarizeBy: none
+		sourceColumn: causa_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column causa_categoria
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 9b1afb53-4e3f-4a90-a0e9-acb94d0eb4e1
+		summarizeBy: none
+		sourceColumn: causa_categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column causa_es_planificada
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 0bd1a1c0-e759-474b-ad3b-e79f70dbadca
+		summarizeBy: none
+		sourceColumn: causa_es_planificada
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_mantenimiento
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 5ca9e226-ac9e-4b4a-be7b-7da5442ff674
+		summarizeBy: sum
+		sourceColumn: id_mantenimiento
+
+		annotation SummarizationSetBy = Automatic
+
+	column inicio_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 00a96192-1481-4473-90cd-e1404e9d2777
+		summarizeBy: none
+		sourceColumn: inicio_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column fin_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 9d496f0e-1eb8-44a1-8142-3b98c2bb1f05
+		summarizeBy: none
+		sourceColumn: fin_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column duracion_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 76716c1b-872b-4a94-bb3a-48b4781c94a0
+		summarizeBy: sum
+		sourceColumn: duracion_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_planificada
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: bb000f5b-5d3d-41e9-b7cb-56b061ed516d
+		summarizeBy: none
+		sourceColumn: es_planificada
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_microparada_etl
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 0b134c40-7a48-4993-86f4-2f589d59b408
+		summarizeBy: none
+		sourceColumn: es_microparada_etl
+
+		annotation SummarizationSetBy = Automatic
+
+	column microparada_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1f883ba2-2e11-4b52-b00d-9fb1fc64e782
+		summarizeBy: sum
+		sourceColumn: microparada_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column falla_corta_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: a84e5d66-a4b3-426c-8dda-1c174075f066
+		summarizeBy: sum
+		sourceColumn: falla_corta_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_microparada_regla
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 492bc2d6-591f-4006-acf3-bfc84a0b737d
+		summarizeBy: none
+		sourceColumn: es_microparada_regla
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_falla
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: ae47094d-6589-4c68-8136-3cbf7f1d6937
+		summarizeBy: none
+		sourceColumn: es_falla
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_falla_corta
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 42c44777-24e0-469b-bc54-e1fe90420074
+		summarizeBy: none
+		sourceColumn: es_falla_corta
+
+		annotation SummarizationSetBy = Automatic
+
+	column clasificacion
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 86740350-d7a7-4017-8ee3-8716e4bb43ae
+		summarizeBy: none
+		sourceColumn: clasificacion
+
+		annotation SummarizationSetBy = Automatic
+
+	partition v_kpi_parada = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_parada = Origen{[Schema="public",Item="v_kpi_parada"]}[Data]
+				in
+				    public_v_kpi_parada
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

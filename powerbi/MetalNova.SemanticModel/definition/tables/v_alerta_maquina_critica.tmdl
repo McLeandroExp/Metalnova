@@ -1,0 +1,506 @@
+table v_alerta_maquina_critica
+	lineageTag: 88fc688e-0165-4f4d-8b65-70e3a9033551
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: eac19e01-e283-4975-b804-4802987a252b
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column anio_mes
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 66107ae9-01ee-4d77-8e79-433242d573a0
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_planta
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: d6aa4373-c782-4048-a200-6bdc237a85fc
+		summarizeBy: sum
+		sourceColumn: id_planta
+
+		annotation SummarizationSetBy = Automatic
+
+	column planta_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 59fa7d5e-c14d-4634-b476-239a5a668331
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_linea
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 83435f9d-1b78-4935-9867-50d4e1463f53
+		summarizeBy: sum
+		sourceColumn: id_linea
+
+		annotation SummarizationSetBy = Automatic
+
+	column linea_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 38986881-d679-4878-8d9d-10354ab6c2fa
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_maquina
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 3ca7aadf-9f4e-4646-bc2a-11a96c38a8ee
+		summarizeBy: sum
+		sourceColumn: id_maquina
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: a8423cfc-f26b-4644-a0f9-912fc2900d87
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7a580525-f33b-464c-91c8-89942a63e169
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_tipo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 5904cdd6-82bc-4c8b-8048-1dc5abe3330f
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_criticidad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: eeea73e4-b26e-4890-8cde-1d466453e9bf
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_turno
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: a382439e-3f00-4b1f-9ae0-fec2fdc87228
+		summarizeBy: sum
+		sourceColumn: id_turno
+
+		annotation SummarizationSetBy = Automatic
+
+	column turno_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: cad2ba79-d17b-464d-bdd6-e6500cbd6379
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column turno_inicio_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 13219cbc-4e3b-482e-a874-d4b2377f7c87
+		summarizeBy: none
+		sourceColumn: turno_inicio_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_tiempo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b812b3cd-34f4-441f-b3d6-a0877b456446
+		summarizeBy: sum
+		sourceColumn: id_tiempo
+
+		annotation SummarizationSetBy = Automatic
+
+	column tiempo_operativo_h
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: d6e82150-24b9-429d-8aee-d19530491af3
+		summarizeBy: sum
+		sourceColumn: tiempo_operativo_h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fallas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 88c6ce9f-f48e-48a2-ab87-2cc9a3659dc5
+		summarizeBy: sum
+		sourceColumn: fallas
+
+		annotation SummarizationSetBy = Automatic
+
+	column mtbf_h
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: f8d30f15-d0a2-4be5-95da-3d2d1f9bf482
+		summarizeBy: sum
+		sourceColumn: mtbf_h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column microparadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 601552bd-4cc0-44d1-b275-57fa2a764033
+		summarizeBy: sum
+		sourceColumn: microparadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column fallas_cortas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 73498bc1-04b2-4575-8e84-989e4e1c0583
+		summarizeBy: sum
+		sourceColumn: fallas_cortas
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutos_fallas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: ed4e2769-1336-438d-a5a3-37c8029ed9cb
+		summarizeBy: sum
+		sourceColumn: minutos_fallas
+
+		annotation SummarizationSetBy = Automatic
+
+	column downtime_no_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 9aff9c67-4f05-4b93-a51a-3cf5fdab2b32
+		summarizeBy: sum
+		sourceColumn: downtime_no_planificado_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column reparaciones
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: d3a16650-8302-4546-b580-a9dc463d49ee
+		summarizeBy: sum
+		sourceColumn: reparaciones
+
+		annotation SummarizationSetBy = Automatic
+
+	column mttr_min
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 6edafecf-40af-4821-a534-4fb7ca433b24
+		summarizeBy: sum
+		sourceColumn: mttr_min
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column oee
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 069ce7d0-e9f2-4d69-b5c5-034598f536cd
+		summarizeBy: sum
+		sourceColumn: oee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column disponibilidad
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 5b498726-fc3b-4476-9a75-a713a1df57da
+		summarizeBy: sum
+		sourceColumn: disponibilidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rendimiento
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: b22681a7-26bf-4f6e-b55f-1a4e479aa7d1
+		summarizeBy: sum
+		sourceColumn: rendimiento
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column calidad
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: de233de4-2b1a-43b0-a1c7-c98d0fb0ab37
+		summarizeBy: sum
+		sourceColumn: calidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column lecturas_temp_alta
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: a240d5d9-a8cf-455d-9883-baa3e79fcda2
+		summarizeBy: sum
+		sourceColumn: lecturas_temp_alta
+
+		annotation SummarizationSetBy = Automatic
+
+	column max_temperatura_c
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: b6fc07d2-4fa8-472b-ba41-19eee7b58643
+		summarizeBy: sum
+		sourceColumn: max_temperatura_c
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column oee_umbral
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 84a8c887-710e-4c85-b29f-b8531e9243a1
+		summarizeBy: sum
+		sourceColumn: oee_umbral
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mtbf_umbral_h
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 1974a478-2bc3-4049-9c75-8135a3634082
+		summarizeBy: sum
+		sourceColumn: mtbf_umbral_h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column temperatura_umbral_c
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 3861dc7c-d37d-447b-8e34-92a025300240
+		summarizeBy: sum
+		sourceColumn: temperatura_umbral_c
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column temperatura_ventana_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 3a6149dc-c8b2-44b2-a83e-994e3a645ee5
+		summarizeBy: sum
+		sourceColumn: temperatura_ventana_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column temperatura_lecturas_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 3665bea7-70aa-4982-b8ad-4c3ffac6fe0c
+		summarizeBy: sum
+		sourceColumn: temperatura_lecturas_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column downtime_umbral_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1721b3e1-7e95-481a-b87b-c1cc16aba22f
+		summarizeBy: sum
+		sourceColumn: downtime_umbral_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column cumple_oee
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 93e1591b-07c9-4ad9-9fbd-e5581f9a922d
+		summarizeBy: none
+		sourceColumn: cumple_oee
+
+		annotation SummarizationSetBy = Automatic
+
+	column cumple_mtbf
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 0c53b807-2ca0-461f-8ef2-76f40107dd90
+		summarizeBy: none
+		sourceColumn: cumple_mtbf
+
+		annotation SummarizationSetBy = Automatic
+
+	column cumple_temperatura
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: ce3dc949-a2d0-421f-9ead-b32779ceec4f
+		summarizeBy: none
+		sourceColumn: cumple_temperatura
+
+		annotation SummarizationSetBy = Automatic
+
+	column cumple_downtime
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 494e1686-4f3d-4ba1-82c7-ca93bfba0904
+		summarizeBy: none
+		sourceColumn: cumple_downtime
+
+		annotation SummarizationSetBy = Automatic
+
+	column condiciones_cumplidas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 304f948a-8ba1-43da-a03f-a4f8c7baa5fd
+		summarizeBy: sum
+		sourceColumn: condiciones_cumplidas
+
+		annotation SummarizationSetBy = Automatic
+
+	column tiene_alerta
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: ec839917-af5b-46b4-a415-7994139a4bd5
+		summarizeBy: none
+		sourceColumn: tiene_alerta
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutos_temp_alta_estimados
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 0c48a16f-b971-43b0-a97c-5b31af66aebb
+		summarizeBy: sum
+		sourceColumn: minutos_temp_alta_estimados
+
+		annotation SummarizationSetBy = Automatic
+
+	column acciones_sugeridas
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7755e353-b4ed-439c-ac10-bcdcf51d84c2
+		summarizeBy: none
+		sourceColumn: acciones_sugeridas
+
+		annotation SummarizationSetBy = Automatic
+
+	column responsables
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: acfd722e-a890-4c34-b1d5-c7c5e66b7aef
+		summarizeBy: none
+		sourceColumn: responsables
+
+		annotation SummarizationSetBy = Automatic
+
+	column kpis_seguimiento
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: c9fd5c24-3e4a-4591-befb-d9d9110f3281
+		summarizeBy: none
+		sourceColumn: kpis_seguimiento
+
+		annotation SummarizationSetBy = Automatic
+
+	column condiciones
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: c9678acf-6eae-4cf3-8412-49dcd1dab77f
+		summarizeBy: none
+		sourceColumn: condiciones
+
+		annotation SummarizationSetBy = Automatic
+
+	column severidad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 928dae3b-5d16-462c-adcd-b0eb449b2ce2
+		summarizeBy: none
+		sourceColumn: severidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_ultimo_turno_maquina
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: e960d4d6-570e-4d3d-a0fb-1b690d784f91
+		summarizeBy: none
+		sourceColumn: es_ultimo_turno_maquina
+
+		annotation SummarizationSetBy = Automatic
+
+	partition v_alerta_maquina_critica = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_alerta_maquina_critica = Origen{[Schema="public",Item="v_alerta_maquina_critica"]}[Data]
+				in
+				    public_v_alerta_maquina_critica
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

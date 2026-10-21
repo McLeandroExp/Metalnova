@@ -1,0 +1,256 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "a49583b15b667cfb9de3",
+  "position": {
+    "x": 1106,
+    "y": 500,
+    "z": 5004,
+    "height": 490,
+    "width": 658,
+    "tabOrder": 5004
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_parada"
+                    }
+                  },
+                  "Property": "maquina_codigo"
+                }
+              },
+              "queryRef": "v_kpi_parada.maquina_codigo",
+              "nativeQueryRef": "maquina_codigo"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_parada"
+                    }
+                  },
+                  "Property": "inicio_at"
+                }
+              },
+              "queryRef": "v_kpi_parada.inicio_at",
+              "nativeQueryRef": "inicio_at"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "v_kpi_parada"
+                        }
+                      },
+                      "Property": "duracion_min"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(v_kpi_parada.duracion_min)",
+              "nativeQueryRef": "Suma de duracion_min"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_parada"
+                    }
+                  },
+                  "Property": "causa_categoria"
+                }
+              },
+              "queryRef": "v_kpi_parada.causa_categoria",
+              "nativeQueryRef": "causa_categoria"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_parada"
+                    }
+                  },
+                  "Property": "clasificacion"
+                }
+              },
+              "queryRef": "v_kpi_parada.clasificacion",
+              "nativeQueryRef": "clasificacion"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_kpi_parada"
+                  }
+                },
+                "Property": "inicio_at"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Últimas paradas M-001'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "01486e0225cf236d1901",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_parada"
+              }
+            },
+            "Property": "maquina_codigo"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "v",
+              "Entity": "v_kpi_parada",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "v"
+                          }
+                        },
+                        "Property": "maquina_codigo"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'M-001'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "142422e357647ff85587",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_parada"
+              }
+            },
+            "Property": "inicio_at"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "af1faece1e824d80f21e",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_kpi_parada"
+                  }
+                },
+                "Property": "duracion_min"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "f2a2016cb9d3f60c5ba5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_parada"
+              }
+            },
+            "Property": "causa_categoria"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "33073fe7413c072af309",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_parada"
+              }
+            },
+            "Property": "clasificacion"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

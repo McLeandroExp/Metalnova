@@ -2,10 +2,10 @@
 
 | ID | Tarea | Requisito | Estado |
 |---|---|---|---|
-| T-601 | Conectar Power BI Desktop a PostgreSQL local | FR-601 | pendiente |
-| T-602 | Página de prueba DirectQuery y mediciones | FR-601 | pendiente |
-| T-603 | Decidir DirectQuery vs Import y documentar | FR-601, AC-606 | pendiente |
-| T-604 | Generar modelo semántico TMDL con jerarquías | FR-614 | pendiente |
+| T-601 | Conectar Power BI Desktop a PostgreSQL local | FR-601 | hecha |
+| T-602 | Página de prueba DirectQuery y mediciones | FR-601 | hecha |
+| T-603 | Decidir DirectQuery vs Import y documentar | FR-601, AC-606 | hecha |
+| T-604 | Generar modelo semántico TMDL con jerarquías | FR-614 | en curso |
 | T-605 | Medidas DAX de los KPI | FR-614, AC-602 | pendiente |
 | T-606 | Página Executive Plant Performance | FR-602 | pendiente |
 | T-607 | Página OEE & Loss Tree (Pareto + matriz máquina-turno) | FR-603,610,611 | pendiente |

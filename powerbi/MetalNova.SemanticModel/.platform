@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "MetalNova"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "146e84b5-5259-4a93-8919-bcae37715932"
+  }
+}

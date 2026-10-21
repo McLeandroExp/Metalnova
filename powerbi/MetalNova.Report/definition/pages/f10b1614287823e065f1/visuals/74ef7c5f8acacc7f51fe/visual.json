@@ -1,0 +1,281 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "74ef7c5f8acacc7f51fe",
+  "position": {
+    "x": 546,
+    "y": 500,
+    "z": 4000,
+    "height": 490,
+    "width": 560,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_maquina_critica"
+                    }
+                  },
+                  "Property": "maquina_codigo"
+                }
+              },
+              "queryRef": "v_alerta_maquina_critica.maquina_codigo",
+              "nativeQueryRef": "maquina_codigo"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_maquina_critica"
+                    }
+                  },
+                  "Property": "severidad"
+                }
+              },
+              "queryRef": "v_alerta_maquina_critica.severidad",
+              "nativeQueryRef": "severidad"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_maquina_critica"
+                    }
+                  },
+                  "Property": "condiciones_cumplidas"
+                }
+              },
+              "queryRef": "Sum(v_alerta_maquina_critica.condiciones_cumplidas)",
+              "nativeQueryRef": "condiciones_cumplidas1"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_maquina_critica"
+                    }
+                  },
+                  "Property": "tiene_alerta"
+                }
+              },
+              "queryRef": "v_alerta_maquina_critica.tiene_alerta",
+              "nativeQueryRef": "tiene_alerta"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Máquinas con alerta (último turno)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "70a0acc218792de2fe2c",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_alerta_maquina_critica"
+              }
+            },
+            "Property": "maquina_codigo"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "333aa95816d8bfff5a7d",
+        "ordinal": 1,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_alerta_maquina_critica"
+              }
+            },
+            "Property": "severidad"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ff26d09650d4da7edeaa",
+        "ordinal": 2,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_alerta_maquina_critica"
+                  }
+                },
+                "Property": "condiciones_cumplidas"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "c8211a6bc97b6aabb155",
+        "ordinal": 3,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_alerta_maquina_critica"
+              }
+            },
+            "Property": "es_ultimo_turno_maquina"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "v",
+              "Entity": "v_alerta_maquina_critica",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "v"
+                          }
+                        },
+                        "Property": "es_ultimo_turno_maquina"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "true"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "56d6b2000922180c26e9",
+        "ordinal": 4,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_alerta_maquina_critica"
+              }
+            },
+            "Property": "tiene_alerta"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "v",
+              "Entity": "v_alerta_maquina_critica",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "v"
+                          }
+                        },
+                        "Property": "tiene_alerta"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "true"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "5ff20f1b8efeb13e7919",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_alerta_maquina_critica"
+              }
+            },
+            "Property": "condiciones_cumplidas"
+          }
+        },
+        "type": "Advanced"
+      }
+    ],
+    "filterSortOrder": "Custom"
+  }
+}

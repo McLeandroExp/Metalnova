@@ -1,0 +1,281 @@
+table v_kpi_oee_planta_dia
+	lineageTag: 84e3fc9d-29bb-4a49-9977-71b972621e05
+
+	measure 'OEE KPI' =
+			
+			DIVIDE (
+			    SUM ( v_kpi_oee_planta_dia[tiempo_operativo_min] ),
+			    SUM ( v_kpi_oee_planta_dia[tiempo_planificado_min] )
+			) *
+			DIVIDE (
+			    SUM ( v_kpi_oee_planta_dia[minutos_ideales] ),
+			    SUM ( v_kpi_oee_planta_dia[tiempo_operativo_min] )
+			) *
+			DIVIDE (
+			    SUM ( v_kpi_oee_planta_dia[good_count] ),
+			    SUM ( v_kpi_oee_planta_dia[total_count] )
+			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 7fe86993-c795-4734-a1ba-4ce2316ff22c
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: 8a90aa3d-1d21-4bb3-8279-af0820659f5e
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column anio_mes
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 66911b1c-a009-486b-95fb-1cd4c7b7ab9d
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_planta
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: a77f5c3c-6481-4d27-9487-25e3e25a4a8d
+		summarizeBy: sum
+		sourceColumn: id_planta
+
+		annotation SummarizationSetBy = Automatic
+
+	column planta_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 5185217b-c1cd-457f-b5d3-111405413078
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column planta_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 35ea94ea-8035-45b0-8ffa-32bfadcda3f8
+		summarizeBy: none
+		sourceColumn: planta_nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column tiempo_calendario_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 036340e4-2973-4a3f-94c9-9639e94f7527
+		summarizeBy: sum
+		sourceColumn: tiempo_calendario_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column tiempo_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 5c212e6d-8194-4adb-885d-89956f03b24e
+		summarizeBy: sum
+		sourceColumn: tiempo_planificado_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column downtime_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 9c12aa35-a74e-4dde-b2a3-dc75bfb35902
+		summarizeBy: sum
+		sourceColumn: downtime_planificado_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column tiempo_operativo_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7269e59e-d6bd-4dd4-9ba8-1195ce4df017
+		summarizeBy: sum
+		sourceColumn: tiempo_operativo_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column downtime_no_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: aa4c9836-01c8-455a-b6e6-3a3ebe6b5751
+		summarizeBy: sum
+		sourceColumn: downtime_no_planificado_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: a880bce4-b982-4360-b626-abc3f7366827
+		summarizeBy: sum
+		sourceColumn: total_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column good_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 99c878a0-8a4a-4333-8298-1cf13975b259
+		summarizeBy: sum
+		sourceColumn: good_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column scrap_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 34fac339-ebd5-4c49-983f-512b77bb37ca
+		summarizeBy: sum
+		sourceColumn: scrap_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutos_ideales
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: b49604ef-b43c-4a33-b7e4-aca5159a6964
+		summarizeBy: sum
+		sourceColumn: minutos_ideales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column energia_kwh
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: b7903a0f-87c2-4799-8e9e-8cc7b0b59b97
+		summarizeBy: sum
+		sourceColumn: energia_kwh
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column filas_produccion
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 25b9a258-bd4e-49f2-9460-b2dd3bcf0a63
+		summarizeBy: sum
+		sourceColumn: filas_produccion
+
+		annotation SummarizationSetBy = Automatic
+
+	column turnos_maquina
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 79e60aef-e5e8-49b0-ac58-4f3513650e96
+		summarizeBy: sum
+		sourceColumn: turnos_maquina
+
+		annotation SummarizationSetBy = Automatic
+
+	column disponibilidad
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: e356aaaa-3c84-4d5e-a548-8be1a552a1a8
+		summarizeBy: sum
+		sourceColumn: disponibilidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rendimiento
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: e50d8c41-ba93-4ac4-a83d-7eb330efac92
+		summarizeBy: sum
+		sourceColumn: rendimiento
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column calidad
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: db6a483f-62e8-43b5-9bd3-6f5a51ebee98
+		summarizeBy: sum
+		sourceColumn: calidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column scrap_rate
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 39b0508a-b216-4e35-82a1-4e3cce1a4c34
+		summarizeBy: sum
+		sourceColumn: scrap_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column energia_por_unidad_buena
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: efcd5a2c-900c-46f8-ad6c-1d1afcb1a099
+		summarizeBy: sum
+		sourceColumn: energia_por_unidad_buena
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column downtime_no_planificado_pct
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 9b9e93bc-d3bb-4f89-a1cd-88f982ec6e2e
+		summarizeBy: sum
+		sourceColumn: downtime_no_planificado_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column oee
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 31883147-b0df-44c5-b3e2-a88f79be67dc
+		summarizeBy: sum
+		sourceColumn: oee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition v_kpi_oee_planta_dia = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_oee_planta_dia = Origen{[Schema="public",Item="v_kpi_oee_planta_dia"]}[Data]
+				in
+				    public_v_kpi_oee_planta_dia
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

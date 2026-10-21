@@ -1,0 +1,154 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "e4c17445f34f1c1b2069",
+  "position": {
+    "x": 748,
+    "y": 0,
+    "z": 1000,
+    "height": 489.8815725556542,
+    "width": 559.864654349319,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_oee_planta_dia"
+                    }
+                  },
+                  "Property": "fecha"
+                }
+              },
+              "queryRef": "v_kpi_oee_planta_dia.fecha",
+              "nativeQueryRef": "fecha",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_oee_planta_dia"
+                    }
+                  },
+                  "Property": "planta_codigo"
+                }
+              },
+              "queryRef": "v_kpi_oee_planta_dia.planta_codigo",
+              "nativeQueryRef": "planta_codigo"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_oee_planta_dia"
+                    }
+                  },
+                  "Property": "OEE KPI"
+                }
+              },
+              "queryRef": "v_kpi_oee_planta_dia.OEE KPI",
+              "nativeQueryRef": "OEE KPI"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_kpi_oee_planta_dia"
+                  }
+                },
+                "Property": "fecha"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'OEE por día y planta'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "cd9202585ddbe823d0b9",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_oee_planta_dia"
+              }
+            },
+            "Property": "fecha"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "173f9c144d48996de756",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_oee_planta_dia"
+              }
+            },
+            "Property": "OEE KPI"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "5a63e9a8638f9821cf44",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_oee_planta_dia"
+              }
+            },
+            "Property": "planta_codigo"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

@@ -20,7 +20,7 @@ más una simulación de eventos cercanos al tiempo real.
 | 003 · Generador histórico (180 días) | **hecho** |
 | 004 · Ingesta continua simulada | **hecho** |
 | 005 · Vistas KPI y validación | **hecho** |
-| 006 · Informe Power BI (4 páginas) | propuesto |
+| 006 · Informe Power BI (4 páginas) | **en curso** |
 | 007 · Integración, demo y plan de mejora | propuesto |
 
 El detalle de cada incremento vive en `specs/`. Ver también `specs/CONSTITUTION.md` (fuente de

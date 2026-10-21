@@ -195,3 +195,27 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
 - **Consecuencias:** el chequeo de duplicados sigue siendo global; la ingesta se identifica por el
   prefijo y las paradas por `causa_detalle`.
 - **Estado:** aceptada.
+
+## D-019 · DirectQuery sobre las vistas KPI para el informe 006
+
+- **Decisión:** el modelo semántico del 006 usa **DirectQuery** sobre las vistas KPI. No se migra a
+  Import en esta iteración.
+- **Alternativas:** Import completo; modelo híbrido (Import para `v_alerta_maquina_critica`);
+  DirectQuery sin optimizar.
+- **Motivo (mediciones del 2026-10-21, spike T-601…T-603):**
+  - Apertura del `.pbip`: 37,50 / 35,46 / 33,21 s; mediana **35,46 s** (umbral ≤ 60 s).
+  - Cambio de filtro de planta: tarjeta 549 ms y línea 508 ms; ventana completa 2,64 s.
+  - Frescura: una parada nueva apareció en **0,35 s**; refresco de visuales 2,17 s.
+  - Página inicial: 3,85 s, de los cuales 3,5 s son la tabla de alertas.
+  - Cero errores de proveedor en los visuales.
+- **Criterio:** la Constitución §9 indica empezar con DirectQuery y cambiar a Import solo si el
+  rendimiento o la fiabilidad no cumplen. Los umbrales acordados se cumplieron, así que no se
+  probó Import; se reevaluará si el informe final supera los 60 s de apertura.
+- **Consecuencias:**
+  - Optimizar `v_alerta_maquina_critica` (materializar el último turno o añadir índices) para bajar
+    los 2,9–3,5 s actuales.
+  - Reconstruir el modelo en T-604 con nombres limpios y relaciones; el renombrado actual provoca
+    «referencia cíclica» al refrescar el modelo.
+  - Las vistas necesitan relaciones por `id_planta`, `id_maquina` y `fecha` (o un esquema en
+    estrella) para que los filtros sean coherentes entre páginas.
+- **Estado:** aceptada; revisable al cerrar el 006.

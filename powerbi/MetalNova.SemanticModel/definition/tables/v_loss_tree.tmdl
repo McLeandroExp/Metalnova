@@ -1,0 +1,380 @@
+table v_loss_tree
+	lineageTag: 0781030e-c629-4fda-bb5a-a1c6e1483c31
+
+	column id_produccion
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 118b627e-6549-4478-bb0e-587ca8a66445
+		summarizeBy: sum
+		sourceColumn: id_produccion
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_orden
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: b70e8bda-f240-4232-867e-57b4e71d87f2
+		summarizeBy: sum
+		sourceColumn: id_orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: c2679908-89e7-49f3-958b-80c890257cb2
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column anio_mes
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 66025af3-81e7-4167-a4e6-db6b9015e943
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_planta
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 332e6769-4fbf-4b43-9c6e-fad99008992c
+		summarizeBy: sum
+		sourceColumn: id_planta
+
+		annotation SummarizationSetBy = Automatic
+
+	column planta_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b8334c8d-7b67-4a53-a030-ae40baa60163
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_linea
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 3a2a0eb7-000a-48ca-9642-73848dc3dcf0
+		summarizeBy: sum
+		sourceColumn: id_linea
+
+		annotation SummarizationSetBy = Automatic
+
+	column linea_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1733b49a-cfbe-43e7-b56d-8005bea4aa08
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_maquina
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 7e0ae48a-7c1e-4323-b55b-ecf80da6b1de
+		summarizeBy: sum
+		sourceColumn: id_maquina
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 346a151e-8d21-4807-8500-9d53df9d1d92
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_tipo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: d0ef9007-e44d-4ffb-876a-14fcf917ee40
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_criticidad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 87d14659-4f11-4800-8d88-9db10de56c77
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_turno
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 72d72c1d-3fa3-43b8-aa6b-cee436694b61
+		summarizeBy: sum
+		sourceColumn: id_turno
+
+		annotation SummarizationSetBy = Automatic
+
+	column turno_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: fa6196bb-1e73-4f93-8eb6-d0f6fef2556e
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_producto
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: c7fed3e6-5646-4cfd-8d4e-59a95d8f5007
+		summarizeBy: sum
+		sourceColumn: id_producto
+
+		annotation SummarizationSetBy = Automatic
+
+	column producto_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b90ea72d-9e83-44ee-8af1-4e561abb7a17
+		summarizeBy: none
+		sourceColumn: producto_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_familia
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 103a978a-6d95-41bc-ab5c-a92062338dd5
+		summarizeBy: sum
+		sourceColumn: id_familia
+
+		annotation SummarizationSetBy = Automatic
+
+	column familia_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: c49b2c07-c1ad-4e8c-924f-fca34370e0ae
+		summarizeBy: none
+		sourceColumn: familia_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column tiempo_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 2c2448f0-dbdd-4fc0-817a-aef4b4c9c847
+		summarizeBy: sum
+		sourceColumn: tiempo_planificado_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column tiempo_operativo_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: cf35b4d8-731d-4124-9634-9502ae20e33c
+		summarizeBy: sum
+		sourceColumn: tiempo_operativo_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 428cc6ec-e8c9-408d-bf0c-d4ea7b3740fd
+		summarizeBy: sum
+		sourceColumn: total_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column good_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 8a6e956e-1862-4728-9435-b379287fe5f1
+		summarizeBy: sum
+		sourceColumn: good_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column scrap_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5cdcfa19-2e2e-4818-8ce8-b53e9aacf6e3
+		summarizeBy: sum
+		sourceColumn: scrap_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column ciclo_ideal_segundos
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 3e5a4509-ae59-4bed-b5b0-73757c1b1f56
+		summarizeBy: sum
+		sourceColumn: ciclo_ideal_segundos
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column minutos_ideales
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: b71d5c45-81c4-4cf3-840d-e26569d7ab3c
+		summarizeBy: sum
+		sourceColumn: minutos_ideales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column oee
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 3c14ae92-2210-450e-bc58-584818a5874c
+		summarizeBy: sum
+		sourceColumn: oee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column minutos_perdidos_disponibilidad
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: a3e7ca80-68f9-49c0-b73d-1c639977ebdd
+		summarizeBy: sum
+		sourceColumn: minutos_perdidos_disponibilidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutos_perdidos_rendimiento
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 74fb4be3-ec75-4e25-ad66-1929c50f4eb3
+		summarizeBy: sum
+		sourceColumn: minutos_perdidos_rendimiento
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column minutos_perdidos_calidad
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 03f77a11-05ef-42c6-8997-e39ad5af9927
+		summarizeBy: sum
+		sourceColumn: minutos_perdidos_calidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column unidades_potenciales
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 512c3d45-9821-4aac-b36d-411fa9e6e4f1
+		summarizeBy: sum
+		sourceColumn: unidades_potenciales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column unidades_no_producidas
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: c0e771a6-ad72-4ac5-ae1f-8c60ea7c518a
+		summarizeBy: sum
+		sourceColumn: unidades_no_producidas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column unidades_scrap
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 9f0147a2-631f-4730-bc37-d6979a8952cc
+		summarizeBy: sum
+		sourceColumn: unidades_scrap
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutos_perdidos_total
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 55840696-1281-4b00-8c83-2513e14133d3
+		summarizeBy: sum
+		sourceColumn: minutos_perdidos_total
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column participacion_disponibilidad
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 0cbaba19-6892-43b2-b120-f1dd4ea426ee
+		summarizeBy: sum
+		sourceColumn: participacion_disponibilidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column participacion_rendimiento
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: ac50ea7f-55d7-41e0-9c81-f8aae976630e
+		summarizeBy: sum
+		sourceColumn: participacion_rendimiento
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column participacion_calidad
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 4da46053-3bc6-470d-8c49-28f419c95588
+		summarizeBy: sum
+		sourceColumn: participacion_calidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition v_loss_tree = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_loss_tree = Origen{[Schema="public",Item="v_loss_tree"]}[Data]
+				in
+				    public_v_loss_tree
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

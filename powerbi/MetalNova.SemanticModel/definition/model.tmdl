@@ -1,0 +1,22 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-EC
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["v_kpi_oee_planta_dia","v_kpi_parada","v_loss_tree","v_alerta_maquina_critica"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table v_kpi_oee_planta_dia
+ref table v_kpi_parada
+ref table v_loss_tree
+ref table v_alerta_maquina_critica
+
+ref cultureInfo es-ES
+

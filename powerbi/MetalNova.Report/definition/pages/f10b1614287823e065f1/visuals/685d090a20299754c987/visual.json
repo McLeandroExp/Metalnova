@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "685d090a20299754c987",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 5003,
+    "height": 380,
+    "width": 334,
+    "tabOrder": 5003
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_oee_planta_dia"
+                    }
+                  },
+                  "Property": "OEE KPI"
+                }
+              },
+              "queryRef": "v_kpi_oee_planta_dia.OEE KPI",
+              "nativeQueryRef": "OEE KPI"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_kpi_oee_planta_dia"
+                  }
+                },
+                "Property": "OEE KPI"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'OEE global'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ba7be89a3f43eb259bea",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_kpi_oee_planta_dia"
+              }
+            },
+            "Property": "OEE KPI"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}
