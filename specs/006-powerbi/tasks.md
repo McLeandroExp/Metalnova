@@ -5,9 +5,9 @@
 | T-601 | Conectar Power BI Desktop a PostgreSQL local | FR-601 | hecha |
 | T-602 | Página de prueba DirectQuery y mediciones | FR-601 | hecha |
 | T-603 | Decidir DirectQuery vs Import y documentar | FR-601, AC-606 | hecha |
-| T-604 | Generar modelo semántico TMDL con jerarquías | FR-614 | en curso |
-| T-605 | Medidas DAX de los KPI | FR-614, AC-602 | pendiente |
-| T-606 | Página Executive Plant Performance | FR-602 | pendiente |
+| T-604 | Generar modelo semántico TMDL con jerarquías | FR-614 | hecha |
+| T-605 | Medidas DAX de los KPI | FR-614, AC-602 | hecha |
+| T-606 | Página Executive Plant Performance | FR-602 | en curso |
 | T-607 | Página OEE & Loss Tree (Pareto + matriz máquina-turno) | FR-603,610,611 | pendiente |
 | T-608 | Página Maintenance Reliability | FR-604 | pendiente |
 | T-609 | Página Quality & Energy | FR-605 | pendiente |
@@ -22,13 +22,11 @@
 
 Notas de estado:
 
-- T-604: el TMDL se generó y validó (12 tablas, 20 relaciones, 45 medidas). El refresco mostró
-  9/10 tarjetas; `OEE último mes` estaba vacío porque el calendario llega a 2027-12 y la medida
-  tomaba ese máximo. Se corrigió a `MAX(v_loss_tree[anio_mes])` (2026-10) y la expresión equivalente
-  se midió por ADOMD en 65,51 %. Queda **en curso** hasta reabrir el `.pbip` y confirmar la tarjeta.
+- T-604/T-605: el TMDL se generó y validó (12 tablas, 20 relaciones, 45 medidas). El usuario
+  confirmó el 2026-10-22 que las 10 tarjetas de validación muestran valor, incluida
+  `OEE último mes` (65,51 % por DAX). El modelo y las medidas quedan cerrados.
 - T-616: `CROSS JOIN LATERAL` + índice parcial `ix_fact_evento_lectura_maquina_time`; consulta
   filtrada 464/335/369 ms y `validate_data.py` 49/49. Evidencia en `verification.md`.
-- T-606…T-609: la guía paso a paso está en `powerbi/final/BUILD_GUIDE.md`; las páginas aún no
-  se han construido ni verificado visualmente.
+- T-606…T-609: la guía paso a paso está en `powerbi/final/BUILD_GUIDE.md`; T-606 está en curso.
 - T-617: corrida `hist-h3a58b2b659`, OEE 78,02 → 66,00 %, dispersión 8,5 → 7,3 pp; validación
   49/49 y reproducibilidad SHA-256 idéntica. Evidencia en `verification.md`.

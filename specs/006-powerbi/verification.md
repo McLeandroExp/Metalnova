@@ -12,10 +12,10 @@ pendientes.
 | AC | Comando/observación | Salida esperada | Salida observada | Fecha | Veredicto |
 |---|---|---|---|---|---|
 | AC-601 | revisar páginas del informe | 4 páginas, 9+ KPIs | solo existe la página de validación de T-604; faltan las 4 páginas definitivas | 2026-10-21 | pendiente |
-| AC-602 | comparar KPI informe vs vista SQL | coinciden | SQL calibrado: OEE global 71,96 % (180 d) y 78,02 → 66,00 % (ventanas de 30 d); tarjetas del informe ya refrescadas (OEE global 71,96 %, disponibilidad 98,79 %, rendimiento 76,55 %, calidad 95,16 %, MTBF 85,71 h, MTTR 17,84 min, FPY 97,63 %, energía 0,3403, alertas 13). OEE último mes corregido por DAX a 65,51 %; falta reabrir el `.pbip` y confirmarlo en pantalla | 2026-10-21/22 | en curso (solo falta la tarjeta corregida) |
+| AC-602 | comparar KPI informe vs vista SQL | coinciden | 10/10 tarjetas visibles tras el refresco: OEE global 71,96 %, OEE último mes visible (DAX 65,51 %), disponibilidad 98,79 %, rendimiento 76,55 %, calidad 95,16 %, MTBF 85,71 h, MTTR 17,84 min, FPY 97,63 %, energía 0,3403, alertas 13. El usuario confirmó la tarjeta corregida el 2026-10-22 | 2026-10-22 | superada (validación de KPIs) |
 | AC-603 | aplicar filtros en cada página | coherentes | no evaluado en páginas definitivas | — | pendiente |
 | AC-604 | drill-through a máquina | navega a detalle | no implementado | — | pendiente |
-| AC-605 | revisar visuales | ninguno roto | el modelo TMDL valida; tras el refresco 9/10 tarjetas muestran valor. `OEE último mes` se corrigió (DAX 65,51 %) y queda confirmar la tarjeta al reabrir el `.pbip` | 2026-10-22 | en curso |
+| AC-605 | revisar visuales | ninguno roto | el modelo TMDL valida y las 10 tarjetas de validación muestran valor; la página de validación no presenta visuales rotos. Las cuatro páginas finales aún no existen | 2026-10-22 | en curso |
 | AC-606 | mediciones DirectQuery/Import | documentadas | DirectQuery medido en el spike (D-019); T-616 redujo la alerta filtrada a 335–464 ms | 2026-10-21 | superada |
 | AC-607 | revisar `powerbi/` | `.pbix`/`.pbip` presente | `powerbi/final/MetalNova.pbip` presente; faltan las páginas 2–4 | 2026-10-21 | en curso |
 | AC-608 | validar escenario calibrado | OEE ≈78 → 66 %, dispersión 5–10 pp, outlier <55 %, 49/49 | OEE 78,02 → 66,00 %; dispersión 8,5 → 7,3 pp; M-047 51,81 %; 49/49 OK | 2026-10-21 | superada |
@@ -156,8 +156,8 @@ RETURN CALCULATE ( [OEE KPI], v_loss_tree[anio_mes] = UltimoMes )
 
 La expresión equivalente se evaluó por ADOMD sobre el modelo en ejecución:
 `0,655105074685` (octubre de 2026), coherente con el OEE del cierre. `tools/generate_tmdl.py`,
-`measures.dax` y el TMDL quedaron corregidos; falta reabrir el `.pbip` para que Power BI cargue el
-nuevo TMDL y confirmar la tarjeta.
+`measures.dax` y el TMDL quedaron corregidos. El usuario reabrió el `.pbip` y confirmó el
+2026-10-22 que la tarjeta muestra valor; T-604 y T-605 quedan cerradas.
 
 ## Medición de modo de conexión (spike)
 
@@ -172,10 +172,9 @@ proveedor. Evidencia del spike en `logs/powerbi_spike_006.txt`,
 
 ## Pendientes y bloqueos
 
-1. Cerrar y reabrir `powerbi/final/MetalNova.pbip` para cargar el TMDL corregido, pulsar
-   «Actualizar ahora» y confirmar que `OEE último mes` muestra ~65,51 %; luego marcar T-604 y
-   AC-605.
-2. Construir las páginas Executive, OEE & Loss Tree, Maintenance y Quality & Energy (T-606–T-609).
+1. Construir las páginas Executive, OEE & Loss Tree, Maintenance y Quality & Energy (T-606–T-609)
+   siguiendo `powerbi/final/BUILD_GUIDE.md`; T-604/T-605 ya están cerradas.
+2. Verificar que los 10 KPIs de la página de validación coinciden con las vistas SQL.
 3. Verificar filtros, drill-through, tooltips, umbrales y navegación (T-610–T-613).
 4. Medir de nuevo la apertura y los filtros en el informe final; si supera 60 s, reevaluar D-019.
 5. Completar AC-601…AC-605, AC-607 y el commit T-615.
