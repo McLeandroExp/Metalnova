@@ -38,8 +38,8 @@ Brecha Meta (pp) =
 
 // [01 OEE] OEE Último Mes
 OEE Último Mes =
-    VAR UltimoMes = CALCULATE ( MAX ( dim_tiempo[anio_mes] ), ALLSELECTED ( dim_tiempo ) )
-    RETURN CALCULATE ( [OEE KPI], dim_tiempo[anio_mes] = UltimoMes )
+    VAR UltimoMes = MAX ( v_loss_tree[anio_mes] )
+    RETURN CALCULATE ( [OEE KPI], v_loss_tree[anio_mes] = UltimoMes )
 // formato: 0.00%
 
 // [01 OEE] Cumple Meta OEE

@@ -38,8 +38,8 @@ table v_loss_tree
 		lineageTag: 9f6d2f20-38f1-4897-b30a-af065c913ccc
 
 	measure 'OEE Último Mes' =
-			VAR UltimoMes = CALCULATE ( MAX ( dim_tiempo[anio_mes] ), ALLSELECTED ( dim_tiempo ) )
-			RETURN CALCULATE ( [OEE KPI], dim_tiempo[anio_mes] = UltimoMes )
+			VAR UltimoMes = MAX ( v_loss_tree[anio_mes] )
+			RETURN CALCULATE ( [OEE KPI], v_loss_tree[anio_mes] = UltimoMes )
 		formatString: 0.00%
 		displayFolder: 01 OEE
 		lineageTag: 8ccea92f-010b-448b-a39d-7bdc31b3cd22

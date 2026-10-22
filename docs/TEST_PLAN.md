@@ -36,6 +36,7 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-028 | Calibración del histórico | 006 | `generate_history.py --escenario calibracion` + `load_history.py --reset` + `validate_data.py` + `03_calibracion.sql` | OEE ~78→66; dispersión 5–10 pp; 49/49 y 7/7 | OEE 78,02→66,00 %; plantas 81,98/78,00/73,44 → 69,32/66,07/62,04; 49/49 y 7/7 OK | 2026-10-21 | superada |
 | P-029 | Reproducibilidad calibrada | 006 | regenerar misma semilla y escenario | seis CSV idénticos | SHA-256 idéntico en los seis CSV; mismo `run_id` | 2026-10-21 | superada |
 | P-030 | Alerta crítica optimizada | 006 | `EXPLAIN ANALYZE` filtrado + `validate_data.py` | consulta < 1 s y regla correcta | 464/335/369 ms; 28.101 filas; 49/49 OK; 13 alertas último turno | 2026-10-21 | superada |
+| P-031 | OEE último mes no vacío | 006 | DAX/ADOMD + tarjeta del informe | valor del último mes con hechos | 0,655105 por DAX (`MAX(v_loss_tree[anio_mes])=2026-10`); tarjeta pendiente de reabrir el `.pbip` | 2026-10-22 | en curso |
 
 ### Evidencia del incremento 005
 

@@ -281,8 +281,11 @@ MEASURES = [
      "( [OEE KPI] - [OEE Meta] ) * 100",
      "0.00", "01 OEE"),
     ("v_loss_tree", "OEE Último Mes",
-     "VAR UltimoMes = CALCULATE ( MAX ( dim_tiempo[anio_mes] ), ALLSELECTED ( dim_tiempo ) )\n"
-     "RETURN CALCULATE ( [OEE KPI], dim_tiempo[anio_mes] = UltimoMes )",
+     # El calendario cubre 2025-2027, pero los hechos terminan en 2026-10:
+     # MAX(dim_tiempo[anio_mes]) devolvía 2027-12 y la tarjeta quedaba vacía.
+     # El máximo se toma del propio hecho, respetando los filtros de fecha.
+     "VAR UltimoMes = MAX ( v_loss_tree[anio_mes] )\n"
+     "RETURN CALCULATE ( [OEE KPI], v_loss_tree[anio_mes] = UltimoMes )",
      "0.00%", "01 OEE"),
     ("v_loss_tree", "Cumple Meta OEE",
      'IF ( [OEE KPI] >= [OEE Meta], "Sí", "No" )',

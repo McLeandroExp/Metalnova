@@ -22,9 +22,10 @@
 
 Notas de estado:
 
-- T-604: el TMDL se generó y validó (12 tablas, 20 relaciones, 45 medidas). Queda **en curso**
-  porque la página de validación aún muestra “—” en las tarjetas hasta que se pulse
-  «Actualizar ahora» en Power BI Desktop; no se marca como hecha sin esa observación.
+- T-604: el TMDL se generó y validó (12 tablas, 20 relaciones, 45 medidas). El refresco mostró
+  9/10 tarjetas; `OEE último mes` estaba vacío porque el calendario llega a 2027-12 y la medida
+  tomaba ese máximo. Se corrigió a `MAX(v_loss_tree[anio_mes])` (2026-10) y la expresión equivalente
+  se midió por ADOMD en 65,51 %. Queda **en curso** hasta reabrir el `.pbip` y confirmar la tarjeta.
 - T-616: `CROSS JOIN LATERAL` + índice parcial `ix_fact_evento_lectura_maquina_time`; consulta
   filtrada 464/335/369 ms y `validate_data.py` 49/49. Evidencia en `verification.md`.
 - T-617: corrida `hist-h3a58b2b659`, OEE 78,02 → 66,00 %, dispersión 8,5 → 7,3 pp; validación
