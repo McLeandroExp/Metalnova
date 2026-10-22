@@ -3,8 +3,9 @@
 Estado: **en curso** · Última actualización: 2026-10-22 · Entorno: PostgreSQL 16.4-alpine en
 Docker (`metalinova_db`, healthy) · Power BI Desktop 2.159.883.0 (Microsoft Store).
 
-Commit de esta etapa: `11224f9` (calibración, optimización de la alerta y TMDL). No cierra T-615:
-las cuatro páginas y el refresco visual siguen pendientes.
+Commits de esta etapa: `11224f9` (calibración, optimización de la alerta y TMDL) y `0b2517f`
+(corrección de `OEE Último Mes`). No cierra T-615: las cuatro páginas y el refresco visual siguen
+pendientes.
 
 ## Criterios de aceptación
 

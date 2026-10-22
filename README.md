@@ -61,6 +61,7 @@ sql/views/                   4 vistas base + 20 vistas KPI (005)
 data/                        CSV generados y manifiestos (no versionados)
 logs/                        logs del pipeline (no versionados)
 powerbi/                     informe .pbix / .pbip
+powerbi/final/               modelo TMDL, medidas y guía de construcción de las 4 páginas
 ```
 
 ---

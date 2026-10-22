@@ -28,5 +28,7 @@ Notas de estado:
   se midió por ADOMD en 65,51 %. Queda **en curso** hasta reabrir el `.pbip` y confirmar la tarjeta.
 - T-616: `CROSS JOIN LATERAL` + índice parcial `ix_fact_evento_lectura_maquina_time`; consulta
   filtrada 464/335/369 ms y `validate_data.py` 49/49. Evidencia en `verification.md`.
+- T-606…T-609: la guía paso a paso está en `powerbi/final/BUILD_GUIDE.md`; las páginas aún no
+  se han construido ni verificado visualmente.
 - T-617: corrida `hist-h3a58b2b659`, OEE 78,02 → 66,00 %, dispersión 8,5 → 7,3 pp; validación
   49/49 y reproducibilidad SHA-256 idéntica. Evidencia en `verification.md`.
