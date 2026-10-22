@@ -22,6 +22,9 @@ docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/02
 
 # Bandas del escenario calibrado (incremento 006)
 docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/03_calibracion.sql
+
+# Calidad y temporalidad IoT (G5)
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/04_iot.sql
 ```
 
 Todas las filas deben mostrar `estado = OK` e `incidencias = 0`.
@@ -36,8 +39,9 @@ Todas las filas deben mostrar `estado = OK` e `incidencias = 0`.
 | 4 | `schema/04_catalogo_referencia.sql` | Catálogo sintético base + perfiles de calibración |
 | 5 | `indexes/01_indices.sql` | Índices de filtro y join (incluye el índice parcial de lecturas IoT) |
 | 6 | `views/01_vistas_base.sql` | Vistas `v_*` para Power BI |
-| 7 | `views/02..08_*.sql` | Vistas KPI y alerta de máquina crítica |
+| 7 | `views/02..08_*.sql` | Vistas KPI, alerta de máquina crítica y `v_alerta_ultimo_turno` |
 | 8 | `views/09_dimensiones_bi.sql` | Dimensiones conformadas `v_dim_maquina` y `v_dim_producto` |
+| 9 | `views/10_calidad_senal_iot.sql` | Cobertura y huecos de la señal IoT |
 
 La columna `dim_maquina.perfil_rendimiento` se añade con `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`
 para bases existentes. Solo la usa el escenario `calibracion`; el catálogo asigna siete outliers
@@ -47,5 +51,6 @@ persistentes y el resto queda en `estandar`.
 
 - `CREATE TABLE IF NOT EXISTS` / `CREATE INDEX IF NOT EXISTS` / `CREATE OR REPLACE VIEW`.
 - Los catálogos usan `INSERT ... ON CONFLICT DO NOTHING`.
-- No hay `DROP` ni operaciones destructivas.
+- No hay `DROP` de datos. La única excepción es `DROP VIEW IF EXISTS v_calidad_senal_iot`
+  antes de recrearla, porque `CREATE OR REPLACE` no permite insertar columnas en medio.
 - Las constraints se declaran inline para que la creación sea atómica e idempotente.

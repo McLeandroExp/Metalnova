@@ -227,6 +227,7 @@ class Simulator:
             "events_generated": 0,
             "events_inserted": 0,
             "events_duplicated": 0,
+            "events_rejected": 0,
             "stops_generated": 0,
             "stops_inserted": 0,
             "stops_duplicated": 0,
@@ -254,6 +255,7 @@ class Simulator:
         self.metrics["events_generated"] += result.events_generated
         self.metrics["events_inserted"] += result.events_inserted
         self.metrics["events_duplicated"] += result.events_duplicated
+        self.metrics["events_rejected"] += result.events_rejected
         self.metrics["stops_generated"] += result.stops_generated
         self.metrics["stops_inserted"] += result.stops_inserted
         self.metrics["stops_duplicated"] += result.stops_duplicated
@@ -426,6 +428,9 @@ class Simulator:
         duration_min: int,
         when: datetime,
     ) -> None:
+        if action == "invalid":
+            self.apply_invalid_scenario(maquina_codigo, when)
+            return
         if action != "stop":
             raise SystemExit(f"Acción de escenario no soportada: {action!r}")
         maquina = next(
@@ -538,6 +543,89 @@ class Simulator:
             result.events_duplicated,
         )
 
+    # ------------------------------------------------------- escenario de calidad
+    def apply_invalid_scenario(self, maquina_codigo: str, when: datetime) -> None:
+        """Demuestra cuarentena, evento tardío y evento reordenado (G5).
+
+        Inserta primero un evento normal; después, en un segundo lote, un evento
+        con ``event_time`` anterior para que el ingestor lo marque como
+        reordenado. El evento futuro y el anterior al rango histórico quedan en
+        ``fact_evento_rechazado`` con su motivo.
+        """
+        maquina = next(
+            (m for m in self.maquinas if m.codigo.upper() == maquina_codigo.upper()),
+            None,
+        )
+        if maquina is None:
+            raise SystemExit(
+                f"Máquina {maquina_codigo!r} no encontrada en dim_maquina"
+            )
+
+        now = datetime.now(UTC)
+        normal_time = when.replace(microsecond=0)
+        late_time = normal_time - timedelta(minutes=10)
+        future_time = now + timedelta(hours=1)
+        ancient_time = now - timedelta(days=400)
+        generated = now
+
+        def make_event(kind: str, event_time: datetime, estado: str) -> EventRecord:
+            return EventRecord(
+                source_system="iot",
+                source_event_id=(
+                    f"sim-inv-{kind}-{maquina.id_maquina:03d}-"
+                    f"{int(event_time.timestamp())}"
+                ),
+                tipo_evento="transicion_estado",
+                id_maquina=maquina.id_maquina,
+                event_time=event_time,
+                generated_at=generated,
+                estado=estado,
+                payload={
+                    "transicion": estado,
+                    "escenario": "invalid",
+                    "origen": "simulacion_004",
+                },
+            )
+
+        normal = make_event("normal", normal_time, "RUNNING")
+        future = make_event("futuro", future_time, "RUNNING")
+        ancient = make_event("antiguo", ancient_time, "RUNNING")
+        late = make_event("tardio", late_time, "DOWN")
+
+        self.log.info(
+            "escenario=invalid maquina=%s normal=%s futuro=%s antiguo=%s tardio=%s",
+            maquina.codigo,
+            _iso(normal_time),
+            _iso(future_time),
+            _iso(ancient_time),
+            _iso(late_time),
+        )
+
+        if self.dry_run:
+            self.metrics["events_generated"] += 4
+            self.log.info("escenario invalid dry_run=true: no se persistió nada")
+            return
+
+        first = self.ingestor.ingest([normal, future, ancient], [])
+        self._record(first)
+        second = self.ingestor.ingest([late], [])
+        self._record(second)
+
+        flags = self.ingestor.query(
+            "SELECT payload->'calidad'->>'tardio', "
+            "       payload->'calidad'->>'reordenado' "
+            "FROM fact_evento WHERE source_event_id = %s",
+            (late.source_event_id,),
+        )
+        self.log.info(
+            "escenario invalid resultado: rechazados=%d motivos=%s "
+            "tardio=%s reordenado=%s",
+            first.events_rejected,
+            ",".join(first.rejection_reasons) or "ninguno",
+            flags[0][0] if flags else "sin_fila",
+            flags[0][1] if flags else "sin_fila",
+        )
+
     # -------------------------------------------------------------------- bucle
     def run(
         self,
@@ -611,13 +699,15 @@ class Simulator:
             self._write_metrics(metrics)
             self.log.info(
                 "fin run_id=%s ciclos=%d eventos=%d insertados=%d duplicados=%d "
-                "paradas=%d insertadas=%d latencia_media_ms=%.1f latencia_max_ms=%.1f "
+                "rechazados=%d paradas=%d insertadas=%d "
+                "latencia_media_ms=%.1f latencia_max_ms=%.1f "
                 "errores=%d cobertura_maquinas=%d/%d cobertura_plantas=%d motivo=%s",
                 self.run_id,
                 metrics["cycles"],
                 metrics["events_generated"],
                 metrics["events_inserted"],
                 metrics["events_duplicated"],
+                metrics["events_rejected"],
                 metrics["stops_generated"],
                 metrics["stops_inserted"],
                 metrics["latency_avg_seconds"] * 1000,
@@ -660,6 +750,7 @@ class Simulator:
             "events_generated": self.metrics["events_generated"],
             "events_inserted": self.metrics["events_inserted"],
             "events_duplicated": self.metrics["events_duplicated"],
+            "events_rejected": self.metrics["events_rejected"],
             "stops_generated": self.metrics["stops_generated"],
             "stops_inserted": self.metrics["stops_inserted"],
             "stops_duplicated": self.metrics["stops_duplicated"],
@@ -726,7 +817,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         nargs=2,
         metavar=("ACCION", "MAQUINA"),
         default=None,
-        help="escenario reproducible, p. ej. --scenario stop M-001",
+        help=(
+            "escenario reproducible: 'stop M-001' o "
+            "'invalid M-001' (cuarentena, tardío y reordenado)"
+        ),
     )
     parser.add_argument(
         "--stop-duration-min",
@@ -782,8 +876,8 @@ def _validate_args(args: argparse.Namespace) -> None:
         raise SystemExit("--stop-duration-min debe ser > 0")
     if args.scenario is not None:
         action, machine = args.scenario
-        if action != "stop":
-            raise SystemExit("--scenario solo admite la acción 'stop'")
+        if action not in ("stop", "invalid"):
+            raise SystemExit("--scenario solo admite 'stop' o 'invalid'")
         if not machine.strip():
             raise SystemExit("--scenario requiere el código de máquina, p. ej. M-001")
     if args.at is not None:

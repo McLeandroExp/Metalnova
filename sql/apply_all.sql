@@ -49,4 +49,7 @@
 \echo '>>> 14 dimensiones para Power BI'
 \i /sql/views/09_dimensiones_bi.sql
 
+\echo '>>> 15 calidad de señal IoT'
+\i /sql/views/10_calidad_senal_iot.sql
+
 \echo '>>> esquema aplicado'

@@ -24,7 +24,11 @@ SELECT
     120           AS downtime_umbral_min,
     85::numeric   AS temperatura_umbral_c,
     15            AS temperatura_ventana_min,
-    2             AS temperatura_lecturas_min;
+    2             AS temperatura_lecturas_min,
+    -- Cadencia declarada del feed sintético: dos lecturas de proceso por turno
+    -- (el histórico emite en los minutos 90 y 300; las excursiones térmicas
+    -- añaden tres más). La cadencia ideal de 15 min se evalúa aparte.
+    2             AS senal_lecturas_turno_min;
 
 -- ---------------------------------------------------------------------------
 -- v_kpi_produccion — grano: una fila de fact_produccion.

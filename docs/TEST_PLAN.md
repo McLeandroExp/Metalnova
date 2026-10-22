@@ -37,6 +37,15 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-029 | Reproducibilidad calibrada | 006 | regenerar misma semilla y escenario | seis CSV idénticos | SHA-256 idéntico en los seis CSV; mismo `run_id` | 2026-10-21 | superada |
 | P-030 | Alerta crítica optimizada | 006 | `EXPLAIN ANALYZE` filtrado + `validate_data.py` | consulta < 1 s y regla correcta | 464/335/369 ms; 28.101 filas; 49/49 OK; 13 alertas último turno | 2026-10-21 | superada |
 | P-031 | OEE último mes no vacío | 006 | DAX/ADOMD + tarjeta del informe | valor del último mes con hechos | 0,655105 por DAX (`MAX(v_loss_tree[anio_mes])=2026-10`); tarjeta visible tras reabrir el `.pbip` | 2026-10-22 | superada |
+| P-032 | Calidad IoT: rango, tardío y reordenado | 006/G5 | `python src/validate_iot.py` | 11/11 y limpieza de datos de prueba | 11/11 OK; 2 rechazos con motivo y evento tardío con `tardio=true`/`reordenado=true` | 2026-10-22 | superada |
+| P-033 | Escenario inválido reproducible | 006/G5 | `simulate_events.py --scenario invalid M-001 --once` | 2 rechazos, 2 aceptados y 0 errores | `rechazados=2 motivos=timestamp_anterior_al_rango,timestamp_futuro tardio=true reordenado=true` | 2026-10-22 | superada |
+| P-034 | Cobertura de señal IoT | 006/G5 | `sql/validation/04_iot.sql` | 5/5 cheques OK | 5/5 OK; 9.360 filas máquina-día, 52/52 máquinas, 0 estados inválidos | 2026-10-22 | superada |
+| P-035 | Modelo TMDL regenerado | 006 | `python tools/generate_tmdl.py` + `validate_model.py` | referencias y tipos coherentes | 15 tablas, 27 relaciones, 60 medidas; OK | 2026-10-22 | superada |
+| P-036 | Referencias del informe PBIR | 006 | `python tools/validate_report.py` | todos los `queryRef` existen | 8 páginas, 105 visuales, 0 errores; solo avisos de solapamiento si los hay | 2026-10-22 | superada |
+| P-037 | Arranque en frío | 007 | `docker compose down` + `up -d` | datos intactos y `db` healthy | 401.832 eventos, 28.080 producciones, 76.042 paradas; healthy | 2026-10-22 | superada |
+| P-038 | Backup y restauración | 007 | `pg_dump -Fc` + `pg_restore` en base temporal | recuentos idénticos | 401.832 / 28.080 / 76.042 / 28.080; base temporal eliminada | 2026-10-22 | superada |
+| P-039 | Latencia end-to-end | 007 | eventos `run_id LIKE 'sim-%'` | < 10 min | 0,7–55 ms; frescura DirectQuery 0,35 s | 2026-10-22 | superada |
+| P-040 | Evento visible tras la ingesta | 007 | `--scenario stop M-001 --once` + vista | cambio observable | M-001 turno B: 20 min de downtime y 1 falla | 2026-10-22 | superada |
 
 ### Evidencia del incremento 005
 
@@ -56,6 +65,17 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
   30 días.
 - `verify_history.py`: 17/17; 43 eventos de la ingesta 004 sobre el histórico calibrado.
 - `backups/metalinova_pre_calibracion_20261021.dump`: respaldo de la base anterior (no versionado).
+
+### Evidencia de calidad IoT y páginas PBIR (006)
+
+- `logs/iot_invalid_scenario.txt`: corrida `--scenario invalid M-001` con 2 rechazos, 2 eventos
+  aceptados y marcas `tardio=true`/`reordenado=true`.
+- `python src/validate_iot.py`: 11/11 comprobaciones, incluida la limpieza de los datos de prueba.
+- `sql/validation/04_iot.sql`: 5/5 chequeos de cuarentena, rango, cobertura, estados y cadencia.
+- `tools/generate_tmdl.py`: 15 tablas, 27 relaciones y 60 medidas.
+- `tools/generate_pbir.py`: 7 páginas generadas (4 principales, 2 de drill-through y 1 tooltip)
+  y 94 visuales; la página de validación de T-604 queda oculta.
+- `tools/validate_report.py`: 8 páginas y 105 visuales; todas las referencias existen en el TMDL.
 
 ### Evidencia del incremento 004
 

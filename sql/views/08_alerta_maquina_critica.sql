@@ -149,3 +149,16 @@ SELECT
         ORDER BY fecha DESC, turno_inicio_at DESC
     ) = 1) AS es_ultimo_turno_maquina
 FROM calc;
+
+-- ---------------------------------------------------------------------------
+-- v_alerta_ultimo_turno — subconjunto listo para la tabla de alertas del
+-- informe. Evita depender de filtros visuales en Power BI y mantiene la regla
+-- en SQL (una sola definición).
+-- ---------------------------------------------------------------------------
+DROP VIEW IF EXISTS v_alerta_ultimo_turno;
+
+CREATE VIEW v_alerta_ultimo_turno AS
+SELECT *
+FROM v_alerta_maquina_critica
+WHERE es_ultimo_turno_maquina
+  AND tiene_alerta;

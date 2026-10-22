@@ -260,3 +260,50 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
   - El umbral de OEE de la alerta se compara con 6 decimales para que un OEE exactamente igual a
     55 % no cambie de lado por precisión numérica. Afecta solo al borde, no a la regla.
 - **Estado:** aceptada.
+
+## D-021 · Generar las páginas del informe con PBIR reproducible
+
+- **Decisión:** las 4 páginas principales, el detalle de máquina, el detalle de
+  causa y la página de tooltip se generan con `tools/generate_pbir.py` en el
+  formato PBIR (JSON) del proyecto `powerbi/final/MetalNova.Report`. La página de
+  validación de T-604 se conserva oculta.
+- **Alternativas:** construir las páginas a mano en Power BI Desktop siguiendo
+  `BUILD_GUIDE.md`; generar solo el modelo y dejar el informe fuera del control
+  de versiones.
+- **Motivo:** el informe queda versionado, revisable y reproducible; el agente no
+  puede operar la GUI y el usuario solo tiene que abrir, refrescar y validar. El
+  esquema PBIR ya estaba probado por la página de validación de T-604.
+- **Consecuencias:**
+  - `tools/validate_report.py` comprueba que cada `queryRef` existe en el TMDL
+    antes de abrir Power BI.
+  - El formato fino (colores por serie, disposición exacta, tooltips nativos) se
+    completa en Desktop si algún visual no renderiza como se espera.
+  - Power BI Desktop debe estar cerrado cuando se regeneran las páginas; el
+    script reescribe los JSON.
+- **Estado:** aceptada.
+
+## D-022 · Alcance del manejo de calidad IoT (G5)
+
+- **Decisión:** implementar en `event_quality.py` y `ingest.py` el rango válido,
+  la cuarentena, el marcado de eventos tardíos/reordenados y una vista de
+  cobertura de señal. **No** se aplica *carry-forward* que fabrique lecturas: los
+  huecos se declaran (`incompleta`/`unknown`) y se mide la cadencia real.
+- **Alternativas:** solo documentar las reglas (estado anterior); implementar
+  *carry-forward* completo y recálculo del hecho; cambiar el generador a
+  muestreo cada 15 min (elevaría el volumen de ~402k a ~1,3M eventos).
+- **Motivo:** el caso f.4 pide manejo explícito y evidencia ejecutada. El feed
+  sintético emite dos lecturas por turno (cinco en excursión térmica), no una
+  cada 15 min; forzar el muestreo de 15 min multiplicaría por tres el volumen y
+  rompería la reproducibilidad del histórico calibrado. Declarar el hueco es más
+  honesto que inventar la lectura.
+- **Consecuencias:**
+  - `v_calidad_senal_iot` usa `senal_lecturas_turno_min = 2` como cobertura
+    mínima y expone `cumple_cadencia_15min` como diagnóstico separado.
+  - `simulate_events.py --scenario invalid M-001` produce un evento normal, uno
+    futuro y uno anterior al rango (los dos últimos a cuarentena) y un evento
+    tardío/reordenado.
+  - `validate_iot.py` (11 comprobaciones) y `sql/validation/04_iot.sql` son la
+    evidencia reproducible.
+  - La documentación de la alerta se corrigió: ya no afirma que el histórico
+    muestrea cada 15 min.
+- **Estado:** aceptada.

@@ -49,6 +49,9 @@
 6. `validate_data.py` (incremento 005) recalcula los KPI desde los hechos crudos, comprueba
    aditividad y casos borde, y compara contra las vistas con tolerancia `1e-9`.
 7. Power BI Desktop (incremento 006) consume las vistas KPI como contrato estable.
+   `tools/generate_tmdl.py` genera el modelo y `tools/generate_pbir.py` las páginas;
+   `tools/validate_report.py` comprueba que cada campo del informe existe en el
+   modelo antes de abrirlo en Desktop.
 
 ## Capa de ingesta continua (incremento 004)
 
@@ -67,6 +70,24 @@
 El simulador no rellena huecos si estuvo detenido: retoma el slot actual. Las paradas que genera
 quedan marcadas con `causa_detalle = 'Ingesta 004: …'`, de modo que se distinguen del histórico
 sin añadir columnas al esquema del 002.
+
+### Calidad y temporalidad IoT (G5)
+
+`event_quality.py` clasifica cada evento antes de insertarlo:
+
+| Situación | Resultado |
+|---|---|
+| `event_time` en `[inicio_histórico − 1 d, ahora + 5 min]` | aceptado |
+| fuera de ese rango o nulo | `fact_evento_rechazado` con `motivo` |
+| llega más de 5 min después | aceptado con `payload.calidad.tardio = true` |
+| `event_time` anterior al último evento de la máquina | aceptado con `payload.calidad.reordenado = true` |
+| duplicado | `ON CONFLICT DO NOTHING` |
+
+`v_calidad_senal_iot` resume la cobertura por máquina/día: lecturas recibidas vs
+`senal_lecturas_turno_min`, hueco máximo y estado `ok`/`incompleta`/`sin_datos`.
+La cadencia ideal de 15 min se informa aparte (`cumple_cadencia_15min`) porque el
+feed sintético emite dos lecturas por turno (D-022). No se aplica *carry-forward*:
+el hueco se declara, no se rellena.
 
 ## Calibración del histórico (006)
 
@@ -92,6 +113,7 @@ OEE 78,02 → 66,00 % en ventanas de 30 días; dispersión entre plantas 8,5 pp 
 | Hechos | `fact_produccion`, `fact_parada`, `fact_mantenimiento`, `fact_calidad`, `fact_evento`, `fact_evento_rechazado` |
 | Vistas base | `v_produccion_detalle`, `v_parada_detalle`, `v_mantenimiento_detalle`, `v_calidad_detalle` |
 | Vistas KPI (005) | `v_kpi_parametros`, `v_kpi_produccion`, `v_kpi_calidad`, `v_kpi_parada`, `v_kpi_mantenimiento`, 5 `v_kpi_oee_*`, 4 `v_kpi_mantenimiento_*`, 2 `v_kpi_calidad_*`, `v_kpi_confiabilidad_apoyo_maquina_dia`, 2 `v_loss_tree*`, `v_alerta_maquina_critica` |
+| Alertas y señal IoT (006) | `v_alerta_ultimo_turno`, `v_calidad_senal_iot` |
 
 Jerarquías: `dim_planta → dim_linea → dim_maquina` y `dim_familia → dim_producto`.
 
@@ -107,7 +129,8 @@ Las vistas son el contrato único para SQL, Python y DAX. Se agrupan en:
 | Confiabilidad | `v_kpi_confiabilidad_apoyo_maquina_dia` | fecha × máquina |
 | Calidad/energía | `v_kpi_calidad_maquina_dia`, `v_kpi_calidad_producto_dia` | fecha × máquina/producto |
 | Loss Tree | `v_loss_tree`, `v_loss_tree_maquina_mes` | fila de producción / mes × máquina |
-| Alerta | `v_alerta_maquina_critica` | fecha × máquina × turno |
+| Alerta | `v_alerta_maquina_critica`, `v_alerta_ultimo_turno` | fecha × máquina × turno |
+| Calidad de señal | `v_calidad_senal_iot` | fecha × máquina |
 | Dimensiones BI (006) | `v_dim_maquina`, `v_dim_producto` | una fila por máquina / producto; alimentan el modelo estrella |
 
 Regla: los porcentajes se agregan con `SUM(numerador) / SUM(denominador)`, nunca promediando

@@ -307,8 +307,9 @@ una planta no es el promedio de los OEE de sus máquinas.
 | `oee_umbral` | 0.55 | umbral de alerta de OEE (55 %) |
 | `downtime_umbral_min` | 120 | umbral de downtime no planificado por turno |
 | `temperatura_umbral_c` | 85 | temperatura máxima admisible |
-| `temperatura_ventana_min` | 15 | intervalo de muestreo histórico |
+| `temperatura_ventana_min` | 15 | ventana de referencia para la regla de temperatura |
 | `temperatura_lecturas_min` | 2 | lecturas altas consecutivas para 15 min |
+| `senal_lecturas_turno_min` | 2 | lecturas de proceso mínimas por turno en el feed sintético |
 
 ### Vistas base de hechos
 
@@ -369,10 +370,12 @@ con `tiempo_operativo_min = 0`, `mtbf_h = NULL` y el downtime medido desde
 | Vista | Grano | Contenido |
 |---|---|---|
 | `v_alerta_maquina_critica` | fecha × máquina × turno | cuatro condiciones, severidad, acciones, responsables y `es_ultimo_turno_maquina` |
+| `v_alerta_ultimo_turno` | fecha × máquina × turno | subconjunto `es_ultimo_turno_maquina = true` y `tiene_alerta = true` |
+| `v_calidad_senal_iot` | fecha × máquina | lecturas, esperadas, faltantes, huecos y estado `ok`/`incompleta`/`sin_datos` |
 
-La vista evalúa el turno completo. El informe filtra `severidad <> 'sin_alerta'`
-y puede usar `es_ultimo_turno_maquina = true` para mostrar solo el último turno
-con actividad de cada máquina.
+La vista de alertas evalúa el turno completo. El informe usa
+`v_alerta_ultimo_turno` para la tabla de alertas, de modo que la regla no dependa
+de filtros visuales.
 
 ---
 
@@ -437,10 +440,13 @@ microparadas 1,20), `critica` (0,76; 2,20; 1,40; 1,50), `calidad` (calidad 0,94)
 | Loss Tree — participación | `pérdida_categoría / minutos_perdidos_total` | `NULL` si el total es 0 |
 | Alerta de máquina crítica | OEE < 55 % **o** MTBF < 20 h **o** temperatura > 85 °C durante ≥ 15 min **o** downtime > 120 min/turno | severidad `critica` si se cumplen ≥ 2 condiciones; el OEE se compara redondeado a 6 decimales para estabilizar el borde exacto de 55 % |
 
-**Ventana de la alerta:** un turno (máquina × turno × fecha). La temperatura se
-muestrea cada 15 min en el histórico; se exigen al menos dos lecturas > 85 °C en
-el turno, que equivalen a 15 min entre la primera y la segunda muestra. La vista
-expone `minutos_temp_alta_estimados = lecturas × 15`.
+**Ventana de la alerta:** un turno (máquina × turno × fecha). El feed sintético
+emite **dos lecturas de proceso por turno** (minutos 90 y 300) y cinco cuando hay
+excursión térmica (minutos 300–360). Se exigen al menos dos lecturas > 85 °C en
+el turno; la vista expone `minutos_temp_alta_estimados = lecturas × 15` como
+aproximación, no como una medición continua. La cadencia ideal de 15 min se
+informa en `v_calidad_senal_iot.cumple_cadencia_15min` y no se oculta: el feed
+sintético no la cumple.
 
 **Casos borde:** toda división por cero devuelve `NULL` de forma intencional y
 documentada; no se propaga `NaN`. Un turno sin producción no genera filas en las
@@ -463,6 +469,29 @@ transacción de prueba que se revierte.
 | Parada planificada | `dim_causa.es_planificada = true` (mantenimiento preventivo, cambio de producto, setup) |
 | Temperatura alta | lectura > 85 °C; ≥ 2 lecturas en el turno para la regla de alerta |
 
+## Calidad y temporalidad de eventos IoT (G5)
+
+El ingestor aplica las reglas de la Constitución §7.1 antes de insertar:
+
+| Regla | Implementación | Evidencia |
+|---|---|---|
+| Duplicados | `ON CONFLICT (source_system, source_event_id)` | `validate_iot.py` y 004 |
+| Timestamp fuera de rango | rechazo a `fact_evento_rechazado` con `motivo` (`timestamp_futuro`, `timestamp_anterior_al_rango`, `event_time_nulo`) | `scenario invalid` + `validate_iot.py` |
+| Evento tardío | se acepta y se marca `payload.calidad.tardio = true` si llega más de 5 min después | `scenario invalid` |
+| Evento reordenado | se acepta y se marca `payload.calidad.reordenado = true` si su `event_time` es anterior al último evento de la máquina | `scenario invalid` |
+| Lecturas faltantes | `v_calidad_senal_iot` compara lecturas recibidas con `senal_lecturas_turno_min` y expone `max_gap_min`; si falta cobertura, el estado es `incompleta` | vista + `04_iot.sql` |
+| Cadencia de 15 min | se informa `cumple_cadencia_15min`; no se rellena con *carry-forward* | vista + decisión D-022 |
+
+**No se inventan lecturas.** Cuando falta una muestra, el hueco se declara
+(`incompleta`/`unknown` en el diagnóstico) en lugar de fabricar un valor por
+*carry-forward*. La cuarentena conserva payload y motivo; nunca se descarta un
+evento en silencio.
+
+**Cadencia del feed sintético.** El generador histórico emite dos lecturas por
+turno, no una cada 15 min. Por eso la vista de señal usa como mínimo
+`senal_lecturas_turno_min = 2` y reporta la cadencia ideal por separado. Esta
+diferencia está documentada en D-022 y no se presenta como telemetría real.
+
 ## Trazabilidad KPI ↔ vista (AC-505)
 
 | KPI / regla | Vista de contrato | Fuente primaria |
@@ -474,6 +503,9 @@ transacción de prueba que se revierte.
 | Microparadas y fallas cortas | `v_kpi_confiabilidad_apoyo_maquina_dia` | `fact_parada` |
 | Loss Tree | `v_loss_tree*` | `fact_produccion` |
 | Alerta de máquina crítica | `v_alerta_maquina_critica` | `fact_produccion`, `fact_parada`, `fact_mantenimiento`, `fact_evento` |
+| Alerta del último turno | `v_alerta_ultimo_turno` | `v_alerta_maquina_critica` |
+| Calidad de señal IoT | `v_calidad_senal_iot` | `fact_evento`, `fact_produccion` |
+| Calidad por producto | `v_kpi_calidad_producto_dia` | `fact_calidad`, `fact_produccion` |
 
 La validación independiente `python src/validate_data.py` recalcula estos KPI
 desde los hechos y compara con las vistas con tolerancia `1e-9` (más estricta
