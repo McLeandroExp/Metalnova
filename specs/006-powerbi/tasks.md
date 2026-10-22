@@ -19,7 +19,7 @@
 | T-618 | Calidad IoT: cuarentena, tardío/reordenado y cobertura | G5 | hecha |
 | T-616 | Optimizar `v_alerta_maquina_critica` (índice o materialización) | FR-601, AC-606 | hecha |
 | T-617 | Calibrar el histórico: factores por planta, perfiles y outliers | FR-615, AC-608 | hecha |
-| T-615 | Commit `feat: informe power bi` | — | pendiente |
+| T-615 | Commit `feat: informe power bi` | — | hecha (`ce39ae9`) |
 
 Notas de estado:
 

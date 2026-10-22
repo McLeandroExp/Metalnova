@@ -11,7 +11,7 @@
 | T-707 | `docs/PLAN_MEJORA.md` cuantificado | FR-707,708 | hecha |
 | T-708 | `README.md` final | FR-709 | hecha |
 | T-709 | Matriz de cumplimiento del caso | FR-710 | hecha |
-| T-710 | Commit `docs: integración, demo y plan de mejora` | — | pendiente |
+| T-710 | Commit `docs: integración, demo y plan de mejora` | — | hecha (`32dce90`) |
 
 Notas:
 
