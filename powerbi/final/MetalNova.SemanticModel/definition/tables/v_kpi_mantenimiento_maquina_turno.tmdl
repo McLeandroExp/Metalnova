@@ -1,54 +1,84 @@
 table v_kpi_mantenimiento_maquina_turno
-	lineageTag: 95bde9dd-107a-430e-9102-1697289ab514
+	lineageTag: 2fb9b69f-9ef1-55f7-83a6-e1991458f6ee
 
 	measure 'MTBF (h)' =
 			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) * 60 )
 		formatString: #,##0.00
 		displayFolder: 05 Mantenimiento
-		lineageTag: 1582e1ac-0a53-4d22-9f4a-4a1df3c8bbc7
+		lineageTag: f9fda6d0-f2be-578f-8e64-4c1fc23e9b02
 
 	measure 'MTTR (min)' =
 			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_reparacion] ), SUM ( v_kpi_mantenimiento_maquina_turno[reparaciones] ) )
 		formatString: #,##0.00
 		displayFolder: 05 Mantenimiento
-		lineageTag: 9bcdf3f8-3cd3-4bc4-b664-004f5f152971
+		lineageTag: 66c8a0b8-44bc-5a77-abea-f4dcbaede0e8
 
 	measure 'Fallas (conteo)' =
 			SUM ( v_kpi_mantenimiento_maquina_turno[fallas] )
 		formatString: #,##0
 		displayFolder: 05 Mantenimiento
-		lineageTag: 373f4106-edbc-489b-803e-9ceae14665af
+		lineageTag: e6365a34-dcab-5cd7-8150-77359ec30da2
 
 	measure 'Microparadas (conteo)' =
 			SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] )
 		formatString: #,##0
 		displayFolder: 05 Mantenimiento
-		lineageTag: c13d5455-17de-421d-b922-de232cca2ca9
+		lineageTag: 5406a463-7bc9-5db2-89d3-121869ca56d1
 
 	measure 'Duración Media Falla (min)' =
 			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_fallas] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) )
 		formatString: #,##0.00
 		displayFolder: 05 Mantenimiento
-		lineageTag: 126cbd08-0176-4f88-abc9-ae00a5981433
+		lineageTag: 97c35af0-d50a-54c8-baf1-8f43fbb5f518
 
 	measure 'Fallas por 100 h' =
 			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) * 60, SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100
 		formatString: #,##0.00
 		displayFolder: 05 Mantenimiento
-		lineageTag: d69cec98-c38e-4f0e-83aa-94e9b1ea402a
+		lineageTag: c1648bee-83a1-52b3-a191-ebab5869479f
 
 	measure 'Downtime Mantenimiento (min)' =
 			SUM ( v_kpi_mantenimiento_maquina_turno[downtime_no_planificado_min] )
 		formatString: #,##0
 		displayFolder: 05 Mantenimiento
-		lineageTag: d476b93f-3a73-4d0a-9c0f-cebe7ee4930d
+		lineageTag: 0701bd37-1eb2-51f8-9f1f-6a8c30c87935
+
+	measure 'Fallas cortas (conteo)' =
+			SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] )
+		formatString: #,##0
+		displayFolder: 05 Mantenimiento
+		lineageTag: b33329cf-42f3-588e-93e8-0b7bcbf6e77f
+
+	measure 'MTBF corto (h)' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] ) * 60 )
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: 2d6bb400-12fb-570e-acd9-6a9e0b091ccc
+
+	measure 'Fallas cortas por 100 h' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] ) * 60, SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: c7865619-8e14-5c1b-b97e-e546939ec6f9
+
+	measure 'Microparadas por 100 h' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] ) * 60, SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: 2968d489-1124-5357-8c55-042a64bdb475
+
+	measure 'Duración media microparada (min)' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_microparadas] ), SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] ) )
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: 39e3ce59-1811-5e6b-815d-17ed0d9c92f6
 
 	column id_maquina
 		dataType: int64
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 93691e4b-a28d-4469-8da8-1c00187b6a14
+		lineageTag: be71e796-217b-539b-b13d-34dde4c1bcd9
 		summarizeBy: none
 		sourceColumn: id_maquina
 
@@ -56,7 +86,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: b85ef1e7-a179-4e84-9a12-a9384cdd9425
+		lineageTag: 284da687-01bf-5657-ae7b-460966d03f9f
 		summarizeBy: none
 		sourceColumn: maquina_codigo
 
@@ -64,7 +94,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: db85b6b9-894a-4520-9d1b-1566f8e08be4
+		lineageTag: 1f7f4ec8-0474-54fa-8b92-0b3709d26f89
 		summarizeBy: none
 		sourceColumn: maquina_nombre
 
@@ -72,7 +102,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 4d425da0-b175-467f-85e3-98155c50e0bf
+		lineageTag: d69ab494-4e17-5871-8c99-927c725e78c8
 		summarizeBy: none
 		sourceColumn: maquina_tipo
 
@@ -80,7 +110,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 213ef192-6e14-43fc-a34a-cf0067dc8de3
+		lineageTag: a4838f4a-0dad-5d5f-a52c-47ce63d1d40a
 		summarizeBy: none
 		sourceColumn: maquina_criticidad
 
@@ -89,7 +119,7 @@ table v_kpi_mantenimiento_maquina_turno
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 0a6e3cdd-b659-4328-ab70-9e0563b4bd94
+		lineageTag: ae0ce8cf-2ac7-5875-b9d9-ceccf8b30ff0
 		summarizeBy: none
 		sourceColumn: id_planta
 
@@ -97,7 +127,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 14e43f74-417f-4bff-89d9-d4aef49415f0
+		lineageTag: bf8d22b2-616c-5d1d-bd2e-b24a5796e7e7
 		summarizeBy: none
 		sourceColumn: planta_codigo
 
@@ -106,7 +136,7 @@ table v_kpi_mantenimiento_maquina_turno
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 1316d3d4-3f04-4a39-9de0-eb73088ea70a
+		lineageTag: 4186762c-f159-5a9a-9e58-70a4411012af
 		summarizeBy: none
 		sourceColumn: id_linea
 
@@ -114,7 +144,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 70950fef-f56f-4073-80b1-e7a857f727da
+		lineageTag: 48761aa2-d26b-5c94-ab8a-e78615360590
 		summarizeBy: none
 		sourceColumn: linea_codigo
 
@@ -123,7 +153,7 @@ table v_kpi_mantenimiento_maquina_turno
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 2b58b51f-a679-4338-9ce0-ae5a779922fc
+		lineageTag: 30a833b4-a557-5642-8c35-3b08128726f9
 		summarizeBy: none
 		sourceColumn: id_turno
 
@@ -131,7 +161,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 987770bc-974a-46a3-8905-1a1f526777c9
+		lineageTag: 7151f6e3-22e9-5f80-b3b9-571faebd34d9
 		summarizeBy: none
 		sourceColumn: turno_codigo
 
@@ -140,7 +170,7 @@ table v_kpi_mantenimiento_maquina_turno
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: fa083f94-5068-44de-901f-a0194e6241ea
+		lineageTag: 0cdbdc90-c1d7-5ff4-bc42-726571e52e7a
 		summarizeBy: none
 		sourceColumn: id_tiempo
 
@@ -149,7 +179,7 @@ table v_kpi_mantenimiento_maquina_turno
 		isHidden
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: 6551b901-c10e-4927-a33c-3e48a555cec8
+		lineageTag: ccc64828-0bfe-522b-9996-4b9db55311a6
 		summarizeBy: none
 		sourceColumn: fecha
 
@@ -157,7 +187,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 70c3fb0c-8228-4c5f-9d6a-2ddb259216dd
+		lineageTag: 15a7b932-61ce-5cf5-857f-ff25a70ea6d4
 		summarizeBy: none
 		sourceColumn: anio_mes
 
@@ -165,7 +195,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: datetime2
-		lineageTag: b39a5039-333a-4697-9076-8e36f0b04e28
+		lineageTag: 86744ca9-7b70-5d6d-a024-d6c2fa7c3454
 		summarizeBy: none
 		sourceColumn: turno_inicio_at
 
@@ -173,7 +203,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 642f7aa6-c059-4825-9975-593b3c5d0451
+		lineageTag: 96432dbf-8b38-5c5b-95bd-86335bc6a910
 		summarizeBy: none
 		sourceColumn: tiempo_calendario_min
 
@@ -181,7 +211,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: a00c9e66-3960-442e-841d-dbe6a75da572
+		lineageTag: 72572f29-1523-525d-bece-30b025515919
 		summarizeBy: none
 		sourceColumn: tiempo_planificado_min
 
@@ -189,7 +219,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 2acae126-0aa4-4410-88b8-3ded1283afb7
+		lineageTag: 9f410b84-785d-5d9f-a173-dee10cc6df99
 		summarizeBy: none
 		sourceColumn: downtime_planificado_min
 
@@ -197,7 +227,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: cc5074a4-0b8d-4e3a-87ab-3acc22d1e97f
+		lineageTag: 9a2f5121-c976-572b-a806-b57541f4c7b4
 		summarizeBy: none
 		sourceColumn: tiempo_operativo_min
 
@@ -205,7 +235,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 30ce5d7c-7cb7-4d54-9bd7-629d4bca2a62
+		lineageTag: 24800f1e-00f7-5797-b541-1cad484d9fb3
 		summarizeBy: none
 		sourceColumn: downtime_no_planificado_min
 
@@ -213,7 +243,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 7e86524a-714d-4c64-aca2-a2433b419607
+		lineageTag: be0bbbc8-56a7-51ee-8a21-d7abbc96b60b
 		summarizeBy: none
 		sourceColumn: total_count
 
@@ -221,7 +251,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: ddef7d2e-0c8d-4f4e-b20c-f1da3acdd8fd
+		lineageTag: 125631c4-fd86-5ab0-8f50-03f3f2938a2d
 		summarizeBy: none
 		sourceColumn: good_count
 
@@ -229,7 +259,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 0b8826d0-e940-412f-a5f1-41e7002a4424
+		lineageTag: 5d3c2c26-13ef-5b58-94fb-4f5ed7d698a2
 		summarizeBy: none
 		sourceColumn: paradas_no_planificadas
 
@@ -237,7 +267,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: f8ca0f97-b497-4b4d-ab2f-945a8aa93dbf
+		lineageTag: 61005246-ac3b-5267-af36-d301e9f46c87
 		summarizeBy: none
 		sourceColumn: minutos_no_planificados_parada
 
@@ -245,7 +275,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 7114f50a-e571-421d-926c-9143d26bf86f
+		lineageTag: 4f5d5052-6f40-5744-a7c0-9e412ff63333
 		summarizeBy: none
 		sourceColumn: fallas
 
@@ -253,7 +283,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 000915ea-07c1-417c-a261-e03c5b478e7c
+		lineageTag: 1e0b75f5-7e9b-57d7-92fa-881f36b2f5cd
 		summarizeBy: none
 		sourceColumn: minutos_fallas
 
@@ -261,7 +291,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 8893767c-1c3b-4529-b234-f46c52fa77a5
+		lineageTag: c45d5af6-bc9d-594b-a891-b1b7c664c32b
 		summarizeBy: none
 		sourceColumn: microparadas
 
@@ -269,7 +299,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 16ab8a68-55d0-436e-9a7b-e8baf44f796e
+		lineageTag: 326c05b4-0a43-5a3d-bde0-e2a6896b49db
 		summarizeBy: none
 		sourceColumn: minutos_microparadas
 
@@ -277,7 +307,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 33750641-50a7-4d7f-aef3-b00393c74514
+		lineageTag: 31990fc1-e345-5897-ba42-33baddb73158
 		summarizeBy: none
 		sourceColumn: fallas_cortas
 
@@ -285,7 +315,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 57988b0d-4326-4a3e-a428-c41381ff13a1
+		lineageTag: 240f3d99-06e3-5db3-8acd-ab04ed1b8518
 		summarizeBy: none
 		sourceColumn: minutos_fallas_cortas
 
@@ -293,7 +323,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 7b771e81-3492-4dd2-acb4-c887bf1d24b8
+		lineageTag: 9ac002a0-2d34-593f-a238-2aa6e3abc355
 		summarizeBy: none
 		sourceColumn: reparaciones
 
@@ -301,7 +331,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: e521d040-4df7-4116-a0d4-a80ca1e9fd93
+		lineageTag: 190ffa91-5d52-5dc4-b9bd-35ad3049edd6
 		summarizeBy: none
 		sourceColumn: minutos_reparacion
 
@@ -309,7 +339,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: fb74bd7e-082f-496f-8d91-6db96fd30ace
+		lineageTag: 067bfe2b-96a1-5477-a74c-54460fa51dd4
 		summarizeBy: none
 		sourceColumn: intervenciones
 
@@ -317,7 +347,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 7bbba01a-0481-422c-9ea4-c20685d9cac5
+		lineageTag: b319b642-7479-5810-8ab6-1cd163cb0f93
 		summarizeBy: none
 		sourceColumn: minutos_intervencion
 
@@ -325,7 +355,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 29cad610-85f8-40d5-a65b-7ed3438df6fb
+		lineageTag: cf6d66b0-4a2a-56ea-9dc1-2ed89f8a016e
 		summarizeBy: none
 		sourceColumn: costo_mantenimiento_usd
 
@@ -333,7 +363,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: c401404e-fb1d-42b4-ae2f-6ab0704798d7
+		lineageTag: 137d2b18-4631-56f0-b165-a2e6bbfd1221
 		summarizeBy: none
 		sourceColumn: tiempo_operativo_h
 
@@ -341,7 +371,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: afbf27e5-b763-4fd7-a84f-65d5966b8efa
+		lineageTag: 1740703e-a6f9-5082-9171-bb6ed6d21aac
 		summarizeBy: none
 		sourceColumn: mtbf_h
 
@@ -349,7 +379,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: f716da72-c084-44ff-a040-ccad19fbb55f
+		lineageTag: 0b4bf537-afbd-5287-aa7b-5b5a68279891
 		summarizeBy: none
 		sourceColumn: mttr_min
 
@@ -357,7 +387,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 3b251571-ff5c-4557-9ea8-e00b4654f136
+		lineageTag: 8ccebf57-5f33-5a62-a676-8a92b05ed957
 		summarizeBy: none
 		sourceColumn: downtime_no_planificado_pct
 
@@ -365,7 +395,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: ac07e5e5-4a76-4c42-973a-1c9771a14610
+		lineageTag: 78dadfd3-34a1-58f7-8dec-c12626b3b5de
 		summarizeBy: none
 		sourceColumn: mtbf_corto_h
 
@@ -373,7 +403,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 29fe1c69-8153-4044-a659-f8ade7c77eea
+		lineageTag: a2b0209e-4d44-53e9-af3f-5d81bcecb3df
 		summarizeBy: none
 		sourceColumn: fallas_cortas_por_100h
 
@@ -381,7 +411,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 9f5f8605-12be-4b6b-90f9-d77dac144053
+		lineageTag: 47172ff9-781c-5fb0-83cd-902d0c52d545
 		summarizeBy: none
 		sourceColumn: microparadas_por_100h
 
@@ -389,7 +419,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: c285ce14-37f8-4a5e-8ceb-2c95455d58c5
+		lineageTag: 12afce7f-6262-5b3a-be0a-bb9b072502de
 		summarizeBy: none
 		sourceColumn: duracion_media_micro_min
 
@@ -397,7 +427,7 @@ table v_kpi_mantenimiento_maquina_turno
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 274bff12-ac29-4abc-9139-7c6318c08e1f
+		lineageTag: 63a4cdd1-54ba-5ef5-ad58-5e23db46edaf
 		summarizeBy: none
 		sourceColumn: duracion_media_falla_min
 

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "chart_perdida_producto",
+  "position": {
+    "x": 40,
+    "y": 710,
+    "z": 17000,
+    "width": 900,
+    "height": 310,
+    "tabOrder": 17
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_producto"
+                    }
+                  },
+                  "Property": "producto_nombre"
+                }
+              },
+              "queryRef": "v_dim_producto.producto_nombre",
+              "nativeQueryRef": "producto_nombre",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_loss_tree"
+                    }
+                  },
+                  "Property": "Pérdida Total (min)"
+                }
+              },
+              "queryRef": "v_loss_tree.Pérdida Total (min)",
+              "nativeQueryRef": "Pérdida Total (min)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_loss_tree"
+                  }
+                },
+                "Property": "Pérdida Total (min)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Pérdida total por producto'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

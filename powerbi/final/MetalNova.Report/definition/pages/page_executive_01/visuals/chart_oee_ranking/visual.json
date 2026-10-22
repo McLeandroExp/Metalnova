@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "chart_oee_ranking",
+  "position": {
+    "x": 960,
+    "y": 370,
+    "z": 16000,
+    "width": 900,
+    "height": 315,
+    "tabOrder": 16
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_maquina"
+                    }
+                  },
+                  "Property": "planta_codigo"
+                }
+              },
+              "queryRef": "v_dim_maquina.planta_codigo",
+              "nativeQueryRef": "planta_codigo",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_loss_tree"
+                    }
+                  },
+                  "Property": "OEE KPI"
+                }
+              },
+              "queryRef": "v_loss_tree.OEE KPI",
+              "nativeQueryRef": "OEE KPI"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_loss_tree"
+                  }
+                },
+                "Property": "OEE KPI"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Comparación de OEE entre plantas'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

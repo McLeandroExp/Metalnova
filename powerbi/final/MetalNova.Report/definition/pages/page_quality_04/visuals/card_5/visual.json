@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "card_5",
+  "position": {
+    "x": 1280,
+    "y": 210,
+    "z": 13000,
+    "width": 290,
+    "height": 135,
+    "tabOrder": 13
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Energía por Unidad Buena"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Energía por Unidad Buena",
+              "nativeQueryRef": "Energía por Unidad Buena"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'kWh / unidad buena'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,37 +1,37 @@
 table v_kpi_mantenimiento
-	lineageTag: 4168518e-15eb-4fd9-9633-c997830c4a75
+	lineageTag: 2ecc8b03-d1d7-5d24-a669-eb7e3b03bb99
 
 	measure 'Intervenciones' =
 			COUNTROWS ( v_kpi_mantenimiento )
 		formatString: #,##0
 		displayFolder: 05 Mantenimiento
-		lineageTag: a1a12d17-f7fa-4179-883d-62e980573535
+		lineageTag: 5f635524-0d4e-5b87-ab9d-eb98ca29bdcc
 
 	measure 'Costo Mantenimiento (USD)' =
 			SUM ( v_kpi_mantenimiento[costo_estimado_usd] )
 		formatString: $ #,##0
 		displayFolder: 05 Mantenimiento
-		lineageTag: 091873d1-986a-46d1-9a5c-becb48dcb546
+		lineageTag: 49a361a4-db5d-5048-a753-1f2cdf49b523
 
 	measure 'Última Intervención' =
 			MAX ( v_kpi_mantenimiento[inicio_at] )
 		formatString: General Date
 		displayFolder: 05 Mantenimiento
-		lineageTag: afb7e8cf-598a-47f4-8d7b-e7962c94d3f8
+		lineageTag: b9fa5739-748e-5714-bd14-3389b1e84970
 
 	column id_mantenimiento
 		dataType: int64
 		isHidden
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: c362581c-eaf7-47b9-9df5-afeb9d0134a0
+		lineageTag: d24742e2-c695-5075-9894-0218a462809a
 		summarizeBy: none
 		sourceColumn: id_mantenimiento
 
 	column codigo_orden_trabajo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: f2a40923-d405-410c-90df-7e38b91601b5
+		lineageTag: 2105af6f-dba0-57d6-93ad-739b016148a1
 		summarizeBy: none
 		sourceColumn: codigo_orden_trabajo
 
@@ -40,7 +40,7 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 8c6befc2-1569-40c0-867e-e41f2d6c4457
+		lineageTag: ee023b10-c2ad-5911-b810-6477e3845d2c
 		summarizeBy: none
 		sourceColumn: id_maquina
 
@@ -48,7 +48,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 6af6d2bc-ef18-4544-bc3e-6637f7c0c86a
+		lineageTag: 31839509-6d6a-557a-90e7-eb256f3cbd4f
 		summarizeBy: none
 		sourceColumn: maquina_codigo
 
@@ -56,7 +56,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 1e3d7bb3-26ab-4699-9c53-3c59ec6c9cb5
+		lineageTag: fe3890ec-08b2-5639-846c-80ed4fdb1fc3
 		summarizeBy: none
 		sourceColumn: maquina_nombre
 
@@ -64,7 +64,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 24dc5c3d-963a-4bf3-adad-ab46009b0dcd
+		lineageTag: c5109b9a-523c-52a0-bdc4-2c1a35a54a59
 		summarizeBy: none
 		sourceColumn: maquina_tipo
 
@@ -72,7 +72,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 891c2055-a79b-4bc3-a0fa-0c292373e47e
+		lineageTag: 44433e07-c874-572a-8c3f-a48fff312644
 		summarizeBy: none
 		sourceColumn: maquina_criticidad
 
@@ -81,7 +81,7 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: a2a0bd5b-7011-4723-9db6-896b8e44f0da
+		lineageTag: 28ca7f09-0b95-5f38-9074-1c768b1a864b
 		summarizeBy: none
 		sourceColumn: id_planta
 
@@ -89,7 +89,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 0896fb95-81ba-48c1-99e9-662ca1add8bf
+		lineageTag: db143ca3-8ca9-5bff-ba37-c11a10e3d75a
 		summarizeBy: none
 		sourceColumn: planta_codigo
 
@@ -98,7 +98,7 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 98c054ff-e340-4167-84ea-cf1a1729e946
+		lineageTag: 31beec39-8b4f-5de2-817e-e3f533d0712c
 		summarizeBy: none
 		sourceColumn: id_linea
 
@@ -106,7 +106,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 8ce1867f-7b25-4b2f-a3d8-87fd251f7bce
+		lineageTag: 3b42e906-9cf8-544c-96db-40613bc4ec04
 		summarizeBy: none
 		sourceColumn: linea_codigo
 
@@ -115,28 +115,28 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: df360ac9-3f5e-453f-b446-ec80c77548ac
+		lineageTag: dd0b44d6-8239-5917-9114-8a4c9d00bdab
 		summarizeBy: none
 		sourceColumn: id_tecnico
 
 	column tecnico_codigo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: caabc441-f807-4dc0-a64a-3bfa6e9f5326
+		lineageTag: dee8260e-c013-5737-8cdd-9bd91d8f384e
 		summarizeBy: none
 		sourceColumn: tecnico_codigo
 
 	column tecnico_nombre
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: ca824c34-1f77-44d3-9717-b30b0480b4b9
+		lineageTag: 48366049-3573-5645-b571-8d07ef500895
 		summarizeBy: none
 		sourceColumn: tecnico_nombre
 
 	column tecnico_especialidad
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 50dc747a-b323-4d2f-8bb4-b884f8940527
+		lineageTag: 700e885f-f4f4-5720-8efd-49e8b1834756
 		summarizeBy: none
 		sourceColumn: tecnico_especialidad
 
@@ -145,7 +145,7 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: d3f0c401-2b33-4556-b2d3-b8573b479441
+		lineageTag: 1aa18c45-390d-50f3-aaa3-5c5c77231527
 		summarizeBy: none
 		sourceColumn: id_causa
 
@@ -153,7 +153,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 909d7212-c241-4f19-b067-bc8a90fb116c
+		lineageTag: 10aae6fe-a4d9-5220-99da-0f149d6ff6fc
 		summarizeBy: none
 		sourceColumn: causa_codigo
 
@@ -162,7 +162,7 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: ed7bc00a-1ba2-495e-8220-3ad66d1d4f6a
+		lineageTag: 495c82af-47b1-575a-9e0f-0610627f7dad
 		summarizeBy: none
 		sourceColumn: id_turno
 
@@ -170,7 +170,7 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 59d876bf-9eac-4a65-8d85-b5e99b885cda
+		lineageTag: 40ead29c-6ca6-596a-8ffc-e9c7c8c6a145
 		summarizeBy: none
 		sourceColumn: turno_codigo
 
@@ -179,7 +179,7 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 9e6506a7-e4d3-4ec1-8713-834d9882dc79
+		lineageTag: 5855a537-176d-50b1-8597-c4bad9133f0a
 		summarizeBy: none
 		sourceColumn: id_tiempo
 
@@ -188,7 +188,7 @@ table v_kpi_mantenimiento
 		isHidden
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: f4a437d8-e681-44c9-9e07-0d991bc3d508
+		lineageTag: 32aa73cc-b7c3-52a3-868e-c7b72ed9c62a
 		summarizeBy: none
 		sourceColumn: fecha
 
@@ -196,14 +196,14 @@ table v_kpi_mantenimiento
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 809cdae0-b616-49e7-a9fd-69d9dfb8da92
+		lineageTag: 8bc68374-1e30-51f7-97c9-60b2af3c261d
 		summarizeBy: none
 		sourceColumn: anio_mes
 
 	column tipo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 51de3985-269a-4c3d-b06a-32abd060b999
+		lineageTag: 8ce37982-0e7f-5987-811a-1d6896814757
 		summarizeBy: none
 		sourceColumn: tipo
 
@@ -211,7 +211,7 @@ table v_kpi_mantenimiento
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: datetime2
-		lineageTag: 76ca7d0b-a273-42c7-ab69-4a4a3d6f90a4
+		lineageTag: a078325c-06d9-5c80-97cd-b000d2c7a296
 		summarizeBy: none
 		sourceColumn: inicio_at
 
@@ -219,7 +219,7 @@ table v_kpi_mantenimiento
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: datetime2
-		lineageTag: 3d30f132-87c2-401e-9372-4fed390dcf89
+		lineageTag: 27e0dfce-8985-5d8a-b238-e5dca802612c
 		summarizeBy: none
 		sourceColumn: fin_at
 
@@ -227,7 +227,7 @@ table v_kpi_mantenimiento
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: af15f0a9-1a4d-4e8c-b981-7ca8b5b9e61f
+		lineageTag: 086c0922-f551-5409-83c9-434eee611643
 		summarizeBy: none
 		sourceColumn: duracion_min
 
@@ -235,21 +235,21 @@ table v_kpi_mantenimiento
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 6ae558a4-e190-4890-ade1-88b0769a92e4
+		lineageTag: 03abdc10-7d17-5211-ac44-8d12d697327f
 		summarizeBy: none
 		sourceColumn: costo_estimado_usd
 
 	column estado
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 02e7fffb-c38f-4e4e-ba77-20b05abb1bbd
+		lineageTag: fbb238dc-5980-557e-972c-3c23e75fb0a5
 		summarizeBy: none
 		sourceColumn: estado
 
 	column es_correctivo_cerrado
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 4700bf4e-37de-4d4f-8484-82cf2d21df2d
+		lineageTag: 23972bd8-727a-5922-a7be-95cdd0abaa9a
 		summarizeBy: none
 		sourceColumn: es_correctivo_cerrado
 

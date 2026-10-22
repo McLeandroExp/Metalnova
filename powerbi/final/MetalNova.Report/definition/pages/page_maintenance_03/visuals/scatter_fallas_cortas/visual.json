@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "scatter_fallas_cortas",
+  "position": {
+    "x": 1210,
+    "y": 710,
+    "z": 18000,
+    "width": 650,
+    "height": 310,
+    "tabOrder": 18
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_maquina"
+                    }
+                  },
+                  "Property": "maquina_codigo"
+                }
+              },
+              "queryRef": "v_dim_maquina.maquina_codigo",
+              "nativeQueryRef": "maquina_codigo",
+              "active": true
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento_maquina_turno"
+                    }
+                  },
+                  "Property": "Fallas cortas por 100 h"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento_maquina_turno.Fallas cortas por 100 h",
+              "nativeQueryRef": "Fallas cortas por 100 h"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento_maquina_turno"
+                    }
+                  },
+                  "Property": "MTBF (h)"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento_maquina_turno.MTBF (h)",
+              "nativeQueryRef": "MTBF (h)"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'MTBF vs fallas cortas por 100 h'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

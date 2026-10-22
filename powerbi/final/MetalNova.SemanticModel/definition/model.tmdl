@@ -9,7 +9,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["v_dim_maquina", "v_dim_producto", "dim_tiempo", "dim_turno", "dim_causa", "v_loss_tree", "v_kpi_parada", "v_kpi_mantenimiento_maquina_turno", "v_kpi_mantenimiento", "v_kpi_calidad_maquina_dia", "v_alerta_maquina_critica", "v_kpi_parametros"]
+annotation PBI_QueryOrder = ["v_dim_maquina", "v_dim_producto", "dim_tiempo", "dim_turno", "dim_causa", "v_loss_tree", "v_kpi_parada", "v_kpi_mantenimiento_maquina_turno", "v_kpi_mantenimiento", "v_kpi_calidad_maquina_dia", "v_kpi_calidad_producto_dia", "v_alerta_maquina_critica", "v_alerta_ultimo_turno", "v_calidad_senal_iot", "v_kpi_parametros"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -23,7 +23,10 @@ ref table v_kpi_parada
 ref table v_kpi_mantenimiento_maquina_turno
 ref table v_kpi_mantenimiento
 ref table v_kpi_calidad_maquina_dia
+ref table v_kpi_calidad_producto_dia
 ref table v_alerta_maquina_critica
+ref table v_alerta_ultimo_turno
+ref table v_calidad_senal_iot
 ref table v_kpi_parametros
 
 ref cultureInfo es-ES

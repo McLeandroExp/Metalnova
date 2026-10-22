@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "card_6",
+  "position": {
+    "x": 1590,
+    "y": 210,
+    "z": 14000,
+    "width": 290,
+    "height": 135,
+    "tabOrder": 14
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_loss_tree"
+                    }
+                  },
+                  "Property": "Brecha Meta (pp)"
+                }
+              },
+              "queryRef": "v_loss_tree.Brecha Meta (pp)",
+              "nativeQueryRef": "Brecha Meta (pp)"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Brecha vs meta'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -170,11 +170,55 @@ Umbrales acordados: apertura ≤ 60 s, cambio de filtro ≤ 5 s, frescura ≤ 60
 proveedor. Evidencia del spike en `logs/powerbi_spike_006.txt`,
 `logs/PowerBIPerformanceFilter.json` y `logs/PowerBIPerformanceFreshness.json`.
 
+## Generación de páginas PBIR (2026-10-22)
+
+Comandos ejecutados:
+
+```powershell
+python tools/generate_tmdl.py
+python tools/validate_model.py
+python tools/generate_pbir.py
+python tools/validate_report.py
+```
+
+Resultados observados:
+
+```text
+Modelo generado: 15 tablas, 27 relaciones, 60 medidas
+OK: 60 medidas, 27 relaciones, 15 tablas; referencias y tipos coherentes.
+Páginas generadas: 7 · Visuales: 94
+Validación del informe PBIR: 8 páginas, 105 visuales, 0 errores
+```
+
+Páginas generadas: `01 Executive Plant Performance`, `02 OEE & Loss Tree`,
+`03 Maintenance Reliability`, `04 Quality & Energy`, `Detalle máquina`,
+`Detalle causa` y `Tooltip máquina`. La página `Modelo validado (T-604)` queda
+oculta. `v_alerta_ultimo_turno` alimenta la tabla de alertas sin filtros
+visuales; `v_kpi_calidad_producto_dia` hace coherente el filtro por producto.
+
+**Verificación pendiente:** el agente no puede abrir la GUI. El usuario debe
+abrir `powerbi/final/MetalNova.pbip`, pulsar «Actualizar ahora» y confirmar que
+las 4 páginas y los visuales renderizan. Hasta entonces AC-601, AC-603, AC-604,
+AC-605 y AC-607 siguen **pendientes de observación visual**.
+
+## Calidad IoT (G5, 2026-10-22)
+
+| Comprobación | Comando | Resultado | Veredicto |
+|---|---|---|---|
+| Clasificación y cuarentena | `python src/validate_iot.py` | 11/11 OK; limpieza correcta | superada |
+| Escenario inválido | `simulate_events.py --scenario invalid M-001 --once` | 2 rechazos (`timestamp_futuro`, `timestamp_anterior_al_rango`); tardío con `tardio=true` y `reordenado=true` | superada |
+| Vista de señal | `sql/validation/04_iot.sql` | 5/5 OK; 9.360 filas máquina-día; 52/52 máquinas | superada |
+
+Detalle: `fact_evento_rechazado` conserva motivo y payload. El rango válido es
+`[inicio_histórico − 1 d, ahora + 5 min]`. La cadencia ideal de 15 min se reporta
+en `cumple_cadencia_15min`; el feed sintético emite 2 lecturas/turno (D-022).
+
 ## Pendientes y bloqueos
 
-1. Construir las páginas Executive, OEE & Loss Tree, Maintenance y Quality & Energy (T-606–T-609)
-   siguiendo `powerbi/final/BUILD_GUIDE.md`; T-604/T-605 ya están cerradas.
-2. Verificar que los 10 KPIs de la página de validación coinciden con las vistas SQL.
-3. Verificar filtros, drill-through, tooltips, umbrales y navegación (T-610–T-613).
-4. Medir de nuevo la apertura y los filtros en el informe final; si supera 60 s, reevaluar D-019.
-5. Completar AC-601…AC-605, AC-607 y el commit T-615.
+1. Abrir `powerbi/final/MetalNova.pbip`, refrescar y verificar las 4 páginas, los
+   10 KPIs y la tabla de alertas (T-614). Es el único paso manual del 006.
+2. Probar filtros sincronizados, drill-through a máquina/causa y tooltip de máquina
+   (T-610–T-613); corregir en el generador si algo no renderiza.
+3. Medir de nuevo la apertura y los filtros en el informe final; si supera 60 s,
+   reevaluar D-019.
+4. Completar AC-601, AC-603, AC-604, AC-605, AC-607 y el commit T-615.

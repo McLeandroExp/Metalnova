@@ -1,48 +1,48 @@
 table v_kpi_calidad_maquina_dia
-	lineageTag: 15920eb8-f482-497d-b66a-5b8b56960943
+	lineageTag: c0891afe-7a5a-53f7-a234-c774f680b94e
 
 	measure 'FPY KPI' =
 			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) - SUM ( v_kpi_calidad_maquina_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
 		formatString: 0.00%
 		displayFolder: 03 Calidad y energía
-		lineageTag: 00baf92e-2841-4d63-bda9-37225fdbb3a8
+		lineageTag: 94bab6d4-a51e-5769-9e20-b16ee2c0997d
 
 	measure 'Tasa Defectos' =
 			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_defectuosas] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
 		formatString: 0.00%
 		displayFolder: 03 Calidad y energía
-		lineageTag: 719d8c21-f5be-4d14-97cb-09e3e64e3bee
+		lineageTag: bc20d7cb-d929-51a1-a058-3a7169972340
 
 	measure 'Tasa Retrabajo' =
 			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
 		formatString: 0.00%
 		displayFolder: 03 Calidad y energía
-		lineageTag: 8a9db81e-8a2d-4f26-aed3-2e650821b3a0
+		lineageTag: e2b8f8ca-700a-51d2-9cb9-c878f8cd1d8f
 
 	measure 'Energía (kWh)' =
 			SUM ( v_kpi_calidad_maquina_dia[energia_kwh] )
 		formatString: #,##0.00
 		displayFolder: 03 Calidad y energía
-		lineageTag: f9b95be0-9e1f-4fb8-a209-ba3d8d490e9e
+		lineageTag: 00e2606a-34f1-5978-99e4-bd5a3747e303
 
 	measure 'Energía por Unidad Buena' =
 			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[energia_kwh] ), SUM ( v_kpi_calidad_maquina_dia[good_count] ) )
 		formatString: 0.0000
 		displayFolder: 03 Calidad y energía
-		lineageTag: e9c328dc-a5ac-4188-9bbb-0c8d43e5fa3a
+		lineageTag: 92fabaa1-ac8d-5185-a772-11e671b0f8c9
 
 	measure 'Scrap Rate (Calidad)' =
 			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[scrap_count] ), SUM ( v_kpi_calidad_maquina_dia[total_count] ) )
 		formatString: 0.00%
 		displayFolder: 03 Calidad y energía
-		lineageTag: b0af4efc-e4ac-424d-8bc4-ba8198d51490
+		lineageTag: 18add3fb-100e-5c80-ac6b-1b420c25fe9b
 
 	column id_maquina
 		dataType: int64
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 27e20dd6-b3e5-46a1-a141-bc3047979ce2
+		lineageTag: bda772e6-b420-566b-bf0d-a74ee9fcb71e
 		summarizeBy: none
 		sourceColumn: id_maquina
 
@@ -50,7 +50,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 8337485e-bf8a-4d7d-923d-87993b72d3b6
+		lineageTag: 0c2d0806-ab4e-5e2f-83eb-37ec645499bb
 		summarizeBy: none
 		sourceColumn: maquina_codigo
 
@@ -58,7 +58,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 2c00e822-123a-4c34-a23f-6b17b72c56d1
+		lineageTag: a43ccbc2-74e9-5fb0-8f6b-bc7d59fa4aa3
 		summarizeBy: none
 		sourceColumn: maquina_nombre
 
@@ -66,7 +66,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 07a9b5c8-9db3-46c8-bac6-b4b333c0e105
+		lineageTag: f981e98c-0f80-5c58-8edc-abbf46eff59a
 		summarizeBy: none
 		sourceColumn: maquina_tipo
 
@@ -74,7 +74,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: faf7582a-51e7-4b6d-8c76-9d0196365151
+		lineageTag: 94349034-04b4-5175-81c1-76cdd2c08b1a
 		summarizeBy: none
 		sourceColumn: maquina_criticidad
 
@@ -83,7 +83,7 @@ table v_kpi_calidad_maquina_dia
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: b8bebee0-3ce8-435c-9d40-102ff3239481
+		lineageTag: 2a419d8c-d39a-5c2f-abc1-2a8645ae4dfb
 		summarizeBy: none
 		sourceColumn: id_planta
 
@@ -91,7 +91,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 1f4b2721-6897-4172-b15a-fdc594855186
+		lineageTag: aeeef752-6a1d-544d-8a8f-f933c077a4de
 		summarizeBy: none
 		sourceColumn: planta_codigo
 
@@ -100,7 +100,7 @@ table v_kpi_calidad_maquina_dia
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 120917c0-a25e-49a9-ac78-0b7110f1a0ef
+		lineageTag: e3097656-71ff-5efe-b0de-bcb5585584a1
 		summarizeBy: none
 		sourceColumn: id_linea
 
@@ -108,7 +108,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 9bf253ff-ecda-4a95-ad25-1434f1e2eb9f
+		lineageTag: a1c4d004-7db4-5835-8d3e-a8445aa79cb6
 		summarizeBy: none
 		sourceColumn: linea_codigo
 
@@ -117,7 +117,7 @@ table v_kpi_calidad_maquina_dia
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 76157246-dec2-47c7-a293-27324f9ad397
+		lineageTag: eb84770f-1ad8-5203-89bf-4dad65953b22
 		summarizeBy: none
 		sourceColumn: id_tiempo
 
@@ -126,7 +126,7 @@ table v_kpi_calidad_maquina_dia
 		isHidden
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: f6674b8e-16d3-4376-8cc6-e1cb7b291be7
+		lineageTag: 07641607-fdd1-54f7-9994-2e89432f9b7d
 		summarizeBy: none
 		sourceColumn: fecha
 
@@ -134,7 +134,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: b0ee4530-2d89-437f-990f-26a18b4b9da5
+		lineageTag: 15c109c3-3677-59f5-b340-8deb77f09860
 		summarizeBy: none
 		sourceColumn: anio_mes
 
@@ -142,7 +142,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 87eb8456-f0da-4383-bdd3-4b28a305c82f
+		lineageTag: 2087c7c3-8444-5264-9a48-428bd112d5d4
 		summarizeBy: none
 		sourceColumn: tiempo_planificado_min
 
@@ -150,7 +150,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 0e8f40e3-59f4-4e9e-8bf7-d915ac6bf1bb
+		lineageTag: 276811c5-f205-5e11-b4ea-eb0f20dba7c4
 		summarizeBy: none
 		sourceColumn: tiempo_operativo_min
 
@@ -158,7 +158,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 31744d48-0b58-4dbd-b36b-e640fb7d8a75
+		lineageTag: 465c128d-3b51-5269-97ea-dd8d2e501287
 		summarizeBy: none
 		sourceColumn: downtime_no_planificado_min
 
@@ -166,7 +166,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 6f4fe3a0-bc4c-4cb7-9adc-9c890fcdd5ad
+		lineageTag: 196235ce-b69d-5914-ab42-cb4208483727
 		summarizeBy: none
 		sourceColumn: total_count
 
@@ -174,7 +174,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 3e4be835-090d-459a-b73e-732879c50290
+		lineageTag: e1d1a84b-9e4a-570c-ba97-ad12d5e895b9
 		summarizeBy: none
 		sourceColumn: good_count
 
@@ -182,7 +182,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 06942061-c535-4f52-bc73-d65e43b0f8b8
+		lineageTag: c45d4563-eca2-5792-aaa0-2fc77d5610b6
 		summarizeBy: none
 		sourceColumn: scrap_count
 
@@ -190,7 +190,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: b7682386-4320-4891-ba0b-f07787eb3fae
+		lineageTag: 39d8f625-f362-5609-b42b-c88a02445f58
 		summarizeBy: none
 		sourceColumn: energia_kwh
 
@@ -198,7 +198,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 108f4a90-774e-4a6a-ab3d-5d911a0ed21f
+		lineageTag: b0cfcf1a-da6e-5ac9-9bbb-cda1c40943d1
 		summarizeBy: none
 		sourceColumn: inspecciones
 
@@ -206,7 +206,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 7ff936ce-ff9c-44d1-bb5a-f4b6145c6150
+		lineageTag: 0457e549-99ec-507e-b905-c1bfee623ef5
 		summarizeBy: none
 		sourceColumn: unidades_inspeccionadas
 
@@ -214,7 +214,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 0da3fa22-07e7-4cda-93a1-693bf551e5ab
+		lineageTag: 93e12e25-1ba7-5b00-96cf-d9e9ec8b44fc
 		summarizeBy: none
 		sourceColumn: unidades_buenas_inspeccion
 
@@ -222,7 +222,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: ba1ea957-7f10-480e-8ade-a7a81814dab6
+		lineageTag: db691127-3b10-5707-983b-df16303ac1d7
 		summarizeBy: none
 		sourceColumn: unidades_defectuosas
 
@@ -230,7 +230,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 7a89fcba-9cf1-4c33-a249-69877286f1a4
+		lineageTag: 47507034-f37b-557b-9fed-8f58c65a95c8
 		summarizeBy: none
 		sourceColumn: unidades_retrabajo
 
@@ -238,7 +238,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: dc0b9018-5888-4b40-bb19-1afd50475142
+		lineageTag: 1b74a15b-12d7-57df-b679-48dfa4ec47f6
 		summarizeBy: none
 		sourceColumn: inspecciones_con_retrabajo
 
@@ -246,7 +246,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 200ad1b0-6f12-4241-a11d-5dd33f792542
+		lineageTag: 4875af09-6cb3-5cd9-837d-359ee4ddec13
 		summarizeBy: none
 		sourceColumn: scrap_rate
 
@@ -254,7 +254,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 095ea925-85bf-4793-837f-6dc5c4148267
+		lineageTag: b2e9b35b-60fe-5bc2-aba1-313e952628ca
 		summarizeBy: none
 		sourceColumn: energia_por_unidad_buena
 
@@ -262,7 +262,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 9c090f6f-ca10-4668-a4b5-80b56271fcf7
+		lineageTag: 666d5489-6f69-54c0-b375-047166f39b5b
 		summarizeBy: none
 		sourceColumn: downtime_no_planificado_pct
 
@@ -270,7 +270,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 4c1fa7ba-0767-4119-b9ce-a3621bf02e88
+		lineageTag: f56d28bc-0e16-5178-8d63-c49f37c280bf
 		summarizeBy: none
 		sourceColumn: tasa_defectos
 
@@ -278,7 +278,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: fe021218-702d-4438-851f-b3b87e673147
+		lineageTag: 887951c9-8a22-579d-a80c-e6661701b070
 		summarizeBy: none
 		sourceColumn: tasa_retrabajo
 
@@ -286,7 +286,7 @@ table v_kpi_calidad_maquina_dia
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: d969fb04-1ef4-49f9-83d0-d6ff6adf8485
+		lineageTag: 75539a00-4d13-5326-96c8-dce9892aaca2
 		summarizeBy: none
 		sourceColumn: fpy
 

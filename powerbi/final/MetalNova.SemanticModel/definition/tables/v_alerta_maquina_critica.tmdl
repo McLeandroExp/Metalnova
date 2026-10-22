@@ -1,36 +1,36 @@
 table v_alerta_maquina_critica
-	lineageTag: e2af8e57-3ad7-495f-a94c-266dbf039932
+	lineageTag: 543f6cba-bf7c-5eac-b234-ebfcf5d5e984
 
 	measure 'Alertas Activas' =
 			CALCULATE ( COUNTROWS ( v_alerta_maquina_critica ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE (), v_alerta_maquina_critica[tiene_alerta] = TRUE () )
 		formatString: #,##0
 		displayFolder: 07 Alertas
-		lineageTag: ed350d85-42bd-4d4a-979e-447f997970e9
+		lineageTag: f2274fa3-0726-5e1c-a8ae-56e59c6a55ff
 
 	measure 'Alertas Críticas' =
 			CALCULATE ( COUNTROWS ( v_alerta_maquina_critica ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE (), v_alerta_maquina_critica[tiene_alerta] = TRUE (), v_alerta_maquina_critica[severidad] = "critica" )
 		formatString: #,##0
 		displayFolder: 07 Alertas
-		lineageTag: bd1f60b0-fc1e-4e4e-8eee-30c45a53e1d9
+		lineageTag: 1da599dd-854e-5c6a-b1f5-b8f9cd07687f
 
 	measure 'Máquinas en Alerta' =
 			CALCULATE ( DISTINCTCOUNT ( v_alerta_maquina_critica[id_maquina] ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE (), v_alerta_maquina_critica[tiene_alerta] = TRUE () )
 		formatString: #,##0
 		displayFolder: 07 Alertas
-		lineageTag: f7ccb33e-5b5c-4226-b205-08d4b4a9827f
+		lineageTag: 3d079069-215c-56ae-9b9e-05dd117c749b
 
 	measure 'Temperatura Máxima (°C)' =
 			CALCULATE ( MAX ( v_alerta_maquina_critica[max_temperatura_c] ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE () )
 		formatString: 0.0
 		displayFolder: 07 Alertas
-		lineageTag: d1c4291d-5d4f-42fe-a79a-6ad3439e7626
+		lineageTag: c6593079-d055-53bd-98ae-3c6e33e37232
 
 	column fecha
 		dataType: dateTime
 		isHidden
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: fc39fc65-2962-4400-88bf-c3c4b3b117d6
+		lineageTag: c89f905f-98a1-5fb9-927a-045ae55c5d3e
 		summarizeBy: none
 		sourceColumn: fecha
 
@@ -38,7 +38,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 8ec9e643-c27a-451f-b6ba-0d2bdbbba0b5
+		lineageTag: 122b1b6d-7741-5023-a557-443221534e34
 		summarizeBy: none
 		sourceColumn: anio_mes
 
@@ -47,7 +47,7 @@ table v_alerta_maquina_critica
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 3f328abf-0d2c-43e8-ab9b-646c023cc461
+		lineageTag: cb17df36-6146-5a6c-a203-9340a1f08017
 		summarizeBy: none
 		sourceColumn: id_planta
 
@@ -55,7 +55,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 6152be95-4bcf-45a1-be03-6916e5dda50b
+		lineageTag: 5333ecca-1fda-50d6-b548-12b825b8e54b
 		summarizeBy: none
 		sourceColumn: planta_codigo
 
@@ -64,7 +64,7 @@ table v_alerta_maquina_critica
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 57143c47-51da-4480-973e-4de9a758400b
+		lineageTag: 95b0be6a-b6bb-595b-85f2-773099ec3010
 		summarizeBy: none
 		sourceColumn: id_linea
 
@@ -72,7 +72,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 8aed9167-83ae-4231-a616-ec5b8fff9b03
+		lineageTag: 190491cd-978b-57c7-aa30-ac49866087bf
 		summarizeBy: none
 		sourceColumn: linea_codigo
 
@@ -81,7 +81,7 @@ table v_alerta_maquina_critica
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 054888cf-b8ca-4e9e-80c1-03e0a1375638
+		lineageTag: 3181f773-74d5-5d5e-816e-156d2c6f4adb
 		summarizeBy: none
 		sourceColumn: id_maquina
 
@@ -89,7 +89,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: f633fe84-c0b4-4e97-9236-f2156f60b577
+		lineageTag: 1a09b7b0-c636-5c9e-9a2f-53ff4bf55078
 		summarizeBy: none
 		sourceColumn: maquina_codigo
 
@@ -97,7 +97,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: b86a3372-e251-4b68-9fe5-bb80b39377de
+		lineageTag: e741e39b-dc4b-565f-b6f6-2d6c1b202495
 		summarizeBy: none
 		sourceColumn: maquina_nombre
 
@@ -105,7 +105,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: b9f8fadd-4a4e-4c04-b178-4fe3048f1dcb
+		lineageTag: e7c8abef-3e66-5ea0-8c5f-b0e523a51a7d
 		summarizeBy: none
 		sourceColumn: maquina_tipo
 
@@ -113,7 +113,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 38e7d10f-10a9-495d-8ed2-ac07864226d8
+		lineageTag: df6f4006-4e9d-5239-9a85-e7a5d5928d08
 		summarizeBy: none
 		sourceColumn: maquina_criticidad
 
@@ -122,7 +122,7 @@ table v_alerta_maquina_critica
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: bd4ef9eb-8861-495c-98f4-ed3845be7b3e
+		lineageTag: 17d7d16e-182b-5587-affe-78a2ee7ab03d
 		summarizeBy: none
 		sourceColumn: id_turno
 
@@ -130,7 +130,7 @@ table v_alerta_maquina_critica
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 4156b920-55f4-4b9a-9d91-b119bfe6b259
+		lineageTag: b502bcb6-f045-5e2f-ab65-fec74999c419
 		summarizeBy: none
 		sourceColumn: turno_codigo
 
@@ -139,7 +139,7 @@ table v_alerta_maquina_critica
 		isHidden
 		formatString: General Date
 		sourceProviderType: datetime2
-		lineageTag: b6b3ecfe-3fb1-4a78-96c5-3348cbf92a50
+		lineageTag: 65881381-0858-57b8-b87a-59590f931907
 		summarizeBy: none
 		sourceColumn: turno_inicio_at
 
@@ -148,7 +148,7 @@ table v_alerta_maquina_critica
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: f7ef91b3-2d06-40b4-b061-1251810be10a
+		lineageTag: be7adc06-35d9-5946-82f9-228fcc417d6c
 		summarizeBy: none
 		sourceColumn: id_tiempo
 
@@ -156,7 +156,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 0c9955e8-2a1f-4808-94a5-8bcaee5b0ec7
+		lineageTag: f12bc62c-816a-5653-b0fa-d25959736e94
 		summarizeBy: none
 		sourceColumn: tiempo_operativo_h
 
@@ -164,7 +164,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 90990c4b-28f8-45fa-ad93-f04401863065
+		lineageTag: 222a44dc-a901-5c32-ada9-9f423cad7249
 		summarizeBy: none
 		sourceColumn: fallas
 
@@ -172,7 +172,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 21fae8f1-9e9c-4bc1-9756-b7d4cef538b5
+		lineageTag: ebdb5d15-8648-5e6e-b9a4-c12d228f3705
 		summarizeBy: none
 		sourceColumn: mtbf_h
 
@@ -180,7 +180,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 12e838bb-86b0-4cea-8c80-150ae58b611b
+		lineageTag: 31e3313a-54a9-5933-80fa-0c9cd9962be8
 		summarizeBy: none
 		sourceColumn: microparadas
 
@@ -188,7 +188,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 771019e6-52b6-45d1-be3f-14700c95071b
+		lineageTag: af585b9d-5494-5bab-b588-8c5111f7ea6f
 		summarizeBy: none
 		sourceColumn: fallas_cortas
 
@@ -196,7 +196,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: f8b74ae5-9d1a-4b64-ac7e-496f2435053e
+		lineageTag: 9839fd69-6fe5-5ce3-b18b-7e0e10915f75
 		summarizeBy: none
 		sourceColumn: minutos_fallas
 
@@ -204,7 +204,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: adb1f32a-fb08-4083-9a0d-7cf1413cea4b
+		lineageTag: 3cdcbc24-b2b3-5942-8ecf-8c9418ca5e0c
 		summarizeBy: none
 		sourceColumn: downtime_no_planificado_min
 
@@ -212,7 +212,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 5f0507c7-a828-40a2-9f59-ccd409357690
+		lineageTag: c9f2f3f1-a7eb-58b3-835a-224e38c00c73
 		summarizeBy: none
 		sourceColumn: reparaciones
 
@@ -220,7 +220,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 5f32a9d2-c215-4165-b1e2-12d7056233ae
+		lineageTag: f7232db7-4765-5391-a9c0-9ad57023fee0
 		summarizeBy: none
 		sourceColumn: mttr_min
 
@@ -228,7 +228,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 1e0edad6-2062-406b-9b5d-f9854cf50682
+		lineageTag: eb0d861b-2bf4-5565-b09a-86f9bb9b847b
 		summarizeBy: none
 		sourceColumn: oee
 
@@ -236,7 +236,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: c3f0b277-8061-4ab8-91f0-00ba40e18c09
+		lineageTag: c1091219-757a-53dd-be5e-9d98fee9b8ae
 		summarizeBy: none
 		sourceColumn: disponibilidad
 
@@ -244,7 +244,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: cf6c85d8-f4c2-4109-b416-dc5948829f7e
+		lineageTag: af8166e5-9442-56b5-8f26-016d181a282f
 		summarizeBy: none
 		sourceColumn: rendimiento
 
@@ -252,7 +252,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 42b3ac36-f360-45b2-beaf-a4efe98b0b47
+		lineageTag: 3c11b305-2a20-5204-ac2c-863a85fe1892
 		summarizeBy: none
 		sourceColumn: calidad
 
@@ -260,7 +260,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 1067566c-7bad-41c6-beab-8f33cecb9693
+		lineageTag: adc50386-f605-5b21-96fa-7c2c275c9390
 		summarizeBy: none
 		sourceColumn: lecturas_temp_alta
 
@@ -268,7 +268,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 7af0b7f2-0c80-4d83-9836-4d928d89bfca
+		lineageTag: b3b85922-4495-5aef-8e00-dff74ef0d713
 		summarizeBy: none
 		sourceColumn: max_temperatura_c
 
@@ -276,7 +276,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 8c55f191-5720-4cae-ab38-8f166fcf076e
+		lineageTag: a80f88a8-8936-5148-920f-55a25c49f9b4
 		summarizeBy: none
 		sourceColumn: oee_umbral
 
@@ -284,7 +284,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: fb91c8fa-8ef5-47ad-9587-c1cba37aa44c
+		lineageTag: 0ace80a1-ed3a-581b-86d8-3b50191d1428
 		summarizeBy: none
 		sourceColumn: mtbf_umbral_h
 
@@ -292,7 +292,7 @@ table v_alerta_maquina_critica
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 4e4b5e92-7e9e-4cbf-aace-f6d5381f012f
+		lineageTag: 66300460-7245-5f43-a7ad-52c0373ffb24
 		summarizeBy: none
 		sourceColumn: temperatura_umbral_c
 
@@ -300,7 +300,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: bcb44c43-4a1b-4f4a-86ea-26f7b0c66b88
+		lineageTag: d0687376-a509-531e-b476-65bcd9080eb8
 		summarizeBy: none
 		sourceColumn: temperatura_ventana_min
 
@@ -308,7 +308,7 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 2f6757d2-e7ed-4373-8314-bef8538e9f18
+		lineageTag: 1f31a290-dc8a-57c5-8255-aba7592a3063
 		summarizeBy: none
 		sourceColumn: temperatura_lecturas_min
 
@@ -316,35 +316,35 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: c363a9af-7fe4-43f6-9fbf-99974f23ad0a
+		lineageTag: 05c41ffb-ce79-5a87-9810-45ce06b717d8
 		summarizeBy: none
 		sourceColumn: downtime_umbral_min
 
 	column cumple_oee
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 12b07d6c-4c27-4521-8725-b231ee6d5264
+		lineageTag: 19b00ea0-4e24-5472-ab24-5c9048e58de6
 		summarizeBy: none
 		sourceColumn: cumple_oee
 
 	column cumple_mtbf
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 3341f691-b6a3-4459-922b-a58549544963
+		lineageTag: 95d584bc-1415-5e18-8c85-9139435c575a
 		summarizeBy: none
 		sourceColumn: cumple_mtbf
 
 	column cumple_temperatura
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: bf39d391-bad1-438c-8a87-4230b62e8646
+		lineageTag: 8dfc952e-87ac-56a6-b3b8-bd905c506890
 		summarizeBy: none
 		sourceColumn: cumple_temperatura
 
 	column cumple_downtime
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 40bba25b-6049-45fd-8dc3-c29246a1f7cb
+		lineageTag: b4a0da39-3725-5019-93e6-10a8e108c511
 		summarizeBy: none
 		sourceColumn: cumple_downtime
 
@@ -352,14 +352,14 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: a2ef188e-0b6f-467a-800b-8ff1cc6864e0
+		lineageTag: ce126c98-88b1-5200-8c90-cce7d5391221
 		summarizeBy: none
 		sourceColumn: condiciones_cumplidas
 
 	column tiene_alerta
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 32b62a6f-e538-4045-aa62-1500f7ba1087
+		lineageTag: 6e146a1c-7aba-570c-82ec-f3cfe78ca43c
 		summarizeBy: none
 		sourceColumn: tiene_alerta
 
@@ -367,49 +367,49 @@ table v_alerta_maquina_critica
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 3fe2cf12-e1fd-48d9-b29e-a54875481749
+		lineageTag: a3d986b0-596d-52b9-8ea3-e863d54c949b
 		summarizeBy: none
 		sourceColumn: minutos_temp_alta_estimados
 
 	column acciones_sugeridas
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: ac7518b4-96d3-4040-a9b9-0d02889846da
+		lineageTag: 364c913b-296a-5e7c-b7b9-fa54b0917f56
 		summarizeBy: none
 		sourceColumn: acciones_sugeridas
 
 	column responsables
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: ea888de5-d96b-4b20-9651-43e6020fe54e
+		lineageTag: c530cfc4-2985-5928-b3a8-c45b607bd2d0
 		summarizeBy: none
 		sourceColumn: responsables
 
 	column kpis_seguimiento
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 06832ca4-cc93-48ef-b8ca-6153ba3716d4
+		lineageTag: 0b05b593-fb9b-5248-b7d0-076970aa6e9d
 		summarizeBy: none
 		sourceColumn: kpis_seguimiento
 
 	column condiciones
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: cbf0a183-c3bb-4160-8cc1-eccf2173f629
+		lineageTag: f9b68d24-1936-5ead-b010-e1bb784e780f
 		summarizeBy: none
 		sourceColumn: condiciones
 
 	column severidad
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 9cbfa34d-90e6-464f-972c-9c07dcbb5362
+		lineageTag: ea354d04-924c-5545-a7e6-7ee992696f96
 		summarizeBy: none
 		sourceColumn: severidad
 
 	column es_ultimo_turno_maquina
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: d2d493d1-9eb3-45fd-a1fe-99f844013134
+		lineageTag: e316b99f-bcad-5195-bd04-1b7868c620a0
 		summarizeBy: none
 		sourceColumn: es_ultimo_turno_maquina
 

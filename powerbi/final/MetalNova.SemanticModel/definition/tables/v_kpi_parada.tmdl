@@ -1,30 +1,42 @@
 table v_kpi_parada
-	lineageTag: bdf8ae8a-6e22-4469-8c11-0481d8c1c173
+	lineageTag: 130df748-f0cc-52d1-87e4-03f5b4d56bf7
 
 	measure 'Downtime por Causa (min)' =
 			CALCULATE ( SUM ( v_kpi_parada[duracion_min] ), v_kpi_parada[es_planificada] = FALSE () )
 		formatString: #,##0
 		displayFolder: 06 Paradas
-		lineageTag: b4421cfe-df7f-41e7-8e79-94b090e93a09
+		lineageTag: 05121f73-e6f1-5fa6-a913-d197af7b5bda
 
 	measure 'Paradas No Planificadas' =
 			CALCULATE ( COUNTROWS ( v_kpi_parada ), v_kpi_parada[es_planificada] = FALSE () )
 		formatString: #,##0
 		displayFolder: 06 Paradas
-		lineageTag: 234aaaaa-90c7-48fa-97b9-aec6e74c0a17
+		lineageTag: a21daa1d-1fb7-5b40-a7ab-2af143f32981
 
 	measure 'Pareto %' =
 			DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )
 		formatString: 0.00%
 		displayFolder: 06 Paradas
-		lineageTag: 79a08860-2302-4391-a437-9c4dbf542a29
+		lineageTag: 224ae912-1be6-5e15-95ff-065af7100e1f
+
+	measure 'Máquinas con Paradas' =
+			DISTINCTCOUNT ( v_kpi_parada[id_maquina] )
+		formatString: #,##0
+		displayFolder: 06 Paradas
+		lineageTag: a2528db6-19bd-53da-b48e-13ec9f9ad1d1
+
+	measure 'Participación Downtime Causa' =
+			DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )
+		formatString: 0.00%
+		displayFolder: 06 Paradas
+		lineageTag: 28f1cb35-a47e-51da-b4f9-9e258894d359
 
 	column id_parada
 		dataType: int64
 		isHidden
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: d19e9009-e590-418e-9a02-db4eede0f49e
+		lineageTag: 218a4f4e-5b87-5333-888d-32704debbe73
 		summarizeBy: none
 		sourceColumn: id_parada
 
@@ -33,7 +45,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 3f4235ff-5ed8-4262-b7c9-ceb2192bd002
+		lineageTag: 012489be-d8b4-5b6f-8b78-31bf660fcd87
 		summarizeBy: none
 		sourceColumn: id_maquina
 
@@ -41,7 +53,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: b32e5f03-b4e5-4cc4-a54b-f43dc659b1b8
+		lineageTag: 31c1b3aa-9aea-54ab-80f4-a88b8fac83bd
 		summarizeBy: none
 		sourceColumn: maquina_codigo
 
@@ -49,7 +61,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 2446e744-05ad-4ebe-95df-80b556d143d4
+		lineageTag: 8ec50254-194f-5f72-a3a2-c4e52bc5ea73
 		summarizeBy: none
 		sourceColumn: maquina_nombre
 
@@ -57,7 +69,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 20dc5f1b-6409-42b4-be76-3b93aec5a135
+		lineageTag: 17f7521f-7760-5028-bbd3-43c32af5336a
 		summarizeBy: none
 		sourceColumn: maquina_tipo
 
@@ -65,7 +77,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: da161064-9ed7-47fb-a5b1-fc0054c8c9f2
+		lineageTag: 0f0023dc-ac8d-53d6-8f66-22359a034dea
 		summarizeBy: none
 		sourceColumn: maquina_criticidad
 
@@ -74,7 +86,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 49777fdc-dd35-484d-9401-076f32d6d156
+		lineageTag: 0f49770e-1120-5e3e-9304-40540e4c09db
 		summarizeBy: none
 		sourceColumn: id_planta
 
@@ -82,7 +94,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 3943c33c-1b7b-42e8-9235-36aa9792cb13
+		lineageTag: 4865951a-5de2-52ff-a6cb-3f2c07bbce08
 		summarizeBy: none
 		sourceColumn: planta_codigo
 
@@ -91,7 +103,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 1cfe8ef9-2899-4f4d-bb62-dce3c0ac3a2c
+		lineageTag: ee1d1754-9f07-54c1-b3be-28b389f8c78a
 		summarizeBy: none
 		sourceColumn: id_linea
 
@@ -99,7 +111,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 6d59ce27-8482-40b0-92a5-80b56b55cbdd
+		lineageTag: 324510a0-b034-54ec-9f51-029aacee4ed9
 		summarizeBy: none
 		sourceColumn: linea_codigo
 
@@ -108,7 +120,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: f3bd09f6-f5d6-46d9-a7df-2f9b26318deb
+		lineageTag: aad42327-abe9-5b59-bf17-fe75843f8f83
 		summarizeBy: none
 		sourceColumn: id_turno
 
@@ -116,7 +128,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: e5839b4c-e044-42be-8b49-46e39d80813c
+		lineageTag: 43b35db1-b30d-5f84-9569-b45c9db63ce6
 		summarizeBy: none
 		sourceColumn: turno_codigo
 
@@ -125,7 +137,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 31a745ad-7bc4-40e3-b5ec-ef0551093abd
+		lineageTag: 0cc6b7ce-54a8-5fa8-8d97-93a7bf244fe2
 		summarizeBy: none
 		sourceColumn: id_tiempo
 
@@ -134,7 +146,7 @@ table v_kpi_parada
 		isHidden
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: 65e8a695-5b27-4eec-8943-f2f9880613fc
+		lineageTag: 85af823f-30e1-50bd-976b-2bce5adcc0db
 		summarizeBy: none
 		sourceColumn: fecha
 
@@ -142,7 +154,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 9af1abe4-35cc-4d7a-bd8b-b76c5d7fd9a9
+		lineageTag: 6f929015-f44f-5403-a9d9-40c1ea084cb2
 		summarizeBy: none
 		sourceColumn: anio_mes
 
@@ -151,7 +163,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: e43e0d85-0899-49df-ac63-4e377df5bcd6
+		lineageTag: 9d0f02f2-dffe-5b00-8d9c-177eaec99971
 		summarizeBy: none
 		sourceColumn: id_causa
 
@@ -159,7 +171,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: 160eefa0-79ab-48e1-b5c2-2834679484b1
+		lineageTag: 0f172072-a191-5b6c-ad5d-f91b9a748728
 		summarizeBy: none
 		sourceColumn: causa_codigo
 
@@ -167,7 +179,7 @@ table v_kpi_parada
 		dataType: string
 		isHidden
 		sourceProviderType: nvarchar(max)
-		lineageTag: b0ab25e2-09e6-4a10-9016-bac3fa846d10
+		lineageTag: 136f3dc6-faca-5ed3-b1e3-86cd245329c7
 		summarizeBy: none
 		sourceColumn: causa_categoria
 
@@ -175,7 +187,7 @@ table v_kpi_parada
 		dataType: boolean
 		isHidden
 		sourceProviderType: bit
-		lineageTag: 436567c0-2d38-4797-801b-56edb0049c40
+		lineageTag: 1dfd4dbf-4e63-512e-9a05-b768ec7122c8
 		summarizeBy: none
 		sourceColumn: causa_es_planificada
 
@@ -184,7 +196,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: f87857df-d4bc-4b69-8888-5bd734a2d238
+		lineageTag: de1db465-8afc-5a60-a1e0-9fbf07f1b3c3
 		summarizeBy: none
 		sourceColumn: id_mantenimiento
 
@@ -192,7 +204,7 @@ table v_kpi_parada
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: datetime2
-		lineageTag: 2e286189-fa05-4939-a8e3-a43ce52e12f7
+		lineageTag: 97a0f3d8-f9dc-5497-931b-e225839c2060
 		summarizeBy: none
 		sourceColumn: inicio_at
 
@@ -200,7 +212,7 @@ table v_kpi_parada
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: datetime2
-		lineageTag: 9e74df21-1bc0-4cef-b243-cf29beedf0fe
+		lineageTag: 3795011e-ef92-57e5-a23d-69515a342bd8
 		summarizeBy: none
 		sourceColumn: fin_at
 
@@ -208,21 +220,21 @@ table v_kpi_parada
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: de46388a-34fe-4a4e-b8da-13b8b785f87a
+		lineageTag: f576e13b-0d37-5c6c-a138-e4f4e8821242
 		summarizeBy: none
 		sourceColumn: duracion_min
 
 	column es_planificada
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 444e0694-dfd7-46cc-b1c6-b43432e3d60d
+		lineageTag: 911313b8-a578-510c-a88f-cc294f201fe3
 		summarizeBy: none
 		sourceColumn: es_planificada
 
 	column es_microparada_etl
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: e0933a19-9c27-44b6-851c-1064090a233e
+		lineageTag: 3f83e210-21d8-5215-84de-94bcd86536af
 		summarizeBy: none
 		sourceColumn: es_microparada_etl
 
@@ -231,7 +243,7 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 1da3f401-be61-4609-9fca-bab022e46f81
+		lineageTag: 2a67ab1c-91a4-5f94-9f5b-14ec7df9fb47
 		summarizeBy: none
 		sourceColumn: microparada_min
 
@@ -240,35 +252,35 @@ table v_kpi_parada
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 73b4b6c9-752c-465e-bda1-1d6cc6003698
+		lineageTag: 8c8309e6-48ce-5daa-82d0-e1cc43fbbbb1
 		summarizeBy: none
 		sourceColumn: falla_corta_min
 
 	column es_microparada_regla
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 7ee6676d-e5a2-4fa6-a19e-4cc2f0a591e9
+		lineageTag: fd5b915f-ba72-565a-a2f0-aec0df75878c
 		summarizeBy: none
 		sourceColumn: es_microparada_regla
 
 	column es_falla
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: fd406893-2b03-4a56-a6e3-0942e2439d09
+		lineageTag: d0d9ceb6-eb31-5d2a-a28b-20f8ee4cd427
 		summarizeBy: none
 		sourceColumn: es_falla
 
 	column es_falla_corta
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: d4d64c16-f467-40b7-b82b-ae5394c5133b
+		lineageTag: 3046fd5a-6a10-5428-b637-034fd497a3b4
 		summarizeBy: none
 		sourceColumn: es_falla_corta
 
 	column clasificacion
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: f93c5cb4-9f92-4870-8418-386053660953
+		lineageTag: 2a590511-c06b-52a7-85ab-ca9cab0e5d2e
 		summarizeBy: none
 		sourceColumn: clasificacion
 

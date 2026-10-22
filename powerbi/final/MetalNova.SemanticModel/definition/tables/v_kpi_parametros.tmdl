@@ -1,35 +1,35 @@
 table v_kpi_parametros
-	lineageTag: 4744b917-6814-4986-b92b-61e7fd46e8b8
+	lineageTag: 82677365-e002-548f-b444-295a1dd3df88
 
 	measure 'Umbral OEE Alerta' =
 			MIN ( v_kpi_parametros[oee_umbral] )
 		formatString: 0.00%
 		displayFolder: 08 Umbrales
-		lineageTag: dea59759-79a9-468a-bbcb-060a96ef7623
+		lineageTag: 997c27ea-de45-5842-ac89-66d30c6f8e8d
 
 	measure 'Umbral MTBF (h)' =
 			MIN ( v_kpi_parametros[mtbf_umbral_h] )
 		formatString: #,##0.00
 		displayFolder: 08 Umbrales
-		lineageTag: 7c1e8f00-39d4-43bc-aeba-62ed5c56899c
+		lineageTag: cc946847-2b83-51d4-9121-c77623581ca5
 
 	measure 'Umbral Temperatura (°C)' =
 			MIN ( v_kpi_parametros[temperatura_umbral_c] )
 		formatString: 0.0
 		displayFolder: 08 Umbrales
-		lineageTag: 3b1d3cdd-ff92-4fc1-86ce-07ee5e77455f
+		lineageTag: e91a0bdf-ddbd-5a00-87a1-379ab5d06aa3
 
 	measure 'Umbral Downtime (min)' =
 			MIN ( v_kpi_parametros[downtime_umbral_min] )
 		formatString: #,##0
 		displayFolder: 08 Umbrales
-		lineageTag: 4f49af46-244c-4443-9ad4-7eef9baa1963
+		lineageTag: e73d0994-06a3-53a1-841f-57c429f707c9
 
 	column microparada_min
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 41e42dec-8503-41fe-bce0-8d6eccac1da8
+		lineageTag: 2651c256-3bc8-5a29-a2e0-aadf6e2bafc1
 		summarizeBy: none
 		sourceColumn: microparada_min
 
@@ -37,7 +37,7 @@ table v_kpi_parametros
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 55ad1112-d6f8-4c96-9d87-9afdb4bee351
+		lineageTag: e1d093ea-493b-535d-8e8a-0b538b06f8dd
 		summarizeBy: none
 		sourceColumn: falla_corta_min
 
@@ -45,7 +45,7 @@ table v_kpi_parametros
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 6cba455a-39cc-451d-8725-7dbbee12b193
+		lineageTag: 15ceb09d-9f87-57ad-a1da-341ff3296acd
 		summarizeBy: none
 		sourceColumn: mtbf_umbral_h
 
@@ -53,7 +53,7 @@ table v_kpi_parametros
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 85416d4b-deb6-4124-834c-8f16125677db
+		lineageTag: 5100e779-dc46-5420-8e03-269c864ef7b5
 		summarizeBy: none
 		sourceColumn: oee_umbral
 
@@ -61,7 +61,7 @@ table v_kpi_parametros
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 9348a497-8aaa-4555-9ec7-6463fa9d3dbe
+		lineageTag: 32296967-01c1-5855-bbcd-c97aaf9ec7f1
 		summarizeBy: none
 		sourceColumn: downtime_umbral_min
 
@@ -69,7 +69,7 @@ table v_kpi_parametros
 		dataType: double
 		formatString: 0.00
 		sourceProviderType: decimal
-		lineageTag: 0bc901a4-8281-464d-ae4c-2ed3697ccb59
+		lineageTag: f673d3f1-3dda-5404-a484-e6f7a4bde25c
 		summarizeBy: none
 		sourceColumn: temperatura_umbral_c
 
@@ -77,7 +77,7 @@ table v_kpi_parametros
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 87202d52-a634-403a-91c7-4199cabf1be5
+		lineageTag: d2b68f7a-4212-5219-9f33-df96e3817d2a
 		summarizeBy: none
 		sourceColumn: temperatura_ventana_min
 
@@ -85,9 +85,17 @@ table v_kpi_parametros
 		dataType: int64
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 4a38037d-39f5-4047-920c-32f497fd5b22
+		lineageTag: ddadd30c-2a51-5068-9e33-6ba525e6182d
 		summarizeBy: none
 		sourceColumn: temperatura_lecturas_min
+
+	column senal_lecturas_turno_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: ef942e48-95eb-515c-99c0-a73d63041a8f
+		summarizeBy: none
+		sourceColumn: senal_lecturas_turno_min
 
 	partition v_kpi_parametros = m
 		mode: directQuery

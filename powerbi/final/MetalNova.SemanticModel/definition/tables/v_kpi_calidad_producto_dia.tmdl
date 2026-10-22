@@ -1,0 +1,267 @@
+table v_kpi_calidad_producto_dia
+	lineageTag: 33a48488-4c34-569c-a1c8-964794cd02f6
+
+	measure 'FPY (Producto)' =
+			DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) - SUM ( v_kpi_calidad_producto_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: c3e2b899-d620-5c9f-b9b8-85598de08afd
+
+	measure 'Tasa Defectos (Producto)' =
+			DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_defectuosas] ), SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: e68826c1-da5d-5eca-ba66-363c39c03ec8
+
+	measure 'Tasa Retrabajo (Producto)' =
+			DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: 6e40feba-6385-5797-80bf-0ddb1317eac5
+
+	measure 'Scrap Rate (Producto)' =
+			DIVIDE ( SUM ( v_kpi_calidad_producto_dia[scrap_count] ), SUM ( v_kpi_calidad_producto_dia[total_count] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: 52d7c832-41b2-502a-a760-13af16d8559d
+
+	measure 'Energía por Unidad Buena (Producto)' =
+			DIVIDE ( SUM ( v_kpi_calidad_producto_dia[energia_kwh] ), SUM ( v_kpi_calidad_producto_dia[good_count] ) )
+		formatString: 0.0000
+		displayFolder: 03 Calidad y energía
+		lineageTag: e02ab98c-c7f1-54f5-9bf9-34f025f4d3d0
+
+	column id_producto
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: f001568e-81e0-534f-93dc-ce2f9619f179
+		summarizeBy: none
+		sourceColumn: id_producto
+
+	column producto_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 324bc8c2-1f69-5d21-b286-6370d4214dad
+		summarizeBy: none
+		sourceColumn: producto_codigo
+
+	column producto_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: ba5648c0-8d66-586e-974d-c5e2f7577e0c
+		summarizeBy: none
+		sourceColumn: producto_nombre
+
+	column id_familia
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 063cc8b7-9546-51cf-a5fd-3ff3e1cbc06d
+		summarizeBy: none
+		sourceColumn: id_familia
+
+	column familia_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 9ba9a099-f7f5-53a2-9a54-f749f2518c16
+		summarizeBy: none
+		sourceColumn: familia_codigo
+
+	column familia_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 505b7e56-1804-5520-b825-b6d767de9d00
+		summarizeBy: none
+		sourceColumn: familia_nombre
+
+	column id_tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 770570d5-eca6-57ff-9d4c-93ee1e868650
+		summarizeBy: none
+		sourceColumn: id_tiempo
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 6bf7a06d-519b-5573-9799-4a3f9067038d
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 32674481-acee-5703-a78b-852403cec3d3
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column tiempo_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 6c91076a-54d2-5a15-bda5-4a4199065e36
+		summarizeBy: none
+		sourceColumn: tiempo_planificado_min
+
+	column tiempo_operativo_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 64bf63ad-3072-5d27-b293-ff4f13c22d9e
+		summarizeBy: none
+		sourceColumn: tiempo_operativo_min
+
+	column downtime_no_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 1a4570fc-60b2-5678-8e5e-0b65f76283b6
+		summarizeBy: none
+		sourceColumn: downtime_no_planificado_min
+
+	column total_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: ce7945ce-58f7-58a2-8d3b-7cb0818d71c9
+		summarizeBy: none
+		sourceColumn: total_count
+
+	column good_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: fcc024b8-6146-5b3a-bdda-1b98a2903423
+		summarizeBy: none
+		sourceColumn: good_count
+
+	column scrap_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: a4803c43-92cd-5fa9-bb2a-f2b06ad7ed7d
+		summarizeBy: none
+		sourceColumn: scrap_count
+
+	column energia_kwh
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 580f6018-e5a1-5636-8d2e-e03b2ddf15a2
+		summarizeBy: none
+		sourceColumn: energia_kwh
+
+	column inspecciones
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: ea6b6dc8-ca4b-5ef3-a9f3-477cd66662fc
+		summarizeBy: none
+		sourceColumn: inspecciones
+
+	column unidades_inspeccionadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 5c16173f-569f-5f66-8edc-611876d1572a
+		summarizeBy: none
+		sourceColumn: unidades_inspeccionadas
+
+	column unidades_buenas_inspeccion
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: b8875940-ff93-5061-a083-976ace1b6a39
+		summarizeBy: none
+		sourceColumn: unidades_buenas_inspeccion
+
+	column unidades_defectuosas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 652238a6-12ee-5c6c-96e1-d290fd436754
+		summarizeBy: none
+		sourceColumn: unidades_defectuosas
+
+	column unidades_retrabajo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 60318003-ec73-5051-a73a-343b05170743
+		summarizeBy: none
+		sourceColumn: unidades_retrabajo
+
+	column inspecciones_con_retrabajo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 6a702dd4-b60e-5596-8759-1296ceba3a63
+		summarizeBy: none
+		sourceColumn: inspecciones_con_retrabajo
+
+	column scrap_rate
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: ee4edeed-78ad-58de-9647-c270da9b7b2a
+		summarizeBy: none
+		sourceColumn: scrap_rate
+
+	column energia_por_unidad_buena
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 355d37a0-afe1-56b7-8b3f-ea097d78b00e
+		summarizeBy: none
+		sourceColumn: energia_por_unidad_buena
+
+	column downtime_no_planificado_pct
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 8d56c48a-7e68-5a4c-a4c9-7a5db8371358
+		summarizeBy: none
+		sourceColumn: downtime_no_planificado_pct
+
+	column tasa_defectos
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 0bd5831b-67d6-5dfe-b26f-2fdce0d39dd7
+		summarizeBy: none
+		sourceColumn: tasa_defectos
+
+	column tasa_retrabajo
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 35f873a1-af56-57c9-9780-d99aaad060e0
+		summarizeBy: none
+		sourceColumn: tasa_retrabajo
+
+	column fpy
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 272b0187-a9f7-5f4e-a7c9-ea7012fd052f
+		summarizeBy: none
+		sourceColumn: fpy
+
+	partition v_kpi_calidad_producto_dia = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_calidad_producto_dia = Origen{[Schema="public",Item="v_kpi_calidad_producto_dia"]}[Data]
+				in
+				    public_v_kpi_calidad_producto_dia
+
+	annotation PBI_ResultType = Table

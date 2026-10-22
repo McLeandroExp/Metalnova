@@ -5,7 +5,9 @@ El modelo es un esquema en estrella con dimensiones conformadas:
   v_dim_maquina, v_dim_producto, dim_tiempo, dim_turno, dim_causa
 y hechos:
   v_loss_tree, v_kpi_parada, v_kpi_mantenimiento_maquina_turno,
-  v_kpi_mantenimiento, v_kpi_calidad_maquina_dia, v_alerta_maquina_critica.
+  v_kpi_mantenimiento, v_kpi_calidad_maquina_dia,
+  v_kpi_calidad_producto_dia, v_alerta_maquina_critica,
+  v_alerta_ultimo_turno y v_calidad_senal_iot.
 
 Uso:
     python tools/generate_tmdl.py [ruta_semantic_model]
@@ -27,6 +29,14 @@ DB_SERVICE = "db"
 DB_USER = "metalinova"
 DB_NAME = "metalinova"
 ROOT = Path(__file__).resolve().parent.parent
+
+# Namespace fijo para lineageTags deterministas: regenerar el modelo no debe
+# cambiar todos los UUID ni ensuciar el diff de Git.
+LINEAGE_NAMESPACE = uuid.UUID("6f2d7f3a-9c1b-4e5a-8d2f-2a7c4b9e1f30")
+
+
+def lineage_tag(*parts: str) -> str:
+    return str(uuid.uuid5(LINEAGE_NAMESPACE, "|".join(parts)))
 
 # ---------------------------------------------------------------------------
 # Configuración del modelo
@@ -210,6 +220,17 @@ TABLES = [
         },
     },
     {
+        "name": "v_kpi_calidad_producto_dia",
+        "kind": "fact",
+        "hidden": {
+            "id_producto",
+            "id_familia",
+            "id_tiempo",
+            "fecha",
+            "anio_mes",
+        },
+    },
+    {
         "name": "v_alerta_maquina_critica",
         "kind": "fact",
         "hidden": {
@@ -228,6 +249,44 @@ TABLES = [
             "turno_codigo",
             "id_tiempo",
             "turno_inicio_at",
+        },
+    },
+    {
+        "name": "v_alerta_ultimo_turno",
+        "kind": "fact",
+        "hidden": {
+            "fecha",
+            "anio_mes",
+            "id_planta",
+            "planta_codigo",
+            "id_linea",
+            "linea_codigo",
+            "id_maquina",
+            "maquina_codigo",
+            "maquina_nombre",
+            "maquina_tipo",
+            "maquina_criticidad",
+            "id_turno",
+            "turno_codigo",
+            "id_tiempo",
+            "turno_inicio_at",
+            "es_ultimo_turno_maquina",
+            "tiene_alerta",
+        },
+    },
+    {
+        "name": "v_calidad_senal_iot",
+        "kind": "fact",
+        "hidden": {
+            "id_maquina",
+            "maquina_codigo",
+            "maquina_nombre",
+            "id_linea",
+            "linea_codigo",
+            "id_planta",
+            "planta_codigo",
+            "fecha",
+            "anio_mes",
         },
     },
     {
@@ -254,9 +313,16 @@ RELATIONSHIPS = [
     ("v_kpi_mantenimiento", "id_causa", "dim_causa", "id_causa"),
     ("v_kpi_calidad_maquina_dia", "id_maquina", "v_dim_maquina", "id_maquina"),
     ("v_kpi_calidad_maquina_dia", "id_tiempo", "dim_tiempo", "id_tiempo"),
+    ("v_kpi_calidad_producto_dia", "id_producto", "v_dim_producto", "id_producto"),
+    ("v_kpi_calidad_producto_dia", "id_tiempo", "dim_tiempo", "id_tiempo"),
     ("v_alerta_maquina_critica", "id_maquina", "v_dim_maquina", "id_maquina"),
     ("v_alerta_maquina_critica", "id_turno", "dim_turno", "id_turno"),
     ("v_alerta_maquina_critica", "id_tiempo", "dim_tiempo", "id_tiempo"),
+    ("v_alerta_ultimo_turno", "id_maquina", "v_dim_maquina", "id_maquina"),
+    ("v_alerta_ultimo_turno", "id_turno", "dim_turno", "id_turno"),
+    ("v_alerta_ultimo_turno", "id_tiempo", "dim_tiempo", "id_tiempo"),
+    ("v_calidad_senal_iot", "id_maquina", "v_dim_maquina", "id_maquina"),
+    ("v_calidad_senal_iot", "fecha", "dim_tiempo", "fecha"),
 ]
 
 # (tabla, nombre, expresión DAX, formato, carpeta)
@@ -342,6 +408,25 @@ MEASURES = [
     ("v_kpi_mantenimiento_maquina_turno", "Downtime Mantenimiento (min)",
      "SUM ( v_kpi_mantenimiento_maquina_turno[downtime_no_planificado_min] )",
      "#,##0", "05 Mantenimiento"),
+    ("v_kpi_mantenimiento_maquina_turno", "Fallas cortas (conteo)",
+     "SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] )",
+     "#,##0", "05 Mantenimiento"),
+    ("v_kpi_mantenimiento_maquina_turno", "MTBF corto (h)",
+     "DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ), "
+     "SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] ) * 60 )",
+     "#,##0.00", "05 Mantenimiento"),
+    ("v_kpi_mantenimiento_maquina_turno", "Fallas cortas por 100 h",
+     "DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] ) * 60, "
+     "SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100",
+     "#,##0.00", "05 Mantenimiento"),
+    ("v_kpi_mantenimiento_maquina_turno", "Microparadas por 100 h",
+     "DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] ) * 60, "
+     "SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100",
+     "#,##0.00", "05 Mantenimiento"),
+    ("v_kpi_mantenimiento_maquina_turno", "Duración media microparada (min)",
+     "DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_microparadas] ), "
+     "SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] ) )",
+     "#,##0.00", "05 Mantenimiento"),
     ("v_kpi_mantenimiento", "Intervenciones",
      "COUNTROWS ( v_kpi_mantenimiento )",
      "#,##0", "05 Mantenimiento"),
@@ -370,6 +455,28 @@ MEASURES = [
     ("v_kpi_calidad_maquina_dia", "Scrap Rate (Calidad)",
      "DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[scrap_count] ), SUM ( v_kpi_calidad_maquina_dia[total_count] ) )",
      "0.00%", "03 Calidad y energía"),
+    # Calidad y energía por producto (filtro de producto coherente en el informe).
+    ("v_kpi_calidad_producto_dia", "FPY (Producto)",
+     "DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) - "
+     "SUM ( v_kpi_calidad_producto_dia[unidades_retrabajo] ), "
+     "SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )",
+     "0.00%", "03 Calidad y energía"),
+    ("v_kpi_calidad_producto_dia", "Tasa Defectos (Producto)",
+     "DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_defectuosas] ), "
+     "SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )",
+     "0.00%", "03 Calidad y energía"),
+    ("v_kpi_calidad_producto_dia", "Tasa Retrabajo (Producto)",
+     "DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_retrabajo] ), "
+     "SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )",
+     "0.00%", "03 Calidad y energía"),
+    ("v_kpi_calidad_producto_dia", "Scrap Rate (Producto)",
+     "DIVIDE ( SUM ( v_kpi_calidad_producto_dia[scrap_count] ), "
+     "SUM ( v_kpi_calidad_producto_dia[total_count] ) )",
+     "0.00%", "03 Calidad y energía"),
+    ("v_kpi_calidad_producto_dia", "Energía por Unidad Buena (Producto)",
+     "DIVIDE ( SUM ( v_kpi_calidad_producto_dia[energia_kwh] ), "
+     "SUM ( v_kpi_calidad_producto_dia[good_count] ) )",
+     "0.0000", "03 Calidad y energía"),
     # Paradas y causas
     ("v_kpi_parada", "Downtime por Causa (min)",
      "CALCULATE ( SUM ( v_kpi_parada[duracion_min] ), v_kpi_parada[es_planificada] = FALSE () )",
@@ -378,6 +485,12 @@ MEASURES = [
      "CALCULATE ( COUNTROWS ( v_kpi_parada ), v_kpi_parada[es_planificada] = FALSE () )",
      "#,##0", "06 Paradas"),
     ("v_kpi_parada", "Pareto %",
+     "DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )",
+     "0.00%", "06 Paradas"),
+    ("v_kpi_parada", "Máquinas con Paradas",
+     "DISTINCTCOUNT ( v_kpi_parada[id_maquina] )",
+     "#,##0", "06 Paradas"),
+    ("v_kpi_parada", "Participación Downtime Causa",
      "DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )",
      "0.00%", "06 Paradas"),
     # Alertas
@@ -393,6 +506,19 @@ MEASURES = [
     ("v_alerta_maquina_critica", "Temperatura Máxima (°C)",
      "CALCULATE ( MAX ( v_alerta_maquina_critica[max_temperatura_c] ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE () )",
      "0.0", "07 Alertas"),
+    # Calidad de la señal IoT
+    ("v_calidad_senal_iot", "Cobertura de señal (%)",
+     'DIVIDE ( CALCULATE ( COUNTROWS ( v_calidad_senal_iot ), '
+     'v_calidad_senal_iot[estado_senal] = "ok" ), '
+     "COUNTROWS ( v_calidad_senal_iot ) )",
+     "0.00%", "09 Calidad de señal"),
+    ("v_calidad_senal_iot", "Días con señal incompleta",
+     'CALCULATE ( COUNTROWS ( v_calidad_senal_iot ), '
+     'v_calidad_senal_iot[estado_senal] <> "ok" )',
+     "#,##0", "09 Calidad de señal"),
+    ("v_calidad_senal_iot", "Hueco máximo (min)",
+     "MAX ( v_calidad_senal_iot[max_gap_min] )",
+     "#,##0.0", "09 Calidad de señal"),
     # Umbrales
     ("v_kpi_parametros", "Umbral OEE Alerta",
      "MIN ( v_kpi_parametros[oee_umbral] )",
@@ -458,7 +584,7 @@ def tmdl_value(text: str) -> str:
     return '"' + text.replace('"', '""') + '"'
 
 
-def column_tmdl(col: dict, hidden: bool, is_key: bool) -> list[str]:
+def column_tmdl(table_name: str, col: dict, hidden: bool, is_key: bool) -> list[str]:
     name = col["name"]
     pg_type = col["type"].lower()
     data_type, provider = TYPE_MAP.get(pg_type, ("string", "nvarchar(max)"))
@@ -475,7 +601,7 @@ def column_tmdl(col: dict, hidden: bool, is_key: bool) -> list[str]:
         lines.append("\t\tformatString: 0.00")
     lines.extend([
         f"\t\tsourceProviderType: {provider}",
-        f"\t\tlineageTag: {uuid.uuid4()}",
+        f"\t\tlineageTag: {lineage_tag('column', table_name, name)}",
         "\t\tsummarizeBy: none",
         f"\t\tsourceColumn: {name}",
     ])
@@ -486,7 +612,7 @@ def table_tmdl(table: dict) -> str:
     name = table["name"]
     hidden = table.get("hidden", set())
     key = table.get("key")
-    lines = [f"table {name}", f"\tlineageTag: {uuid.uuid4()}"]
+    lines = [f"table {name}", f"\tlineageTag: {lineage_tag('table', name)}"]
 
     if table.get("data_category"):
         lines.append(f"\tdataCategory: {table['data_category']}")
@@ -502,22 +628,28 @@ def table_tmdl(table: dict) -> str:
         if fmt:
             lines.append(f"\t\tformatString: {fmt}")
         lines.append(f"\t\tdisplayFolder: {folder}")
-        lines.append(f"\t\tlineageTag: {uuid.uuid4()}")
+        lines.append(f"\t\tlineageTag: {lineage_tag('measure', name, m)}")
 
     # Columnas
     for col in query_columns(name):
         lines.append("")
-        lines.extend(column_tmdl(col, col["name"] in hidden, col["name"] == key))
+        lines.extend(
+            column_tmdl(name, col, col["name"] in hidden, col["name"] == key)
+        )
 
     # Jerarquía
     hierarchy = table.get("hierarchy")
     if hierarchy:
         lines.append("")
         lines.append(f"\thierarchy '{hierarchy['name']}'")
-        lines.append(f"\t\tlineageTag: {uuid.uuid4()}")
+        lines.append(
+            f"\t\tlineageTag: {lineage_tag('hierarchy', name, hierarchy['name'])}"
+        )
         for level, column in hierarchy["levels"]:
             lines.append(f"\t\tlevel '{level}'")
-            lines.append(f"\t\t\tlineageTag: {uuid.uuid4()}")
+            lines.append(
+                f"\t\t\tlineageTag: {lineage_tag('level', name, hierarchy['name'], level)}"
+            )
             lines.append(f"\t\t\tcolumn: {column}")
 
     # Partición DirectQuery
@@ -567,7 +699,10 @@ def model_tmdl(table_names: list[str]) -> str:
 def relationships_tmdl() -> str:
     lines = []
     for from_table, from_col, to_table, to_col in RELATIONSHIPS:
-        lines.append(f"relationship {uuid.uuid4()}")
+        lines.append(
+            "relationship "
+            + lineage_tag("relationship", from_table, from_col, to_table, to_col)
+        )
         lines.append(f"\tfromColumn: {from_table}.{from_col}")
         lines.append(f"\ttoColumn: {to_table}.{to_col}")
         lines.append("")

@@ -1,79 +1,107 @@
-relationship 5bf22aa6-3eb2-4fc0-bb61-7f95ae4cae2a
+relationship f5c4575a-3ef7-501a-a356-1b32b867f841
 	fromColumn: v_loss_tree.id_maquina
 	toColumn: v_dim_maquina.id_maquina
 
-relationship f6d5e2eb-92dd-4e56-a4a5-0a917711f6be
+relationship 5537a802-fdeb-51a2-83b4-237dda965078
 	fromColumn: v_loss_tree.id_turno
 	toColumn: dim_turno.id_turno
 
-relationship 8cee60e7-5a24-4a81-82a5-71d1e2b39599
+relationship b1819d6d-8b9f-54b7-a294-f6411caa22fd
 	fromColumn: v_loss_tree.fecha
 	toColumn: dim_tiempo.fecha
 
-relationship 157b19f7-e331-4727-a7d0-06207193d0b2
+relationship 0b115afa-b695-523c-9aa9-31b52a137586
 	fromColumn: v_loss_tree.id_producto
 	toColumn: v_dim_producto.id_producto
 
-relationship 205c4580-6ce4-4a88-987e-a2b7b5129790
+relationship 35c7bd33-d67c-53bc-96f0-9e8f83d5076d
 	fromColumn: v_kpi_parada.id_maquina
 	toColumn: v_dim_maquina.id_maquina
 
-relationship 37b862cd-86ac-4a2f-b979-5799788b1397
+relationship 2655a3a0-b56c-5b8b-973b-c252381a79cf
 	fromColumn: v_kpi_parada.id_turno
 	toColumn: dim_turno.id_turno
 
-relationship 44e65e1e-9616-423f-8ad2-f5dd66490715
+relationship efe538ec-018e-5e01-bc8a-72aa5fa54f0a
 	fromColumn: v_kpi_parada.id_tiempo
 	toColumn: dim_tiempo.id_tiempo
 
-relationship e56a1aa4-4122-40cf-9a05-4b4d8a95aec4
+relationship 29e01f44-a2bc-5375-9b7b-521331d66070
 	fromColumn: v_kpi_parada.id_causa
 	toColumn: dim_causa.id_causa
 
-relationship 51a6081a-b6f5-4d8c-b923-eef9a53fb3f7
+relationship 39ff8e59-7428-5a77-ae8f-c6dd58fbb92e
 	fromColumn: v_kpi_mantenimiento_maquina_turno.id_maquina
 	toColumn: v_dim_maquina.id_maquina
 
-relationship 4bc052dd-e9b6-49b3-a1e1-3935cd609bdd
+relationship a0c1cc62-3311-52be-a747-94408b997d91
 	fromColumn: v_kpi_mantenimiento_maquina_turno.id_turno
 	toColumn: dim_turno.id_turno
 
-relationship 86ad2cca-fd43-456b-ba8f-a57c0148fea1
+relationship 450535cc-ac2a-5820-9e71-1905fe84439b
 	fromColumn: v_kpi_mantenimiento_maquina_turno.id_tiempo
 	toColumn: dim_tiempo.id_tiempo
 
-relationship b207fb05-792d-42c4-8560-ac093e232ddf
+relationship 104020d4-cf10-5eda-aafe-a0f78189a1b2
 	fromColumn: v_kpi_mantenimiento.id_maquina
 	toColumn: v_dim_maquina.id_maquina
 
-relationship 1a227360-8037-4ed2-a14b-d90bcd567f74
+relationship 248da929-eb77-5d97-9036-8e44a42a1024
 	fromColumn: v_kpi_mantenimiento.id_turno
 	toColumn: dim_turno.id_turno
 
-relationship ecd5ccda-c97f-4389-bb12-8715210e8d4d
+relationship ae043aaa-7456-5726-85a8-b089f9014cf8
 	fromColumn: v_kpi_mantenimiento.id_tiempo
 	toColumn: dim_tiempo.id_tiempo
 
-relationship c5a0d189-d77f-400d-b1e9-9ebb49f3e231
+relationship 53b2fadb-bcdf-5c50-929d-4c9814103451
 	fromColumn: v_kpi_mantenimiento.id_causa
 	toColumn: dim_causa.id_causa
 
-relationship ea0c4278-7fe9-4db5-98c1-b19b6cb4d4b4
+relationship d8abc6ae-f824-5327-a6e7-e96b0e49420e
 	fromColumn: v_kpi_calidad_maquina_dia.id_maquina
 	toColumn: v_dim_maquina.id_maquina
 
-relationship 8e2c86f7-0fd1-441f-aa04-5a51a7d31118
+relationship 5466f298-89b5-5e40-a7d1-602a03e95dce
 	fromColumn: v_kpi_calidad_maquina_dia.id_tiempo
 	toColumn: dim_tiempo.id_tiempo
 
-relationship 1821a5e5-5e4b-4888-b527-a73fe6464bdc
+relationship 9d4e00dc-c97c-53d3-b1a7-843f0bb503f2
+	fromColumn: v_kpi_calidad_producto_dia.id_producto
+	toColumn: v_dim_producto.id_producto
+
+relationship c677deac-2c1d-565d-ad2b-4bea25b2ef0f
+	fromColumn: v_kpi_calidad_producto_dia.id_tiempo
+	toColumn: dim_tiempo.id_tiempo
+
+relationship 5af87242-04a6-57ae-adaf-4edbd5f685c7
 	fromColumn: v_alerta_maquina_critica.id_maquina
 	toColumn: v_dim_maquina.id_maquina
 
-relationship f0152f6a-58c7-4f9c-9e3f-b76b494f9bbd
+relationship 71928350-507a-5074-91c6-8fb7e9c3acd2
 	fromColumn: v_alerta_maquina_critica.id_turno
 	toColumn: dim_turno.id_turno
 
-relationship fd0d67e2-9588-40f9-8b98-8a2ffb737fbb
+relationship cc84db1f-44d5-5850-915b-e2073fd66506
 	fromColumn: v_alerta_maquina_critica.id_tiempo
 	toColumn: dim_tiempo.id_tiempo
+
+relationship 66d616ec-d788-5b1f-a2d1-3fbe0f74ffb4
+	fromColumn: v_alerta_ultimo_turno.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship 3070418a-00e4-5c9a-b258-3dec6ef6edad
+	fromColumn: v_alerta_ultimo_turno.id_turno
+	toColumn: dim_turno.id_turno
+
+relationship 1e26797e-e4e4-54c2-a522-532789acdc08
+	fromColumn: v_alerta_ultimo_turno.id_tiempo
+	toColumn: dim_tiempo.id_tiempo
+
+relationship 8ba79dc9-c392-5a29-a3de-cadfc9f3ade9
+	fromColumn: v_calidad_senal_iot.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship 54064293-1fef-54fc-8c0d-d9783164dbd7
+	fromColumn: v_calidad_senal_iot.fecha
+	toColumn: dim_tiempo.fecha

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "table_calidad_maquina",
+  "position": {
+    "x": 960,
+    "y": 660,
+    "z": 11000,
+    "width": 900,
+    "height": 370,
+    "tabOrder": 11
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "FPY KPI"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.FPY KPI",
+              "nativeQueryRef": "FPY KPI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Tasa Defectos"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Tasa Defectos",
+              "nativeQueryRef": "Tasa Defectos"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Tasa Retrabajo"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Tasa Retrabajo",
+              "nativeQueryRef": "Tasa Retrabajo"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Scrap Rate (Calidad)"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Scrap Rate (Calidad)",
+              "nativeQueryRef": "Scrap Rate (Calidad)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Energía por Unidad Buena"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Energía por Unidad Buena",
+              "nativeQueryRef": "Energía por Unidad Buena"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Calidad y energía de la máquina'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

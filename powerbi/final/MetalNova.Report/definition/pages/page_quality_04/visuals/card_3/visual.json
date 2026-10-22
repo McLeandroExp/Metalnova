@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "card_3",
+  "position": {
+    "x": 660,
+    "y": 210,
+    "z": 11000,
+    "width": 290,
+    "height": 135,
+    "tabOrder": 11
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Tasa Defectos"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Tasa Defectos",
+              "nativeQueryRef": "Tasa Defectos"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Defectos'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

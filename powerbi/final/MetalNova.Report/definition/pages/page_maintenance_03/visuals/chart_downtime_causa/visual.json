@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "chart_downtime_causa",
+  "position": {
+    "x": 40,
+    "y": 370,
+    "z": 15000,
+    "width": 900,
+    "height": 315,
+    "tabOrder": 15
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_causa"
+                    }
+                  },
+                  "Property": "categoria"
+                }
+              },
+              "queryRef": "dim_causa.categoria",
+              "nativeQueryRef": "categoria",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_parada"
+                    }
+                  },
+                  "Property": "Downtime por Causa (min)"
+                }
+              },
+              "queryRef": "v_kpi_parada.Downtime por Causa (min)",
+              "nativeQueryRef": "Downtime por Causa (min)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_kpi_parada"
+                  }
+                },
+                "Property": "Downtime por Causa (min)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Downtime por causa'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

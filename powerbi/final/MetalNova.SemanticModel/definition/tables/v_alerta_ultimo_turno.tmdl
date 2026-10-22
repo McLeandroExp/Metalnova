@@ -1,0 +1,403 @@
+table v_alerta_ultimo_turno
+	lineageTag: 1956aba7-2754-59c6-acdd-4222fa488ad0
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: d8d13a7d-80b4-5631-83bd-34d0d0b7f923
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 185f6839-fac8-5692-a962-f926668e7ffa
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 5cac5f53-01db-56ed-bb16-b80fd6c6228b
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1c5853fe-59c6-5b1f-a7ba-b87f0b4ec3bd
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: da60e2a3-a585-5697-aeef-27bcd05b4ae9
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 9ed17632-3f23-520e-aa82-37ac40aa84bc
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column id_maquina
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: a8234fc2-a32a-5f3c-a122-bc3d62c5de44
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: b66dd21d-3e28-5a2b-b718-e9564091efd4
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_nombre
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1224c3af-339e-5f14-bf3c-3321dcc24ea8
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+	column maquina_tipo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: db26582b-6259-5ba5-bd45-33eda85eb5cb
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+	column maquina_criticidad
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: daacc8d7-0cf2-592e-a148-a4317dccae63
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+	column id_turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 6580cc0c-818c-5242-971e-4b3b0c2d2f72
+		summarizeBy: none
+		sourceColumn: id_turno
+
+	column turno_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 48892afc-cebc-5008-a220-4054339c993e
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+	column turno_inicio_at
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 3023162a-cb08-5b52-8e26-ec08f43d3c8d
+		summarizeBy: none
+		sourceColumn: turno_inicio_at
+
+	column id_tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: e66698b6-36d5-584d-88c7-e018208b96fc
+		summarizeBy: none
+		sourceColumn: id_tiempo
+
+	column tiempo_operativo_h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 69097d83-4310-50d4-ba13-4a7276b2652a
+		summarizeBy: none
+		sourceColumn: tiempo_operativo_h
+
+	column fallas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 61d2f049-796f-5f9e-8aae-b1e91f0576aa
+		summarizeBy: none
+		sourceColumn: fallas
+
+	column mtbf_h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 09275971-574d-5a1e-bf7c-38f1afe12b9b
+		summarizeBy: none
+		sourceColumn: mtbf_h
+
+	column microparadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 0cdd805d-de85-56b3-8a1a-2ed938cb7461
+		summarizeBy: none
+		sourceColumn: microparadas
+
+	column fallas_cortas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: e13aa27b-7f54-5ca2-bffb-e9cec775880c
+		summarizeBy: none
+		sourceColumn: fallas_cortas
+
+	column minutos_fallas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 508a1377-173d-591d-9183-1af8388aea11
+		summarizeBy: none
+		sourceColumn: minutos_fallas
+
+	column downtime_no_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 953095bb-6a17-55fe-b8ce-c4886f13b4cf
+		summarizeBy: none
+		sourceColumn: downtime_no_planificado_min
+
+	column reparaciones
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 61158e5a-a179-5eb3-8398-fc22be4991ae
+		summarizeBy: none
+		sourceColumn: reparaciones
+
+	column mttr_min
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: ca9d422c-8b5c-5b19-bfcb-35fd5da22ec4
+		summarizeBy: none
+		sourceColumn: mttr_min
+
+	column oee
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: a90b5f2a-9b42-5b68-80f7-6d0c3dfa7f7c
+		summarizeBy: none
+		sourceColumn: oee
+
+	column disponibilidad
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: f697ccf4-3f43-5fe6-a858-c3a77a523f6b
+		summarizeBy: none
+		sourceColumn: disponibilidad
+
+	column rendimiento
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: fa93173b-2579-5580-8946-237fd599c48d
+		summarizeBy: none
+		sourceColumn: rendimiento
+
+	column calidad
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: e701a386-4fb4-5d6a-8ff3-164866dfa660
+		summarizeBy: none
+		sourceColumn: calidad
+
+	column lecturas_temp_alta
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 458d966d-b6a8-59ff-947a-9ca5d3f529b1
+		summarizeBy: none
+		sourceColumn: lecturas_temp_alta
+
+	column max_temperatura_c
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: c05c5c2c-7c72-5f06-97ff-da06367bf3fb
+		summarizeBy: none
+		sourceColumn: max_temperatura_c
+
+	column oee_umbral
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 0dda886a-2030-5b47-a8aa-462af5a29262
+		summarizeBy: none
+		sourceColumn: oee_umbral
+
+	column mtbf_umbral_h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: c94efc14-69a3-52a9-9010-b4d52c8906df
+		summarizeBy: none
+		sourceColumn: mtbf_umbral_h
+
+	column temperatura_umbral_c
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: a435cb1d-6da4-52c1-8d85-08d6bd4e31d3
+		summarizeBy: none
+		sourceColumn: temperatura_umbral_c
+
+	column temperatura_ventana_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 2408419c-a444-5c82-8273-7e3a0f1c59cf
+		summarizeBy: none
+		sourceColumn: temperatura_ventana_min
+
+	column temperatura_lecturas_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 8d156a2d-b660-5ff7-9821-6b546e8c81e9
+		summarizeBy: none
+		sourceColumn: temperatura_lecturas_min
+
+	column downtime_umbral_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 14dcf4aa-5565-5dfa-b435-bc44f2e5d2c7
+		summarizeBy: none
+		sourceColumn: downtime_umbral_min
+
+	column cumple_oee
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 70fc2503-f6a6-513b-8484-a904f75251a0
+		summarizeBy: none
+		sourceColumn: cumple_oee
+
+	column cumple_mtbf
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: fec2f36a-a425-594c-a9f0-5ab6f77f7889
+		summarizeBy: none
+		sourceColumn: cumple_mtbf
+
+	column cumple_temperatura
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 860b1dbc-e6d3-58b2-8781-124d10ac379a
+		summarizeBy: none
+		sourceColumn: cumple_temperatura
+
+	column cumple_downtime
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 397d71b4-babc-5425-a784-9af13ecb9cac
+		summarizeBy: none
+		sourceColumn: cumple_downtime
+
+	column condiciones_cumplidas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 39c9dd23-f3ff-51a0-a141-02b7e0cca882
+		summarizeBy: none
+		sourceColumn: condiciones_cumplidas
+
+	column tiene_alerta
+		dataType: boolean
+		isHidden
+		sourceProviderType: bit
+		lineageTag: bea9ea58-a26a-541d-9607-1e7a5c192cd3
+		summarizeBy: none
+		sourceColumn: tiene_alerta
+
+	column minutos_temp_alta_estimados
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: c138ec79-e22b-54ac-a672-5b7292a45fad
+		summarizeBy: none
+		sourceColumn: minutos_temp_alta_estimados
+
+	column acciones_sugeridas
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: e0c7e812-25d2-50f5-ab09-12c4c4e70a9f
+		summarizeBy: none
+		sourceColumn: acciones_sugeridas
+
+	column responsables
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 95bdefc5-be34-51f6-8e30-1c4864cfe524
+		summarizeBy: none
+		sourceColumn: responsables
+
+	column kpis_seguimiento
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8afe67e4-3450-58db-81f5-df97735e4972
+		summarizeBy: none
+		sourceColumn: kpis_seguimiento
+
+	column condiciones
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7d4a96f9-6457-5a10-b176-ae2833d2e984
+		summarizeBy: none
+		sourceColumn: condiciones
+
+	column severidad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: abbf2245-d14e-5cf9-92ae-08277d6446fc
+		summarizeBy: none
+		sourceColumn: severidad
+
+	column es_ultimo_turno_maquina
+		dataType: boolean
+		isHidden
+		sourceProviderType: bit
+		lineageTag: 9fda4630-d103-52e7-86aa-eba856719001
+		summarizeBy: none
+		sourceColumn: es_ultimo_turno_maquina
+
+	partition v_alerta_ultimo_turno = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_alerta_ultimo_turno = Origen{[Schema="public",Item="v_alerta_ultimo_turno"]}[Data]
+				in
+				    public_v_alerta_ultimo_turno
+
+	annotation PBI_ResultType = Table

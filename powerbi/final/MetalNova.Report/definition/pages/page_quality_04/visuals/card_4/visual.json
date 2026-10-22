@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "card_4",
+  "position": {
+    "x": 970,
+    "y": 210,
+    "z": 12000,
+    "width": 290,
+    "height": 135,
+    "tabOrder": 12
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Tasa Retrabajo"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Tasa Retrabajo",
+              "nativeQueryRef": "Tasa Retrabajo"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Retrabajo'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

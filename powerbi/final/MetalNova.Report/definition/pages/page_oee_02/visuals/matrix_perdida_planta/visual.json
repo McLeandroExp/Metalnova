@@ -1,0 +1,121 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "matrix_perdida_planta",
+  "position": {
+    "x": 960,
+    "y": 710,
+    "z": 18000,
+    "width": 900,
+    "height": 310,
+    "tabOrder": 18
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_maquina"
+                    }
+                  },
+                  "Property": "planta_codigo"
+                }
+              },
+              "queryRef": "v_dim_maquina.planta_codigo",
+              "nativeQueryRef": "planta_codigo",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_loss_tree"
+                    }
+                  },
+                  "Property": "Pérdida Disponibilidad (min)"
+                }
+              },
+              "queryRef": "v_loss_tree.Pérdida Disponibilidad (min)",
+              "nativeQueryRef": "Pérdida Disponibilidad (min)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_loss_tree"
+                    }
+                  },
+                  "Property": "Pérdida Rendimiento (min)"
+                }
+              },
+              "queryRef": "v_loss_tree.Pérdida Rendimiento (min)",
+              "nativeQueryRef": "Pérdida Rendimiento (min)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_loss_tree"
+                    }
+                  },
+                  "Property": "Pérdida Calidad (min)"
+                }
+              },
+              "queryRef": "v_loss_tree.Pérdida Calidad (min)",
+              "nativeQueryRef": "Pérdida Calidad (min)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_loss_tree"
+                    }
+                  },
+                  "Property": "Pérdida Total (min)"
+                }
+              },
+              "queryRef": "v_loss_tree.Pérdida Total (min)",
+              "nativeQueryRef": "Pérdida Total (min)"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Loss Tree por planta (minutos equivalentes)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

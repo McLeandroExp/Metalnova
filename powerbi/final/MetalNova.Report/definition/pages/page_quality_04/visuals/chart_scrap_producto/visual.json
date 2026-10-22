@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "chart_scrap_producto",
+  "position": {
+    "x": 660,
+    "y": 710,
+    "z": 18000,
+    "width": 600,
+    "height": 310,
+    "tabOrder": 18
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_producto"
+                    }
+                  },
+                  "Property": "producto_nombre"
+                }
+              },
+              "queryRef": "v_dim_producto.producto_nombre",
+              "nativeQueryRef": "producto_nombre",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_producto_dia"
+                    }
+                  },
+                  "Property": "Scrap Rate (Producto)"
+                }
+              },
+              "queryRef": "v_kpi_calidad_producto_dia.Scrap Rate (Producto)",
+              "nativeQueryRef": "Scrap Rate (Producto)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_kpi_calidad_producto_dia"
+                  }
+                },
+                "Property": "Scrap Rate (Producto)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Scrap por producto'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

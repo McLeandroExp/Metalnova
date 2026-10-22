@@ -1,0 +1,162 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "table_alertas",
+  "position": {
+    "x": 40,
+    "y": 710,
+    "z": 17000,
+    "width": 1820,
+    "height": 310,
+    "tabOrder": 17
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_maquina"
+                    }
+                  },
+                  "Property": "maquina_codigo"
+                }
+              },
+              "queryRef": "v_dim_maquina.maquina_codigo",
+              "nativeQueryRef": "maquina_codigo"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_maquina"
+                    }
+                  },
+                  "Property": "planta_codigo"
+                }
+              },
+              "queryRef": "v_dim_maquina.planta_codigo",
+              "nativeQueryRef": "planta_codigo"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_ultimo_turno"
+                    }
+                  },
+                  "Property": "severidad"
+                }
+              },
+              "queryRef": "v_alerta_ultimo_turno.severidad",
+              "nativeQueryRef": "severidad"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_ultimo_turno"
+                    }
+                  },
+                  "Property": "oee"
+                }
+              },
+              "queryRef": "v_alerta_ultimo_turno.oee",
+              "nativeQueryRef": "oee"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_ultimo_turno"
+                    }
+                  },
+                  "Property": "mtbf_h"
+                }
+              },
+              "queryRef": "v_alerta_ultimo_turno.mtbf_h",
+              "nativeQueryRef": "mtbf_h"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_ultimo_turno"
+                    }
+                  },
+                  "Property": "max_temperatura_c"
+                }
+              },
+              "queryRef": "v_alerta_ultimo_turno.max_temperatura_c",
+              "nativeQueryRef": "max_temperatura_c"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_alerta_ultimo_turno"
+                    }
+                  },
+                  "Property": "acciones_sugeridas"
+                }
+              },
+              "queryRef": "v_alerta_ultimo_turno.acciones_sugeridas",
+              "nativeQueryRef": "acciones_sugeridas"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_alerta_ultimo_turno"
+                  }
+                },
+                "Property": "oee"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Alertas del último turno por máquina'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

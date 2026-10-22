@@ -133,6 +133,31 @@ Downtime Mantenimiento (min) =
     SUM ( v_kpi_mantenimiento_maquina_turno[downtime_no_planificado_min] )
 // formato: #,##0
 
+// [05 Mantenimiento] Fallas cortas (conteo)
+Fallas cortas (conteo) =
+    SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] )
+// formato: #,##0
+
+// [05 Mantenimiento] MTBF corto (h)
+MTBF corto (h) =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] ) * 60 )
+// formato: #,##0.00
+
+// [05 Mantenimiento] Fallas cortas por 100 h
+Fallas cortas por 100 h =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] ) * 60, SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100
+// formato: #,##0.00
+
+// [05 Mantenimiento] Microparadas por 100 h
+Microparadas por 100 h =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] ) * 60, SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100
+// formato: #,##0.00
+
+// [05 Mantenimiento] Duración media microparada (min)
+Duración media microparada (min) =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_microparadas] ), SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] ) )
+// formato: #,##0.00
+
 // --- v_kpi_mantenimiento ---
 
 // [05 Mantenimiento] Intervenciones
@@ -182,6 +207,33 @@ Scrap Rate (Calidad) =
     DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[scrap_count] ), SUM ( v_kpi_calidad_maquina_dia[total_count] ) )
 // formato: 0.00%
 
+// --- v_kpi_calidad_producto_dia ---
+
+// [03 Calidad y energía] FPY (Producto)
+FPY (Producto) =
+    DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) - SUM ( v_kpi_calidad_producto_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Tasa Defectos (Producto)
+Tasa Defectos (Producto) =
+    DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_defectuosas] ), SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Tasa Retrabajo (Producto)
+Tasa Retrabajo (Producto) =
+    DIVIDE ( SUM ( v_kpi_calidad_producto_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_producto_dia[unidades_inspeccionadas] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Scrap Rate (Producto)
+Scrap Rate (Producto) =
+    DIVIDE ( SUM ( v_kpi_calidad_producto_dia[scrap_count] ), SUM ( v_kpi_calidad_producto_dia[total_count] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Energía por Unidad Buena (Producto)
+Energía por Unidad Buena (Producto) =
+    DIVIDE ( SUM ( v_kpi_calidad_producto_dia[energia_kwh] ), SUM ( v_kpi_calidad_producto_dia[good_count] ) )
+// formato: 0.0000
+
 // --- v_kpi_parada ---
 
 // [06 Paradas] Downtime por Causa (min)
@@ -196,6 +248,16 @@ Paradas No Planificadas =
 
 // [06 Paradas] Pareto %
 Pareto % =
+    DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )
+// formato: 0.00%
+
+// [06 Paradas] Máquinas con Paradas
+Máquinas con Paradas =
+    DISTINCTCOUNT ( v_kpi_parada[id_maquina] )
+// formato: #,##0
+
+// [06 Paradas] Participación Downtime Causa
+Participación Downtime Causa =
     DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )
 // formato: 0.00%
 
@@ -220,6 +282,23 @@ Máquinas en Alerta =
 Temperatura Máxima (°C) =
     CALCULATE ( MAX ( v_alerta_maquina_critica[max_temperatura_c] ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE () )
 // formato: 0.0
+
+// --- v_calidad_senal_iot ---
+
+// [09 Calidad de señal] Cobertura de señal (%)
+Cobertura de señal (%) =
+    DIVIDE ( CALCULATE ( COUNTROWS ( v_calidad_senal_iot ), v_calidad_senal_iot[estado_senal] = "ok" ), COUNTROWS ( v_calidad_senal_iot ) )
+// formato: 0.00%
+
+// [09 Calidad de señal] Días con señal incompleta
+Días con señal incompleta =
+    CALCULATE ( COUNTROWS ( v_calidad_senal_iot ), v_calidad_senal_iot[estado_senal] <> "ok" )
+// formato: #,##0
+
+// [09 Calidad de señal] Hueco máximo (min)
+Hueco máximo (min) =
+    MAX ( v_calidad_senal_iot[max_gap_min] )
+// formato: #,##0.0
 
 // --- v_kpi_parametros ---
 

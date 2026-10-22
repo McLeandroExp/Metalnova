@@ -1,0 +1,10 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "page_tooltip_maquina",
+  "displayName": "Tooltip máquina",
+  "displayOption": "ActualSize",
+  "visibility": "HiddenInViewMode",
+  "type": "Tooltip",
+  "width": 320,
+  "height": 240
+}

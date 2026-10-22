@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "table_intervenciones",
+  "position": {
+    "x": 1260,
+    "y": 260,
+    "z": 9000,
+    "width": 600,
+    "height": 380,
+    "tabOrder": 9
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento"
+                    }
+                  },
+                  "Property": "inicio_at"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento.inicio_at",
+              "nativeQueryRef": "inicio_at"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento"
+                    }
+                  },
+                  "Property": "tipo"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento.tipo",
+              "nativeQueryRef": "tipo"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento"
+                    }
+                  },
+                  "Property": "estado"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento.estado",
+              "nativeQueryRef": "estado"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento"
+                    }
+                  },
+                  "Property": "duracion_min"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento.duracion_min",
+              "nativeQueryRef": "duracion_min"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento"
+                    }
+                  },
+                  "Property": "costo_estimado_usd"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento.costo_estimado_usd",
+              "nativeQueryRef": "costo_estimado_usd"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Últimas intervenciones'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

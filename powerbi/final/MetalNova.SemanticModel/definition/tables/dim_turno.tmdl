@@ -1,5 +1,5 @@
 table dim_turno
-	lineageTag: 293133eb-c297-449e-b69c-11010e04915b
+	lineageTag: f333fdc7-b85b-5f11-974d-affa8eaa4b40
 
 	column id_turno
 		dataType: int64
@@ -7,35 +7,35 @@ table dim_turno
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: f608cf00-e12c-4004-9d45-2a46d345ca4d
+		lineageTag: 604c6dff-e88e-5e99-b53b-56b7e13b0306
 		summarizeBy: none
 		sourceColumn: id_turno
 
 	column codigo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 3939861a-5153-4a6e-b3de-09dd7426a2be
+		lineageTag: 979af20d-2e71-5a1a-b044-694c9a03abfa
 		summarizeBy: none
 		sourceColumn: codigo
 
 	column nombre
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: b1469767-7ecb-42c5-9b3b-5b6819ae04fa
+		lineageTag: 8d823590-5cac-5209-ba72-fdd202eb3630
 		summarizeBy: none
 		sourceColumn: nombre
 
 	column hora_inicio
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 4d1b2fe8-bdea-415e-81a6-0abca61d29ed
+		lineageTag: 8b91ae2e-d5bd-5163-9ff0-1b5b45137fc2
 		summarizeBy: none
 		sourceColumn: hora_inicio
 
 	column hora_fin
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: f4c84968-b799-407e-a5fe-9b2ad92b480d
+		lineageTag: 34e57a85-f19f-5ba7-8d38-005f4d0c0f6e
 		summarizeBy: none
 		sourceColumn: hora_fin
 
@@ -43,14 +43,14 @@ table dim_turno
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: bd20c81d-bbcf-423e-8891-d4c1225c984a
+		lineageTag: 901f6c0c-5810-5c68-979a-8bb042d023a4
 		summarizeBy: none
 		sourceColumn: duracion_min
 
 	column cruza_medianoche
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: b8918f40-fa18-4971-a56b-9dcd387f197a
+		lineageTag: decd40bf-5396-5639-8865-f9f68a1016c8
 		summarizeBy: none
 		sourceColumn: cruza_medianoche
 

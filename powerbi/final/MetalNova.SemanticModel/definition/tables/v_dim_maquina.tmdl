@@ -1,5 +1,5 @@
 table v_dim_maquina
-	lineageTag: 99328c04-0027-465f-a523-bdf18376544b
+	lineageTag: 9a47bcc3-47df-5810-b7bb-6d3f45f0ecd5
 
 	column id_maquina
 		dataType: int64
@@ -7,49 +7,49 @@ table v_dim_maquina
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 1478714c-72ef-4679-a504-dede59400256
+		lineageTag: c02a3896-9973-5126-b7f3-f298635cc32f
 		summarizeBy: none
 		sourceColumn: id_maquina
 
 	column maquina_codigo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: e0c7f010-afba-4e20-a34e-a1cdc9676f6b
+		lineageTag: e06254dd-b630-59a9-bb8d-33c29faf1d96
 		summarizeBy: none
 		sourceColumn: maquina_codigo
 
 	column maquina_nombre
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 32a78fbc-64dc-4f07-ad8f-92b8916f4b66
+		lineageTag: 96d0c7c1-404f-5537-8878-3c42c3ab1d47
 		summarizeBy: none
 		sourceColumn: maquina_nombre
 
 	column maquina_tipo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: efb3f020-7a72-4b0f-9cf7-a4dcc66bd727
+		lineageTag: c208b1ea-379f-59be-9ba0-eab66a2b6536
 		summarizeBy: none
 		sourceColumn: maquina_tipo
 
 	column maquina_criticidad
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 6596b26c-638c-469c-9873-3d7f5d7380e8
+		lineageTag: cd83e40b-6029-5b6d-b4e7-a919dba5d676
 		summarizeBy: none
 		sourceColumn: maquina_criticidad
 
 	column fabricante
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 18324872-0f3e-45c8-ba5a-058e07318e87
+		lineageTag: 1e26dfdb-b330-5ba3-9944-8e7a201c6787
 		summarizeBy: none
 		sourceColumn: fabricante
 
 	column modelo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: decdcfc2-dfa7-4e6d-a98a-a2198b957c96
+		lineageTag: e64e0ab3-8cec-560a-9363-f41f86fff4e3
 		summarizeBy: none
 		sourceColumn: modelo
 
@@ -57,14 +57,14 @@ table v_dim_maquina
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: b470c037-03fc-42c9-94f0-9e87e436113a
+		lineageTag: 5f9ef94a-ded4-5f52-b0f3-9792e23c5d46
 		summarizeBy: none
 		sourceColumn: fecha_alta
 
 	column activa
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: d5b6932e-dd52-43de-9e35-a7d1b79ce19b
+		lineageTag: 737583e7-17a7-5233-86a7-3595f289dd66
 		summarizeBy: none
 		sourceColumn: activa
 
@@ -73,21 +73,21 @@ table v_dim_maquina
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 8c68a750-fbb0-4f22-b614-ea92ca161011
+		lineageTag: a4d64c51-8ad3-5c47-a973-4009a9a3574a
 		summarizeBy: none
 		sourceColumn: id_linea
 
 	column linea_codigo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: ccfddf7f-aeda-4216-b7f9-d0ba27f02b73
+		lineageTag: 027cc09b-f859-5e74-a086-cee30fcf21bc
 		summarizeBy: none
 		sourceColumn: linea_codigo
 
 	column linea_nombre
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: a97a84ea-f342-4f7a-b8ee-a9ed33ba0b61
+		lineageTag: 00f21eae-e391-5093-a07e-2eb7f5f50491
 		summarizeBy: none
 		sourceColumn: linea_nombre
 
@@ -96,55 +96,55 @@ table v_dim_maquina
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 01978f19-a6ec-494b-97ee-19bb2577b47e
+		lineageTag: 2077b273-6476-58e9-97c1-d461aa8d672f
 		summarizeBy: none
 		sourceColumn: id_planta
 
 	column planta_codigo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: c0e7b984-de1b-435d-a19e-4d20ed12b1ad
+		lineageTag: 2303b165-3e94-5f4c-9689-3940a1ae3d0f
 		summarizeBy: none
 		sourceColumn: planta_codigo
 
 	column planta_nombre
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: c418bead-44b8-4bda-9de8-9f3a9b81dd6d
+		lineageTag: 44295dca-f5a1-586d-8e7d-f56a1f3c652a
 		summarizeBy: none
 		sourceColumn: planta_nombre
 
 	column ciudad
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 3302509e-78ae-4f62-8cc8-dcf8e35bcbea
+		lineageTag: 45e2c31e-36e3-56c6-a3f3-af844e8bcd15
 		summarizeBy: none
 		sourceColumn: ciudad
 
 	column pais
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 8175e5aa-baa9-404d-b4b1-0dafe750dd3e
+		lineageTag: 5d24e77d-2349-5670-b02b-35768be89628
 		summarizeBy: none
 		sourceColumn: pais
 
 	column perfil_rendimiento
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 520ddeda-03ff-4f57-ada2-60cdce05b871
+		lineageTag: 940330fd-e248-529b-99c5-0480ea613fde
 		summarizeBy: none
 		sourceColumn: perfil_rendimiento
 
 	hierarchy 'Ubicación'
-		lineageTag: abce8207-ebb6-438a-aed8-8f9ed6ddcc57
+		lineageTag: c3772af5-908c-5a98-9b0a-032f7388b4c1
 		level 'Planta'
-			lineageTag: b20842b1-1128-4fcd-955e-e6a3e642ba35
+			lineageTag: eef2e352-7938-505a-bb08-a7a5e993bf6a
 			column: planta_nombre
 		level 'Línea'
-			lineageTag: 3dad9dac-da8c-422f-9037-9c2f4bdec166
+			lineageTag: a903bc51-9a19-5a36-8643-aa02bbac40d5
 			column: linea_nombre
 		level 'Máquina'
-			lineageTag: f0b444d7-b884-423d-ae54-fea9386c565f
+			lineageTag: e58581b1-f64e-5ff3-b0b8-70d2658fe1b3
 			column: maquina_nombre
 
 	partition v_dim_maquina = m

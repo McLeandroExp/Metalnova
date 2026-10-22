@@ -1,5 +1,5 @@
 table v_dim_producto
-	lineageTag: f9ca04ca-8956-48a5-b1ab-edc93fb62892
+	lineageTag: 463afb85-c524-567b-b887-b23f8b1a8831
 
 	column id_producto
 		dataType: int64
@@ -7,28 +7,28 @@ table v_dim_producto
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: e97c192c-4871-4e36-a4d8-b60aa21c9d47
+		lineageTag: 31bb8c62-1d6e-56e2-8c0f-0d50b96d0551
 		summarizeBy: none
 		sourceColumn: id_producto
 
 	column producto_codigo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 7b81f568-43da-44f2-8e70-79cd297c90f4
+		lineageTag: b14b324c-6f5b-5254-9b69-06d1a7ea912d
 		summarizeBy: none
 		sourceColumn: producto_codigo
 
 	column producto_nombre
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 3418b713-f285-4345-a817-116de8d9d536
+		lineageTag: ef86bf40-5d66-55d0-b228-01ac006adb85
 		summarizeBy: none
 		sourceColumn: producto_nombre
 
 	column unidad_medida
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 2eef2ce7-0fbc-4793-a68e-f6029c01a71e
+		lineageTag: 64601710-9fb4-5d41-92c2-45e441a667ae
 		summarizeBy: none
 		sourceColumn: unidad_medida
 
@@ -37,31 +37,31 @@ table v_dim_producto
 		isHidden
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 1d96d48c-8e18-4ad9-b149-a5541442ea2f
+		lineageTag: cfc6d43f-3bd5-55de-ac5a-22e772dcea12
 		summarizeBy: none
 		sourceColumn: id_familia
 
 	column familia_codigo
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 2d1a6992-8e7d-4d55-aac3-1de66cd5bf29
+		lineageTag: 6000995e-bde1-5766-b69a-9875b0b0440a
 		summarizeBy: none
 		sourceColumn: familia_codigo
 
 	column familia_nombre
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: f7b0765e-b69d-44a7-a298-0b4ca9fd6adc
+		lineageTag: e7e7dae6-72cd-59f4-9e7a-96645c509d72
 		summarizeBy: none
 		sourceColumn: familia_nombre
 
 	hierarchy 'Producto'
-		lineageTag: efbe3a43-4abb-4ed6-bb15-03ff5014a801
+		lineageTag: 751f8989-fe28-5e12-b9ed-b32b28702bbf
 		level 'Familia'
-			lineageTag: 7f408e62-1aef-40bb-9c81-91f314541a1d
+			lineageTag: 28eef7eb-32a8-533e-aeda-b4fc6465b870
 			column: familia_nombre
 		level 'Producto'
-			lineageTag: 32baafa3-76bc-4961-98ca-21fe87a84880
+			lineageTag: dd88f721-ae5e-5041-bf57-f57f31b75c83
 			column: producto_nombre
 
 	partition v_dim_producto = m

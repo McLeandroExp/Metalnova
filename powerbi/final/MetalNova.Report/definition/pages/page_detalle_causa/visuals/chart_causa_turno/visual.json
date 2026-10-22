@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "chart_causa_turno",
+  "position": {
+    "x": 1260,
+    "y": 260,
+    "z": 8000,
+    "width": 620,
+    "height": 770,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_turno"
+                    }
+                  },
+                  "Property": "codigo"
+                }
+              },
+              "queryRef": "dim_turno.codigo",
+              "nativeQueryRef": "codigo",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_parada"
+                    }
+                  },
+                  "Property": "Downtime por Causa (min)"
+                }
+              },
+              "queryRef": "v_kpi_parada.Downtime por Causa (min)",
+              "nativeQueryRef": "Downtime por Causa (min)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "v_kpi_parada"
+                  }
+                },
+                "Property": "Downtime por Causa (min)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Downtime de la causa por turno'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

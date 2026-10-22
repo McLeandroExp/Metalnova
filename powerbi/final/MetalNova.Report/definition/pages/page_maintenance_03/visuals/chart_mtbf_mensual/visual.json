@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "chart_mtbf_mensual",
+  "position": {
+    "x": 960,
+    "y": 370,
+    "z": 16000,
+    "width": 900,
+    "height": 315,
+    "tabOrder": 16
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento_maquina_turno"
+                    }
+                  },
+                  "Property": "anio_mes"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento_maquina_turno.anio_mes",
+              "nativeQueryRef": "anio_mes",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_mantenimiento_maquina_turno"
+                    }
+                  },
+                  "Property": "MTBF (h)"
+                }
+              },
+              "queryRef": "v_kpi_mantenimiento_maquina_turno.MTBF (h)",
+              "nativeQueryRef": "MTBF (h)"
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_maquina"
+                    }
+                  },
+                  "Property": "planta_codigo"
+                }
+              },
+              "queryRef": "v_dim_maquina.planta_codigo",
+              "nativeQueryRef": "planta_codigo"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'MTBF mensual por planta'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

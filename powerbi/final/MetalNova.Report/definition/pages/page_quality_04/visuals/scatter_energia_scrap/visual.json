@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "scatter_energia_scrap",
+  "position": {
+    "x": 1280,
+    "y": 710,
+    "z": 19000,
+    "width": 580,
+    "height": 310,
+    "tabOrder": 19
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_dim_maquina"
+                    }
+                  },
+                  "Property": "maquina_codigo"
+                }
+              },
+              "queryRef": "v_dim_maquina.maquina_codigo",
+              "nativeQueryRef": "maquina_codigo",
+              "active": true
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Energía por Unidad Buena"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Energía por Unidad Buena",
+              "nativeQueryRef": "Energía por Unidad Buena"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_kpi_calidad_maquina_dia"
+                    }
+                  },
+                  "Property": "Scrap Rate (Calidad)"
+                }
+              },
+              "queryRef": "v_kpi_calidad_maquina_dia.Scrap Rate (Calidad)",
+              "nativeQueryRef": "Scrap Rate (Calidad)"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Energía vs scrap por máquina'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

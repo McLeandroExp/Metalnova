@@ -1,5 +1,5 @@
 table dim_tiempo
-	lineageTag: 3e14e47b-92bd-4fb7-8078-ce644313de08
+	lineageTag: 5233ffae-d896-506f-a9a7-9943cc562777
 	dataCategory: Time
 
 	column id_tiempo
@@ -8,7 +8,7 @@ table dim_tiempo
 		isHidden
 		formatString: 0
 		sourceProviderType: integer
-		lineageTag: 3b3cc6a8-7393-44af-bf74-7d71cfcc491a
+		lineageTag: a2308542-c07a-5df0-9ade-4bdbc9cd98ec
 		summarizeBy: none
 		sourceColumn: id_tiempo
 
@@ -16,7 +16,7 @@ table dim_tiempo
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: c1b46905-a1c1-4bae-affe-7b977f88c4d7
+		lineageTag: f6f11783-a9b0-56c5-b832-27235b2ce62a
 		summarizeBy: none
 		sourceColumn: fecha
 
@@ -24,7 +24,7 @@ table dim_tiempo
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 2cd017d5-68af-4d1d-b25b-7d1b3f93b1bf
+		lineageTag: 308c2ea5-20e4-531f-890e-36b54dfbd152
 		summarizeBy: none
 		sourceColumn: anio
 
@@ -32,7 +32,7 @@ table dim_tiempo
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: ca7fd996-781e-408a-a70e-e92f28fbf6a1
+		lineageTag: 38c42621-f6d9-5879-a362-5475044b6113
 		summarizeBy: none
 		sourceColumn: trimestre
 
@@ -40,7 +40,7 @@ table dim_tiempo
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: f243e433-c496-41d7-b548-5a0590da40aa
+		lineageTag: 87e6328b-8548-52b6-abe3-8b8e483a4e43
 		summarizeBy: none
 		sourceColumn: mes
 
@@ -48,7 +48,7 @@ table dim_tiempo
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 7fbdbe30-4852-40dc-b364-817d0d9f31dc
+		lineageTag: e40d6792-5e55-548c-90c4-62c3a199eae9
 		summarizeBy: none
 		sourceColumn: dia
 
@@ -56,7 +56,7 @@ table dim_tiempo
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 24a5d746-585e-412a-a775-51a4a66bd39d
+		lineageTag: bf7dd10f-bd0e-51e3-8a4b-067a5e2a44b7
 		summarizeBy: none
 		sourceColumn: semana_iso
 
@@ -64,44 +64,44 @@ table dim_tiempo
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 8d38eb81-3b84-49c9-a02b-79349888d50a
+		lineageTag: 16bd7ffd-0615-5328-a9cf-78fac2502a28
 		summarizeBy: none
 		sourceColumn: dia_semana
 
 	column nombre_dia
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: 8b5966fd-b1b7-4ac0-be8a-66f48b3097a4
+		lineageTag: 7a27d06f-4556-5b8e-b5ee-89c878e67afd
 		summarizeBy: none
 		sourceColumn: nombre_dia
 
 	column es_fin_semana
 		dataType: boolean
 		sourceProviderType: bit
-		lineageTag: 1fc699ff-4b72-4daa-a3ff-47d75e3e7e56
+		lineageTag: ddcc7e72-4dd3-5609-8fd2-210a527ad5a8
 		summarizeBy: none
 		sourceColumn: es_fin_semana
 
 	column anio_mes
 		dataType: string
 		sourceProviderType: nvarchar(max)
-		lineageTag: cf28595f-b289-4a80-911e-f3c833982bfe
+		lineageTag: 9b07b3b2-e1c3-5328-9fdc-d61685dcfa30
 		summarizeBy: none
 		sourceColumn: anio_mes
 
 	hierarchy 'Calendario'
-		lineageTag: 103fe6ee-f876-4c07-9517-72fbd230b9b5
+		lineageTag: daaee670-05c8-506a-8b0a-aeef2021b70f
 		level 'Año'
-			lineageTag: 3e2d0ff6-f131-4145-a8da-61524249f3a4
+			lineageTag: c25ddc7d-7d3f-5446-baee-7b5a0b3ce5e3
 			column: anio
 		level 'Trimestre'
-			lineageTag: 8890f816-6c07-4898-9e37-6e9a4b0da4b7
+			lineageTag: 85e13946-a1db-5189-8cfa-b2584ea440ca
 			column: trimestre
 		level 'Mes'
-			lineageTag: 0a9e8710-3320-4c4c-9fcf-7428d53978c8
+			lineageTag: 10207ffd-c18c-5f17-a650-909d0ed44c63
 			column: mes
 		level 'Día'
-			lineageTag: ae0c6926-b45f-41a8-adc2-3831df0a9ae4
+			lineageTag: 65d6f5fe-a061-50e2-9d60-fa3c2131e1c9
 			column: fecha
 
 	partition dim_tiempo = m

@@ -1,0 +1,185 @@
+table v_calidad_senal_iot
+	lineageTag: 1443b442-4225-536f-998c-8d430fea2c33
+
+	measure 'Cobertura de señal (%)' =
+			DIVIDE ( CALCULATE ( COUNTROWS ( v_calidad_senal_iot ), v_calidad_senal_iot[estado_senal] = "ok" ), COUNTROWS ( v_calidad_senal_iot ) )
+		formatString: 0.00%
+		displayFolder: 09 Calidad de señal
+		lineageTag: 5e1473f6-b41a-5cb3-98c9-82cb5f82bd94
+
+	measure 'Días con señal incompleta' =
+			CALCULATE ( COUNTROWS ( v_calidad_senal_iot ), v_calidad_senal_iot[estado_senal] <> "ok" )
+		formatString: #,##0
+		displayFolder: 09 Calidad de señal
+		lineageTag: 04cce8d5-8155-5c48-a267-caf084748ba1
+
+	measure 'Hueco máximo (min)' =
+			MAX ( v_calidad_senal_iot[max_gap_min] )
+		formatString: #,##0.0
+		displayFolder: 09 Calidad de señal
+		lineageTag: b315e8b8-94ae-5c36-b31a-199c76d4d7f4
+
+	column id_maquina
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: bbd335fd-d3f8-55b0-aaf1-680de4b3992a
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: e4a54c01-a146-5e92-b73d-899dd22d2d19
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_nombre
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: a6543b76-71a3-507a-9127-fb28d81d2e3d
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 18044ca0-2f7b-53d9-aad1-22831f3bc907
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: b8a1d0d3-6148-570f-bf0f-9d49bb8012a7
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 7e6bbb89-e737-5bc8-91b4-3f07c19e1fb7
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2f0c85cd-2ffa-5cbc-9675-3e8f956e79bb
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: deed630d-23ba-58c3-b176-4d9f37eeaadf
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 4b72c2ad-0268-5732-b36e-abbafbd3b005
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column lecturas
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: e855bfba-22e4-513e-b7b8-7bae4bdfecd3
+		summarizeBy: none
+		sourceColumn: lecturas
+
+	column lecturas_esperadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 8e88188b-d09f-5adb-9d6b-4dcde5f1ea9a
+		summarizeBy: none
+		sourceColumn: lecturas_esperadas
+
+	column lecturas_faltantes
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 1398aa69-d992-55d1-b5bd-4e7c232e9618
+		summarizeBy: none
+		sourceColumn: lecturas_faltantes
+
+	column turnos_sin_lecturas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 178046b9-d3fb-56b5-9dfa-9333808f52d2
+		summarizeBy: none
+		sourceColumn: turnos_sin_lecturas
+
+	column turnos_incompletos
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 272aebb3-ad87-5416-8e51-7e380b62877f
+		summarizeBy: none
+		sourceColumn: turnos_incompletos
+
+	column primera_lectura
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 3f946e76-ec03-5a1c-9578-d463623f4dc8
+		summarizeBy: none
+		sourceColumn: primera_lectura
+
+	column ultima_lectura
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 5c8cacfb-e10b-5303-88ec-4637eb2111e3
+		summarizeBy: none
+		sourceColumn: ultima_lectura
+
+	column max_gap_min
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 4f6d4aaa-d037-5fac-8910-7331e098c000
+		summarizeBy: none
+		sourceColumn: max_gap_min
+
+	column cumple_cadencia_15min
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 859776f4-1a8f-5ebe-9948-d4b0e693357d
+		summarizeBy: none
+		sourceColumn: cumple_cadencia_15min
+
+	column estado_senal
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 33204d04-4b3f-50eb-912b-cdd5747ee726
+		summarizeBy: none
+		sourceColumn: estado_senal
+
+	partition v_calidad_senal_iot = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_calidad_senal_iot = Origen{[Schema="public",Item="v_calidad_senal_iot"]}[Data]
+				in
+				    public_v_calidad_senal_iot
+
+	annotation PBI_ResultType = Table
