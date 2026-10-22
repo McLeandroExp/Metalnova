@@ -8,6 +8,10 @@ Construye la capa de visualización: 4 páginas, 9 KPIs, filtros consistentes, d
 tooltips y alertas. Enfoque híbrido: el modelo semántico (TMDL/medidas DAX) se genera por
 código; los visuales se montan en Power BI Desktop siguiendo una guía verificable.
 
+El histórico previo era homogéneo entre plantas (rango 0,05 pp), así que el 006 incluye una
+calibración declarada (FR-615): factores por planta, perfiles persistentes de máquina y outliers.
+Sigue siendo sintético y reproducible con semilla 42; no se presenta como telemetría real.
+
 ## Requisitos funcionales
 
 | ID | Requisito |
@@ -26,6 +30,7 @@ código; los visuales se montan en Power BI Desktop siguiendo una guía verifica
 | FR-612 | Navegación desde una pérdida de OEE hacia su causa. |
 | FR-613 | Visual de alerta de máquina crítica basado en la vista `v_alerta_maquina_critica`. |
 | FR-614 | Modelo semántico en `powerbi/` (proyecto `.pbip` + TMDL) y medidas DAX documentadas. |
+| FR-615 | Escenario `calibracion` reproducible: factores por planta y perfiles persistentes por máquina, para que el informe muestre diferencias visibles y outliers sin abandonar la semilla 42. |
 
 ## Criterios de aceptación
 
@@ -38,6 +43,7 @@ código; los visuales se montan en Power BI Desktop siguiendo una guía verifica
 | AC-605 | No hay visuales críticos rotos. |
 | AC-606 | El modo de conexión elegido está justificado con mediciones reales. |
 | AC-607 | Se guarda `powerbi/MetalNova.pbix` (o `.pbip`) en el repositorio. |
+| AC-608 | El escenario calibrado apunta a OEE ≈78 → 66 %, muestra 5–10 pp de dispersión entre plantas y al menos una máquina outlier <55 %; `validate_data.py` sigue en 49/49. |
 
 ## Fuera de alcance
 

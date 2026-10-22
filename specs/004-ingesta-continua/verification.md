@@ -184,3 +184,20 @@ muestrear 52 filas por minuto.
   `intervalo_s=15 seed=7 intensidad=2.5` y el proceso terminó con código 0. Un flag explícito
   de la CLI sigue teniendo precedencia sobre la variable de entorno.
 - Todos los eventos y paradas son **sintéticos** y no representan telemetría real.
+
+## Regresión de calibración (2026-10-21)
+
+La base histórica se reemplazó por `hist-h3a58b2b659` (escenario `calibracion`). No se repitieron
+los seis escenarios AC-401…AC-406; su evidencia anterior sigue siendo válida para la lógica del
+simulador. Sí se ejecutó una regresión sobre el histórico calibrado:
+
+```text
+docker compose run --rm ingestor python src/simulate_events.py `
+  --cycles 30 --interval 5 --seed 42
+```
+
+Resultado: 30 ciclos, **43 eventos**, **21 paradas**, 0 duplicados, 0 errores; cobertura 21/52
+máquinas y 3/3 plantas; latencia media 31,1 ms (máx. 54,9 ms). Después:
+`verify_history.py` 17/17 OK y `validate_data.py` 49/49 OK. El último evento quedó en
+`2026-10-22T02:01:15Z`. La cobertura parcial es normal en 30 ciclos; AC-402 ya se probó con 600
+ciclos en la evidencia original.

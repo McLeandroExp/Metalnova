@@ -16,6 +16,7 @@ COMMENT ON TABLE dim_tiempo IS 'Dimensión. Grano: un día calendario. id_tiempo
 COMMENT ON TABLE dim_orden IS 'Dimensión. Grano: una orden de producción. Conserva cantidad planificada y estado.';
 
 COMMENT ON COLUMN dim_maquina.criticidad IS 'Criticidad operacional: A (alta), B (media), C (baja).';
+COMMENT ON COLUMN dim_maquina.perfil_rendimiento IS 'Perfil sintético de calibración: estandar, desgastada, critica, calidad o energia. Solo lo aplica el escenario calibracion.';
 COMMENT ON COLUMN dim_causa.es_planificada IS 'true = parada planificada (mantenimiento preventivo, cambio de producto).';
 
 -- --- Hechos ----------------------------------------------------------------

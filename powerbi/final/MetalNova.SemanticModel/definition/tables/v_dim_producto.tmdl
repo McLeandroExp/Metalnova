@@ -1,0 +1,76 @@
+table v_dim_producto
+	lineageTag: f9ca04ca-8956-48a5-b1ab-edc93fb62892
+
+	column id_producto
+		dataType: int64
+		isKey
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: e97c192c-4871-4e36-a4d8-b60aa21c9d47
+		summarizeBy: none
+		sourceColumn: id_producto
+
+	column producto_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7b81f568-43da-44f2-8e70-79cd297c90f4
+		summarizeBy: none
+		sourceColumn: producto_codigo
+
+	column producto_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 3418b713-f285-4345-a817-116de8d9d536
+		summarizeBy: none
+		sourceColumn: producto_nombre
+
+	column unidad_medida
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2eef2ce7-0fbc-4793-a68e-f6029c01a71e
+		summarizeBy: none
+		sourceColumn: unidad_medida
+
+	column id_familia
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 1d96d48c-8e18-4ad9-b149-a5541442ea2f
+		summarizeBy: none
+		sourceColumn: id_familia
+
+	column familia_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2d1a6992-8e7d-4d55-aac3-1de66cd5bf29
+		summarizeBy: none
+		sourceColumn: familia_codigo
+
+	column familia_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: f7b0765e-b69d-44a7-a298-0b4ca9fd6adc
+		summarizeBy: none
+		sourceColumn: familia_nombre
+
+	hierarchy 'Producto'
+		lineageTag: efbe3a43-4abb-4ed6-bb15-03ff5014a801
+		level 'Familia'
+			lineageTag: 7f408e62-1aef-40bb-9c81-91f314541a1d
+			column: familia_nombre
+		level 'Producto'
+			lineageTag: 32baafa3-76bc-4961-98ca-21fe87a84880
+			column: producto_nombre
+
+	partition v_dim_producto = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_dim_producto = Origen{[Schema="public",Item="v_dim_producto"]}[Data]
+				in
+				    public_v_dim_producto
+
+	annotation PBI_ResultType = Table

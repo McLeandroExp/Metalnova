@@ -30,9 +30,11 @@ class Linea:
 class Maquina:
     id_maquina: int
     id_linea: int
+    id_planta: int
     codigo: str
     tipo: str
     criticidad: str
+    perfil_rendimiento: str
 
 
 @dataclass(frozen=True)
@@ -129,8 +131,11 @@ def load_catalog(
             raise RuntimeError("No hay líneas para las plantas seleccionadas.")
 
         cur.execute(
-            "SELECT id_maquina, id_linea, codigo, tipo, criticidad "
-            "FROM dim_maquina ORDER BY id_maquina"
+            "SELECT m.id_maquina, m.id_linea, l.id_planta, m.codigo, m.tipo, "
+            "       m.criticidad, m.perfil_rendimiento "
+            "FROM dim_maquina m "
+            "JOIN dim_linea l ON l.id_linea = m.id_linea "
+            "ORDER BY m.id_maquina"
         )
         maquinas = tuple(
             Maquina(*row)

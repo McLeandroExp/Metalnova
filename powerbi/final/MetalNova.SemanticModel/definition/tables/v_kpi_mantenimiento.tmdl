@@ -1,0 +1,265 @@
+table v_kpi_mantenimiento
+	lineageTag: 4168518e-15eb-4fd9-9633-c997830c4a75
+
+	measure 'Intervenciones' =
+			COUNTROWS ( v_kpi_mantenimiento )
+		formatString: #,##0
+		displayFolder: 05 Mantenimiento
+		lineageTag: a1a12d17-f7fa-4179-883d-62e980573535
+
+	measure 'Costo Mantenimiento (USD)' =
+			SUM ( v_kpi_mantenimiento[costo_estimado_usd] )
+		formatString: $ #,##0
+		displayFolder: 05 Mantenimiento
+		lineageTag: 091873d1-986a-46d1-9a5c-becb48dcb546
+
+	measure 'Última Intervención' =
+			MAX ( v_kpi_mantenimiento[inicio_at] )
+		formatString: General Date
+		displayFolder: 05 Mantenimiento
+		lineageTag: afb7e8cf-598a-47f4-8d7b-e7962c94d3f8
+
+	column id_mantenimiento
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: c362581c-eaf7-47b9-9df5-afeb9d0134a0
+		summarizeBy: none
+		sourceColumn: id_mantenimiento
+
+	column codigo_orden_trabajo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: f2a40923-d405-410c-90df-7e38b91601b5
+		summarizeBy: none
+		sourceColumn: codigo_orden_trabajo
+
+	column id_maquina
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 8c6befc2-1569-40c0-867e-e41f2d6c4457
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 6af6d2bc-ef18-4544-bc3e-6637f7c0c86a
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_nombre
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1e3d7bb3-26ab-4699-9c53-3c59ec6c9cb5
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+	column maquina_tipo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 24dc5c3d-963a-4bf3-adad-ab46009b0dcd
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+	column maquina_criticidad
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 891c2055-a79b-4bc3-a0fa-0c292373e47e
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: a2a0bd5b-7011-4723-9db6-896b8e44f0da
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 0896fb95-81ba-48c1-99e9-662ca1add8bf
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 98c054ff-e340-4167-84ea-cf1a1729e946
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8ce1867f-7b25-4b2f-a3d8-87fd251f7bce
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column id_tecnico
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: df360ac9-3f5e-453f-b446-ec80c77548ac
+		summarizeBy: none
+		sourceColumn: id_tecnico
+
+	column tecnico_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: caabc441-f807-4dc0-a64a-3bfa6e9f5326
+		summarizeBy: none
+		sourceColumn: tecnico_codigo
+
+	column tecnico_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: ca824c34-1f77-44d3-9717-b30b0480b4b9
+		summarizeBy: none
+		sourceColumn: tecnico_nombre
+
+	column tecnico_especialidad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 50dc747a-b323-4d2f-8bb4-b884f8940527
+		summarizeBy: none
+		sourceColumn: tecnico_especialidad
+
+	column id_causa
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: d3f0c401-2b33-4556-b2d3-b8573b479441
+		summarizeBy: none
+		sourceColumn: id_causa
+
+	column causa_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 909d7212-c241-4f19-b067-bc8a90fb116c
+		summarizeBy: none
+		sourceColumn: causa_codigo
+
+	column id_turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: ed7bc00a-1ba2-495e-8220-3ad66d1d4f6a
+		summarizeBy: none
+		sourceColumn: id_turno
+
+	column turno_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 59d876bf-9eac-4a65-8d85-b5e99b885cda
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+	column id_tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 9e6506a7-e4d3-4ec1-8713-834d9882dc79
+		summarizeBy: none
+		sourceColumn: id_tiempo
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: f4a437d8-e681-44c9-9e07-0d991bc3d508
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 809cdae0-b616-49e7-a9fd-69d9dfb8da92
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column tipo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 51de3985-269a-4c3d-b06a-32abd060b999
+		summarizeBy: none
+		sourceColumn: tipo
+
+	column inicio_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 76ca7d0b-a273-42c7-ab69-4a4a3d6f90a4
+		summarizeBy: none
+		sourceColumn: inicio_at
+
+	column fin_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 3d30f132-87c2-401e-9372-4fed390dcf89
+		summarizeBy: none
+		sourceColumn: fin_at
+
+	column duracion_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: af15f0a9-1a4d-4e8c-b981-7ca8b5b9e61f
+		summarizeBy: none
+		sourceColumn: duracion_min
+
+	column costo_estimado_usd
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 6ae558a4-e190-4890-ade1-88b0769a92e4
+		summarizeBy: none
+		sourceColumn: costo_estimado_usd
+
+	column estado
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 02e7fffb-c38f-4e4e-ba77-20b05abb1bbd
+		summarizeBy: none
+		sourceColumn: estado
+
+	column es_correctivo_cerrado
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 4700bf4e-37de-4d4f-8484-82cf2d21df2d
+		summarizeBy: none
+		sourceColumn: es_correctivo_cerrado
+
+	partition v_kpi_mantenimiento = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_mantenimiento = Origen{[Schema="public",Item="v_kpi_mantenimiento"]}[Data]
+				in
+				    public_v_kpi_mantenimiento
+
+	annotation PBI_ResultType = Table

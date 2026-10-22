@@ -1,0 +1,66 @@
+table dim_turno
+	lineageTag: 293133eb-c297-449e-b69c-11010e04915b
+
+	column id_turno
+		dataType: int64
+		isKey
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: f608cf00-e12c-4004-9d45-2a46d345ca4d
+		summarizeBy: none
+		sourceColumn: id_turno
+
+	column codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 3939861a-5153-4a6e-b3de-09dd7426a2be
+		summarizeBy: none
+		sourceColumn: codigo
+
+	column nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b1469767-7ecb-42c5-9b3b-5b6819ae04fa
+		summarizeBy: none
+		sourceColumn: nombre
+
+	column hora_inicio
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 4d1b2fe8-bdea-415e-81a6-0abca61d29ed
+		summarizeBy: none
+		sourceColumn: hora_inicio
+
+	column hora_fin
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: f4c84968-b799-407e-a5fe-9b2ad92b480d
+		summarizeBy: none
+		sourceColumn: hora_fin
+
+	column duracion_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: bd20c81d-bbcf-423e-8891-d4c1225c984a
+		summarizeBy: none
+		sourceColumn: duracion_min
+
+	column cruza_medianoche
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: b8918f40-fa18-4971-a56b-9dcd387f197a
+		summarizeBy: none
+		sourceColumn: cruza_medianoche
+
+	partition dim_turno = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_dim_turno = Origen{[Schema="public",Item="dim_turno"]}[Data]
+				in
+				    public_dim_turno
+
+	annotation PBI_ResultType = Table

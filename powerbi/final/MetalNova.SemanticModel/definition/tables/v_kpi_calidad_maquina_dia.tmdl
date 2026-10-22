@@ -1,0 +1,302 @@
+table v_kpi_calidad_maquina_dia
+	lineageTag: 15920eb8-f482-497d-b66a-5b8b56960943
+
+	measure 'FPY KPI' =
+			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) - SUM ( v_kpi_calidad_maquina_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: 00baf92e-2841-4d63-bda9-37225fdbb3a8
+
+	measure 'Tasa Defectos' =
+			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_defectuosas] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: 719d8c21-f5be-4d14-97cb-09e3e64e3bee
+
+	measure 'Tasa Retrabajo' =
+			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: 8a9db81e-8a2d-4f26-aed3-2e650821b3a0
+
+	measure 'Energía (kWh)' =
+			SUM ( v_kpi_calidad_maquina_dia[energia_kwh] )
+		formatString: #,##0.00
+		displayFolder: 03 Calidad y energía
+		lineageTag: f9b95be0-9e1f-4fb8-a209-ba3d8d490e9e
+
+	measure 'Energía por Unidad Buena' =
+			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[energia_kwh] ), SUM ( v_kpi_calidad_maquina_dia[good_count] ) )
+		formatString: 0.0000
+		displayFolder: 03 Calidad y energía
+		lineageTag: e9c328dc-a5ac-4188-9bbb-0c8d43e5fa3a
+
+	measure 'Scrap Rate (Calidad)' =
+			DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[scrap_count] ), SUM ( v_kpi_calidad_maquina_dia[total_count] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: b0af4efc-e4ac-424d-8bc4-ba8198d51490
+
+	column id_maquina
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 27e20dd6-b3e5-46a1-a141-bc3047979ce2
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8337485e-bf8a-4d7d-923d-87993b72d3b6
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_nombre
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2c00e822-123a-4c34-a23f-6b17b72c56d1
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+	column maquina_tipo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 07a9b5c8-9db3-46c8-bac6-b4b333c0e105
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+	column maquina_criticidad
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: faf7582a-51e7-4b6d-8c76-9d0196365151
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: b8bebee0-3ce8-435c-9d40-102ff3239481
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1f4b2721-6897-4172-b15a-fdc594855186
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 120917c0-a25e-49a9-ac78-0b7110f1a0ef
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 9bf253ff-ecda-4a95-ad25-1434f1e2eb9f
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column id_tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 76157246-dec2-47c7-a293-27324f9ad397
+		summarizeBy: none
+		sourceColumn: id_tiempo
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: f6674b8e-16d3-4376-8cc6-e1cb7b291be7
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: b0ee4530-2d89-437f-990f-26a18b4b9da5
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column tiempo_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 87eb8456-f0da-4383-bdd3-4b28a305c82f
+		summarizeBy: none
+		sourceColumn: tiempo_planificado_min
+
+	column tiempo_operativo_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 0e8f40e3-59f4-4e9e-8bf7-d915ac6bf1bb
+		summarizeBy: none
+		sourceColumn: tiempo_operativo_min
+
+	column downtime_no_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 31744d48-0b58-4dbd-b36b-e640fb7d8a75
+		summarizeBy: none
+		sourceColumn: downtime_no_planificado_min
+
+	column total_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 6f4fe3a0-bc4c-4cb7-9adc-9c890fcdd5ad
+		summarizeBy: none
+		sourceColumn: total_count
+
+	column good_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 3e4be835-090d-459a-b73e-732879c50290
+		summarizeBy: none
+		sourceColumn: good_count
+
+	column scrap_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 06942061-c535-4f52-bc73-d65e43b0f8b8
+		summarizeBy: none
+		sourceColumn: scrap_count
+
+	column energia_kwh
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: b7682386-4320-4891-ba0b-f07787eb3fae
+		summarizeBy: none
+		sourceColumn: energia_kwh
+
+	column inspecciones
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 108f4a90-774e-4a6a-ab3d-5d911a0ed21f
+		summarizeBy: none
+		sourceColumn: inspecciones
+
+	column unidades_inspeccionadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7ff936ce-ff9c-44d1-bb5a-f4b6145c6150
+		summarizeBy: none
+		sourceColumn: unidades_inspeccionadas
+
+	column unidades_buenas_inspeccion
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 0da3fa22-07e7-4cda-93a1-693bf551e5ab
+		summarizeBy: none
+		sourceColumn: unidades_buenas_inspeccion
+
+	column unidades_defectuosas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: ba1ea957-7f10-480e-8ade-a7a81814dab6
+		summarizeBy: none
+		sourceColumn: unidades_defectuosas
+
+	column unidades_retrabajo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7a89fcba-9cf1-4c33-a249-69877286f1a4
+		summarizeBy: none
+		sourceColumn: unidades_retrabajo
+
+	column inspecciones_con_retrabajo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: dc0b9018-5888-4b40-bb19-1afd50475142
+		summarizeBy: none
+		sourceColumn: inspecciones_con_retrabajo
+
+	column scrap_rate
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 200ad1b0-6f12-4241-a11d-5dd33f792542
+		summarizeBy: none
+		sourceColumn: scrap_rate
+
+	column energia_por_unidad_buena
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 095ea925-85bf-4793-837f-6dc5c4148267
+		summarizeBy: none
+		sourceColumn: energia_por_unidad_buena
+
+	column downtime_no_planificado_pct
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 9c090f6f-ca10-4668-a4b5-80b56271fcf7
+		summarizeBy: none
+		sourceColumn: downtime_no_planificado_pct
+
+	column tasa_defectos
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 4c1fa7ba-0767-4119-b9ce-a3621bf02e88
+		summarizeBy: none
+		sourceColumn: tasa_defectos
+
+	column tasa_retrabajo
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: fe021218-702d-4438-851f-b3b87e673147
+		summarizeBy: none
+		sourceColumn: tasa_retrabajo
+
+	column fpy
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: d969fb04-1ef4-49f9-83d0-d6ff6adf8485
+		summarizeBy: none
+		sourceColumn: fpy
+
+	partition v_kpi_calidad_maquina_dia = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_calidad_maquina_dia = Origen{[Schema="public",Item="v_kpi_calidad_maquina_dia"]}[Data]
+				in
+				    public_v_kpi_calidad_maquina_dia
+
+	annotation PBI_ResultType = Table

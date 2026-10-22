@@ -1,0 +1,244 @@
+// ============================================================================
+// Medidas DAX del modelo 006. Se agregan numeradores y denominadores;
+// nunca se promedian porcentajes (Constitución §7 y D-013).
+// Generado por tools/generate_tmdl.py; editar allí, no en el TMDL.
+// ============================================================================
+
+// --- v_loss_tree ---
+
+// [01 OEE] Disponibilidad KPI
+Disponibilidad KPI =
+    DIVIDE ( SUM ( v_loss_tree[tiempo_operativo_min] ), SUM ( v_loss_tree[tiempo_planificado_min] ) )
+// formato: 0.00%
+
+// [01 OEE] Rendimiento KPI
+Rendimiento KPI =
+    DIVIDE ( SUM ( v_loss_tree[minutos_ideales] ), SUM ( v_loss_tree[tiempo_operativo_min] ) )
+// formato: 0.00%
+
+// [01 OEE] Calidad KPI
+Calidad KPI =
+    DIVIDE ( SUM ( v_loss_tree[good_count] ), SUM ( v_loss_tree[total_count] ) )
+// formato: 0.00%
+
+// [01 OEE] OEE KPI
+OEE KPI =
+    [Disponibilidad KPI] * [Rendimiento KPI] * [Calidad KPI]
+// formato: 0.00%
+
+// [01 OEE] OEE Meta
+OEE Meta =
+    0.85
+// formato: 0.00%
+
+// [01 OEE] Brecha Meta (pp)
+Brecha Meta (pp) =
+    ( [OEE KPI] - [OEE Meta] ) * 100
+// formato: 0.00
+
+// [01 OEE] OEE Último Mes
+OEE Último Mes =
+    VAR UltimoMes = CALCULATE ( MAX ( dim_tiempo[anio_mes] ), ALLSELECTED ( dim_tiempo ) )
+    RETURN CALCULATE ( [OEE KPI], dim_tiempo[anio_mes] = UltimoMes )
+// formato: 0.00%
+
+// [01 OEE] Cumple Meta OEE
+Cumple Meta OEE =
+    IF ( [OEE KPI] >= [OEE Meta], "Sí", "No" )
+
+// [02 Pérdidas] Pérdida Disponibilidad (min)
+Pérdida Disponibilidad (min) =
+    SUM ( v_loss_tree[minutos_perdidos_disponibilidad] )
+// formato: #,##0
+
+// [02 Pérdidas] Pérdida Rendimiento (min)
+Pérdida Rendimiento (min) =
+    SUM ( v_loss_tree[minutos_perdidos_rendimiento] )
+// formato: #,##0
+
+// [02 Pérdidas] Pérdida Calidad (min)
+Pérdida Calidad (min) =
+    SUM ( v_loss_tree[minutos_perdidos_calidad] )
+// formato: #,##0
+
+// [02 Pérdidas] Pérdida Total (min)
+Pérdida Total (min) =
+    SUM ( v_loss_tree[minutos_perdidos_total] )
+// formato: #,##0
+
+// [02 Pérdidas] Participación Pérdida Disponibilidad
+Participación Pérdida Disponibilidad =
+    DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_disponibilidad] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
+// formato: 0.00%
+
+// [02 Pérdidas] Participación Pérdida Rendimiento
+Participación Pérdida Rendimiento =
+    DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_rendimiento] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
+// formato: 0.00%
+
+// [02 Pérdidas] Participación Pérdida Calidad
+Participación Pérdida Calidad =
+    DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_calidad] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Scrap Rate
+Scrap Rate =
+    DIVIDE ( SUM ( v_loss_tree[scrap_count] ), SUM ( v_loss_tree[total_count] ) )
+// formato: 0.00%
+
+// [04 Producción] Unidades Buenas
+Unidades Buenas =
+    SUM ( v_loss_tree[good_count] )
+// formato: #,##0
+
+// [04 Producción] Unidades Totales
+Unidades Totales =
+    SUM ( v_loss_tree[total_count] )
+// formato: #,##0
+
+// --- v_kpi_mantenimiento_maquina_turno ---
+
+// [05 Mantenimiento] MTBF (h)
+MTBF (h) =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) * 60 )
+// formato: #,##0.00
+
+// [05 Mantenimiento] MTTR (min)
+MTTR (min) =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_reparacion] ), SUM ( v_kpi_mantenimiento_maquina_turno[reparaciones] ) )
+// formato: #,##0.00
+
+// [05 Mantenimiento] Fallas (conteo)
+Fallas (conteo) =
+    SUM ( v_kpi_mantenimiento_maquina_turno[fallas] )
+// formato: #,##0
+
+// [05 Mantenimiento] Microparadas (conteo)
+Microparadas (conteo) =
+    SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] )
+// formato: #,##0
+
+// [05 Mantenimiento] Duración Media Falla (min)
+Duración Media Falla (min) =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_fallas] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) )
+// formato: #,##0.00
+
+// [05 Mantenimiento] Fallas por 100 h
+Fallas por 100 h =
+    DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) * 60, SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100
+// formato: #,##0.00
+
+// [05 Mantenimiento] Downtime Mantenimiento (min)
+Downtime Mantenimiento (min) =
+    SUM ( v_kpi_mantenimiento_maquina_turno[downtime_no_planificado_min] )
+// formato: #,##0
+
+// --- v_kpi_mantenimiento ---
+
+// [05 Mantenimiento] Intervenciones
+Intervenciones =
+    COUNTROWS ( v_kpi_mantenimiento )
+// formato: #,##0
+
+// [05 Mantenimiento] Costo Mantenimiento (USD)
+Costo Mantenimiento (USD) =
+    SUM ( v_kpi_mantenimiento[costo_estimado_usd] )
+// formato: $ #,##0
+
+// [05 Mantenimiento] Última Intervención
+Última Intervención =
+    MAX ( v_kpi_mantenimiento[inicio_at] )
+// formato: General Date
+
+// --- v_kpi_calidad_maquina_dia ---
+
+// [03 Calidad y energía] FPY KPI
+FPY KPI =
+    DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) - SUM ( v_kpi_calidad_maquina_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Tasa Defectos
+Tasa Defectos =
+    DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_defectuosas] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Tasa Retrabajo
+Tasa Retrabajo =
+    DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[unidades_retrabajo] ), SUM ( v_kpi_calidad_maquina_dia[unidades_inspeccionadas] ) )
+// formato: 0.00%
+
+// [03 Calidad y energía] Energía (kWh)
+Energía (kWh) =
+    SUM ( v_kpi_calidad_maquina_dia[energia_kwh] )
+// formato: #,##0.00
+
+// [03 Calidad y energía] Energía por Unidad Buena
+Energía por Unidad Buena =
+    DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[energia_kwh] ), SUM ( v_kpi_calidad_maquina_dia[good_count] ) )
+// formato: 0.0000
+
+// [03 Calidad y energía] Scrap Rate (Calidad)
+Scrap Rate (Calidad) =
+    DIVIDE ( SUM ( v_kpi_calidad_maquina_dia[scrap_count] ), SUM ( v_kpi_calidad_maquina_dia[total_count] ) )
+// formato: 0.00%
+
+// --- v_kpi_parada ---
+
+// [06 Paradas] Downtime por Causa (min)
+Downtime por Causa (min) =
+    CALCULATE ( SUM ( v_kpi_parada[duracion_min] ), v_kpi_parada[es_planificada] = FALSE () )
+// formato: #,##0
+
+// [06 Paradas] Paradas No Planificadas
+Paradas No Planificadas =
+    CALCULATE ( COUNTROWS ( v_kpi_parada ), v_kpi_parada[es_planificada] = FALSE () )
+// formato: #,##0
+
+// [06 Paradas] Pareto %
+Pareto % =
+    DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )
+// formato: 0.00%
+
+// --- v_alerta_maquina_critica ---
+
+// [07 Alertas] Alertas Activas
+Alertas Activas =
+    CALCULATE ( COUNTROWS ( v_alerta_maquina_critica ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE (), v_alerta_maquina_critica[tiene_alerta] = TRUE () )
+// formato: #,##0
+
+// [07 Alertas] Alertas Críticas
+Alertas Críticas =
+    CALCULATE ( COUNTROWS ( v_alerta_maquina_critica ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE (), v_alerta_maquina_critica[tiene_alerta] = TRUE (), v_alerta_maquina_critica[severidad] = "critica" )
+// formato: #,##0
+
+// [07 Alertas] Máquinas en Alerta
+Máquinas en Alerta =
+    CALCULATE ( DISTINCTCOUNT ( v_alerta_maquina_critica[id_maquina] ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE (), v_alerta_maquina_critica[tiene_alerta] = TRUE () )
+// formato: #,##0
+
+// [07 Alertas] Temperatura Máxima (°C)
+Temperatura Máxima (°C) =
+    CALCULATE ( MAX ( v_alerta_maquina_critica[max_temperatura_c] ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE () )
+// formato: 0.0
+
+// --- v_kpi_parametros ---
+
+// [08 Umbrales] Umbral OEE Alerta
+Umbral OEE Alerta =
+    MIN ( v_kpi_parametros[oee_umbral] )
+// formato: 0.00%
+
+// [08 Umbrales] Umbral MTBF (h)
+Umbral MTBF (h) =
+    MIN ( v_kpi_parametros[mtbf_umbral_h] )
+// formato: #,##0.00
+
+// [08 Umbrales] Umbral Temperatura (°C)
+Umbral Temperatura (°C) =
+    MIN ( v_kpi_parametros[temperatura_umbral_c] )
+// formato: 0.0
+
+// [08 Umbrales] Umbral Downtime (min)
+Umbral Downtime (min) =
+    MIN ( v_kpi_parametros[downtime_umbral_min] )
+// formato: #,##0

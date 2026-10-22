@@ -1,0 +1,284 @@
+table v_kpi_parada
+	lineageTag: bdf8ae8a-6e22-4469-8c11-0481d8c1c173
+
+	measure 'Downtime por Causa (min)' =
+			CALCULATE ( SUM ( v_kpi_parada[duracion_min] ), v_kpi_parada[es_planificada] = FALSE () )
+		formatString: #,##0
+		displayFolder: 06 Paradas
+		lineageTag: b4421cfe-df7f-41e7-8e79-94b090e93a09
+
+	measure 'Paradas No Planificadas' =
+			CALCULATE ( COUNTROWS ( v_kpi_parada ), v_kpi_parada[es_planificada] = FALSE () )
+		formatString: #,##0
+		displayFolder: 06 Paradas
+		lineageTag: 234aaaaa-90c7-48fa-97b9-aec6e74c0a17
+
+	measure 'Pareto %' =
+			DIVIDE ( [Downtime por Causa (min)], CALCULATE ( [Downtime por Causa (min)], ALLSELECTED ( dim_causa ) ) )
+		formatString: 0.00%
+		displayFolder: 06 Paradas
+		lineageTag: 79a08860-2302-4391-a437-9c4dbf542a29
+
+	column id_parada
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: d19e9009-e590-418e-9a02-db4eede0f49e
+		summarizeBy: none
+		sourceColumn: id_parada
+
+	column id_maquina
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 3f4235ff-5ed8-4262-b7c9-ceb2192bd002
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: b32e5f03-b4e5-4cc4-a54b-f43dc659b1b8
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_nombre
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2446e744-05ad-4ebe-95df-80b556d143d4
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+	column maquina_tipo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 20dc5f1b-6409-42b4-be76-3b93aec5a135
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+	column maquina_criticidad
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: da161064-9ed7-47fb-a5b1-fc0054c8c9f2
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 49777fdc-dd35-484d-9401-076f32d6d156
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 3943c33c-1b7b-42e8-9235-36aa9792cb13
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 1cfe8ef9-2899-4f4d-bb62-dce3c0ac3a2c
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 6d59ce27-8482-40b0-92a5-80b56b55cbdd
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column id_turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: f3bd09f6-f5d6-46d9-a7df-2f9b26318deb
+		summarizeBy: none
+		sourceColumn: id_turno
+
+	column turno_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: e5839b4c-e044-42be-8b49-46e39d80813c
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+	column id_tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 31a745ad-7bc4-40e3-b5ec-ef0551093abd
+		summarizeBy: none
+		sourceColumn: id_tiempo
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 65e8a695-5b27-4eec-8943-f2f9880613fc
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 9af1abe4-35cc-4d7a-bd8b-b76c5d7fd9a9
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column id_causa
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: e43e0d85-0899-49df-ac63-4e377df5bcd6
+		summarizeBy: none
+		sourceColumn: id_causa
+
+	column causa_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 160eefa0-79ab-48e1-b5c2-2834679484b1
+		summarizeBy: none
+		sourceColumn: causa_codigo
+
+	column causa_categoria
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: b0ab25e2-09e6-4a10-9016-bac3fa846d10
+		summarizeBy: none
+		sourceColumn: causa_categoria
+
+	column causa_es_planificada
+		dataType: boolean
+		isHidden
+		sourceProviderType: bit
+		lineageTag: 436567c0-2d38-4797-801b-56edb0049c40
+		summarizeBy: none
+		sourceColumn: causa_es_planificada
+
+	column id_mantenimiento
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: f87857df-d4bc-4b69-8888-5bd734a2d238
+		summarizeBy: none
+		sourceColumn: id_mantenimiento
+
+	column inicio_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 2e286189-fa05-4939-a8e3-a43ce52e12f7
+		summarizeBy: none
+		sourceColumn: inicio_at
+
+	column fin_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 9e74df21-1bc0-4cef-b243-cf29beedf0fe
+		summarizeBy: none
+		sourceColumn: fin_at
+
+	column duracion_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: de46388a-34fe-4a4e-b8da-13b8b785f87a
+		summarizeBy: none
+		sourceColumn: duracion_min
+
+	column es_planificada
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 444e0694-dfd7-46cc-b1c6-b43432e3d60d
+		summarizeBy: none
+		sourceColumn: es_planificada
+
+	column es_microparada_etl
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: e0933a19-9c27-44b6-851c-1064090a233e
+		summarizeBy: none
+		sourceColumn: es_microparada_etl
+
+	column microparada_min
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 1da3f401-be61-4609-9fca-bab022e46f81
+		summarizeBy: none
+		sourceColumn: microparada_min
+
+	column falla_corta_min
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 73b4b6c9-752c-465e-bda1-1d6cc6003698
+		summarizeBy: none
+		sourceColumn: falla_corta_min
+
+	column es_microparada_regla
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 7ee6676d-e5a2-4fa6-a19e-4cc2f0a591e9
+		summarizeBy: none
+		sourceColumn: es_microparada_regla
+
+	column es_falla
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: fd406893-2b03-4a56-a6e3-0942e2439d09
+		summarizeBy: none
+		sourceColumn: es_falla
+
+	column es_falla_corta
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: d4d64c16-f467-40b7-b82b-ae5394c5133b
+		summarizeBy: none
+		sourceColumn: es_falla_corta
+
+	column clasificacion
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: f93c5cb4-9f92-4870-8418-386053660953
+		summarizeBy: none
+		sourceColumn: clasificacion
+
+	partition v_kpi_parada = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_parada = Origen{[Schema="public",Item="v_kpi_parada"]}[Data]
+				in
+				    public_v_kpi_parada
+
+	annotation PBI_ResultType = Table

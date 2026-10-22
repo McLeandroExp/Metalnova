@@ -1,0 +1,413 @@
+table v_kpi_mantenimiento_maquina_turno
+	lineageTag: 95bde9dd-107a-430e-9102-1697289ab514
+
+	measure 'MTBF (h)' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) * 60 )
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: 1582e1ac-0a53-4d22-9f4a-4a1df3c8bbc7
+
+	measure 'MTTR (min)' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_reparacion] ), SUM ( v_kpi_mantenimiento_maquina_turno[reparaciones] ) )
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: 9bcdf3f8-3cd3-4bc4-b664-004f5f152971
+
+	measure 'Fallas (conteo)' =
+			SUM ( v_kpi_mantenimiento_maquina_turno[fallas] )
+		formatString: #,##0
+		displayFolder: 05 Mantenimiento
+		lineageTag: 373f4106-edbc-489b-803e-9ceae14665af
+
+	measure 'Microparadas (conteo)' =
+			SUM ( v_kpi_mantenimiento_maquina_turno[microparadas] )
+		formatString: #,##0
+		displayFolder: 05 Mantenimiento
+		lineageTag: c13d5455-17de-421d-b922-de232cca2ca9
+
+	measure 'Duración Media Falla (min)' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_fallas] ), SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) )
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: 126cbd08-0176-4f88-abc9-ae00a5981433
+
+	measure 'Fallas por 100 h' =
+			DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[fallas] ) * 60, SUM ( v_kpi_mantenimiento_maquina_turno[tiempo_operativo_min] ) ) * 100
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: d69cec98-c38e-4f0e-83aa-94e9b1ea402a
+
+	measure 'Downtime Mantenimiento (min)' =
+			SUM ( v_kpi_mantenimiento_maquina_turno[downtime_no_planificado_min] )
+		formatString: #,##0
+		displayFolder: 05 Mantenimiento
+		lineageTag: d476b93f-3a73-4d0a-9c0f-cebe7ee4930d
+
+	column id_maquina
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 93691e4b-a28d-4469-8da8-1c00187b6a14
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: b85ef1e7-a179-4e84-9a12-a9384cdd9425
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_nombre
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: db85b6b9-894a-4520-9d1b-1566f8e08be4
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+	column maquina_tipo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 4d425da0-b175-467f-85e3-98155c50e0bf
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+	column maquina_criticidad
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 213ef192-6e14-43fc-a34a-cf0067dc8de3
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 0a6e3cdd-b659-4328-ab70-9e0563b4bd94
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 14e43f74-417f-4bff-89d9-d4aef49415f0
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 1316d3d4-3f04-4a39-9de0-eb73088ea70a
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 70950fef-f56f-4073-80b1-e7a857f727da
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column id_turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 2b58b51f-a679-4338-9ce0-ae5a779922fc
+		summarizeBy: none
+		sourceColumn: id_turno
+
+	column turno_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 987770bc-974a-46a3-8905-1a1f526777c9
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+	column id_tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: fa083f94-5068-44de-901f-a0194e6241ea
+		summarizeBy: none
+		sourceColumn: id_tiempo
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 6551b901-c10e-4927-a33c-3e48a555cec8
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 70c3fb0c-8228-4c5f-9d6a-2ddb259216dd
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column turno_inicio_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: b39a5039-333a-4697-9076-8e36f0b04e28
+		summarizeBy: none
+		sourceColumn: turno_inicio_at
+
+	column tiempo_calendario_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 642f7aa6-c059-4825-9975-593b3c5d0451
+		summarizeBy: none
+		sourceColumn: tiempo_calendario_min
+
+	column tiempo_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: a00c9e66-3960-442e-841d-dbe6a75da572
+		summarizeBy: none
+		sourceColumn: tiempo_planificado_min
+
+	column downtime_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 2acae126-0aa4-4410-88b8-3ded1283afb7
+		summarizeBy: none
+		sourceColumn: downtime_planificado_min
+
+	column tiempo_operativo_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: cc5074a4-0b8d-4e3a-87ab-3acc22d1e97f
+		summarizeBy: none
+		sourceColumn: tiempo_operativo_min
+
+	column downtime_no_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 30ce5d7c-7cb7-4d54-9bd7-629d4bca2a62
+		summarizeBy: none
+		sourceColumn: downtime_no_planificado_min
+
+	column total_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7e86524a-714d-4c64-aca2-a2433b419607
+		summarizeBy: none
+		sourceColumn: total_count
+
+	column good_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: ddef7d2e-0c8d-4f4e-b20c-f1da3acdd8fd
+		summarizeBy: none
+		sourceColumn: good_count
+
+	column paradas_no_planificadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 0b8826d0-e940-412f-a5f1-41e7002a4424
+		summarizeBy: none
+		sourceColumn: paradas_no_planificadas
+
+	column minutos_no_planificados_parada
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: f8ca0f97-b497-4b4d-ab2f-945a8aa93dbf
+		summarizeBy: none
+		sourceColumn: minutos_no_planificados_parada
+
+	column fallas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7114f50a-e571-421d-926c-9143d26bf86f
+		summarizeBy: none
+		sourceColumn: fallas
+
+	column minutos_fallas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 000915ea-07c1-417c-a261-e03c5b478e7c
+		summarizeBy: none
+		sourceColumn: minutos_fallas
+
+	column microparadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 8893767c-1c3b-4529-b234-f46c52fa77a5
+		summarizeBy: none
+		sourceColumn: microparadas
+
+	column minutos_microparadas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 16ab8a68-55d0-436e-9a7b-e8baf44f796e
+		summarizeBy: none
+		sourceColumn: minutos_microparadas
+
+	column fallas_cortas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 33750641-50a7-4d7f-aef3-b00393c74514
+		summarizeBy: none
+		sourceColumn: fallas_cortas
+
+	column minutos_fallas_cortas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 57988b0d-4326-4a3e-a428-c41381ff13a1
+		summarizeBy: none
+		sourceColumn: minutos_fallas_cortas
+
+	column reparaciones
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7b771e81-3492-4dd2-acb4-c887bf1d24b8
+		summarizeBy: none
+		sourceColumn: reparaciones
+
+	column minutos_reparacion
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: e521d040-4df7-4116-a0d4-a80ca1e9fd93
+		summarizeBy: none
+		sourceColumn: minutos_reparacion
+
+	column intervenciones
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: fb74bd7e-082f-496f-8d91-6db96fd30ace
+		summarizeBy: none
+		sourceColumn: intervenciones
+
+	column minutos_intervencion
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7bbba01a-0481-422c-9ea4-c20685d9cac5
+		summarizeBy: none
+		sourceColumn: minutos_intervencion
+
+	column costo_mantenimiento_usd
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 29cad610-85f8-40d5-a65b-7ed3438df6fb
+		summarizeBy: none
+		sourceColumn: costo_mantenimiento_usd
+
+	column tiempo_operativo_h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: c401404e-fb1d-42b4-ae2f-6ab0704798d7
+		summarizeBy: none
+		sourceColumn: tiempo_operativo_h
+
+	column mtbf_h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: afbf27e5-b763-4fd7-a84f-65d5966b8efa
+		summarizeBy: none
+		sourceColumn: mtbf_h
+
+	column mttr_min
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: f716da72-c084-44ff-a040-ccad19fbb55f
+		summarizeBy: none
+		sourceColumn: mttr_min
+
+	column downtime_no_planificado_pct
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 3b251571-ff5c-4557-9ea8-e00b4654f136
+		summarizeBy: none
+		sourceColumn: downtime_no_planificado_pct
+
+	column mtbf_corto_h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: ac07e5e5-4a76-4c42-973a-1c9771a14610
+		summarizeBy: none
+		sourceColumn: mtbf_corto_h
+
+	column fallas_cortas_por_100h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 29fe1c69-8153-4044-a659-f8ade7c77eea
+		summarizeBy: none
+		sourceColumn: fallas_cortas_por_100h
+
+	column microparadas_por_100h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 9f5f8605-12be-4b6b-90f9-d77dac144053
+		summarizeBy: none
+		sourceColumn: microparadas_por_100h
+
+	column duracion_media_micro_min
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: c285ce14-37f8-4a5e-8ceb-2c95455d58c5
+		summarizeBy: none
+		sourceColumn: duracion_media_micro_min
+
+	column duracion_media_falla_min
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 274bff12-ac29-4abc-9139-7c6318c08e1f
+		summarizeBy: none
+		sourceColumn: duracion_media_falla_min
+
+	partition v_kpi_mantenimiento_maquina_turno = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_mantenimiento_maquina_turno = Origen{[Schema="public",Item="v_kpi_mantenimiento_maquina_turno"]}[Data]
+				in
+				    public_v_kpi_mantenimiento_maquina_turno
+
+	annotation PBI_ResultType = Table

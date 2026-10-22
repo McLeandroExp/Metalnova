@@ -15,7 +15,9 @@ Salidas:
     data/processed/manifest.json
 
 Los datos son **sintéticos**. El manifiesto registra semilla, parámetros,
-recuentos, tamaños, duración y memoria máxima.
+recuentos, tamaños, duración y memoria máxima. Para el escenario
+``calibracion`` también registra los factores de planta, los perfiles de
+máquina y la degradación usada, de modo que la corrida sea auditable.
 """
 
 from __future__ import annotations
@@ -29,10 +31,14 @@ from pathlib import Path
 
 from common.catalog import load_catalog
 from common.db import connect
-from common.simulation import HistoryGenerator, SimParams
+from common.simulation import (
+    HistoryGenerator,
+    SimParams,
+    calibration_manifest,
+)
 
 UTC = timezone.utc
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 DEFAULT_SEED = 42
 DEFAULT_DAYS = 180
 DEFAULT_SCENARIO = "degradado"
@@ -60,7 +66,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--escenario",
-        choices=("base", "degradado"),
+        choices=("base", "degradado", "calibracion"),
         default=DEFAULT_SCENARIO,
         help="escenario de degradación (default: degradado)",
     )
@@ -115,19 +121,29 @@ def _validate_args(args: argparse.Namespace) -> tuple[date, date]:
 
 
 def _run_tag(args: argparse.Namespace, start_date: date, end_date: date) -> str:
-    raw = "|".join(
-        [
-            VERSION,
-            str(args.seed),
-            str(args.days),
-            start_date.isoformat(),
-            end_date.isoformat(),
-            args.escenario,
-            f"{args.intensidad:.4f}",
-            str(args.plantas),
-            str(args.maquinas),
-        ]
-    )
+    parts = [
+        VERSION,
+        str(args.seed),
+        str(args.days),
+        start_date.isoformat(),
+        end_date.isoformat(),
+        args.escenario,
+        f"{args.intensidad:.4f}",
+        str(args.plantas),
+        str(args.maquinas),
+    ]
+    if args.escenario == "calibracion":
+        # La configuración forma parte de la identidad de la corrida: dos
+        # calibraciones con factores distintos no pueden compartir run_id.
+        parts.append(
+            json.dumps(
+                calibration_manifest(),
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+        )
+    raw = "|".join(parts)
     return "h" + hashlib.sha256(raw.encode("utf-8")).hexdigest()[:10]
 
 
@@ -222,6 +238,8 @@ def main(argv: list[str] | None = None) -> int:
         },
         **summary,
     }
+    if args.escenario == "calibracion":
+        manifest["calibracion"] = calibration_manifest()
 
     args.manifest.parent.mkdir(parents=True, exist_ok=True)
     args.manifest.write_text(

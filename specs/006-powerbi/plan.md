@@ -40,6 +40,29 @@ vistas SQL (contrato único).
 - El `.pbip` del spike se conserva como referencia de las mediciones; las páginas definitivas lo
   sustituirán.
 
+## Calibración del histórico (FR-615, T-617)
+
+El diagnóstico previo mostró OEE por planta 84,45 / 84,47 / 84,50 % (rango 0,05 pp) y
+máquinas 84,47–84,50 %. Las plantas solo se diferenciaban por ruido; cambiar la semilla no crea
+dispersión estructural. Se optó por un escenario nuevo, manteniendo `degradado` como histórico
+reproducible.
+
+Diseño aplicado:
+
+- `dim_maquina.perfil_rendimiento` con cinco valores; migración idempotente y exposición en
+  `v_dim_maquina`.
+- Factores por planta (rendimiento/fallas/calidad/energía) y globales de calibración.
+- Siete outliers persistentes: M-005 energía, M-015/M-024/M-040/M-049 desgastada, M-032 calidad,
+  M-047 crítica.
+- El `run_id` incluye el manifiesto de calibración para que dos configuraciones no compartan
+  identidad.
+- El umbral de alerta OEE se redondea a 6 decimales para estabilizar el borde exacto de 55 %.
+
+Resultado medido (30 días inicio/cierre): OEE 78,02 → 66,00 %; plantas 81,98/78,00/73,44 →
+69,32/66,07/62,04; dispersión 8,5 → 7,3 pp; M-047 51,81 %; scrap 3,66 → 6,08 %; energía por
+unidad buena +12,2 %; downtime +49,4 % (brecha frente al +31 % orientativo, documentada). La
+validación independiente siguió en 49/49 y la reproducibilidad de los seis CSV fue idéntica.
+
 ## Riesgos
 
 | Riesgo | Mitigación |

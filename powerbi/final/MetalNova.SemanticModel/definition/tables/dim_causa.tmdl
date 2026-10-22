@@ -1,0 +1,60 @@
+table dim_causa
+	lineageTag: 249b5983-a934-4c93-a2e5-09aea813487f
+
+	column id_causa
+		dataType: int64
+		isKey
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 65948a5c-ccdc-4420-a132-2d4622ab85fe
+		summarizeBy: none
+		sourceColumn: id_causa
+
+	column codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b1f38924-e229-466b-aaf0-d34a01a261ef
+		summarizeBy: none
+		sourceColumn: codigo
+
+	column descripcion
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 5914fdd6-a9d0-4d2d-aa82-9c21a6d1adaf
+		summarizeBy: none
+		sourceColumn: descripcion
+
+	column categoria
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 9f69cd26-c23f-42ce-aee8-275590d9449f
+		summarizeBy: none
+		sourceColumn: categoria
+
+	column es_planificada
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: df8832ef-d05d-422e-acf9-bc63afb022c5
+		summarizeBy: none
+		sourceColumn: es_planificada
+
+	hierarchy 'Causa'
+		lineageTag: 4e699637-e4cd-4441-acdf-2086cb90e9a1
+		level 'Categoría'
+			lineageTag: 41485bec-a14f-4685-b67e-1d4baa38ec86
+			column: categoria
+		level 'Detalle'
+			lineageTag: af3f80f3-7b46-4158-88d9-ed578ec145b7
+			column: descripcion
+
+	partition dim_causa = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_dim_causa = Origen{[Schema="public",Item="dim_causa"]}[Data]
+				in
+				    public_dim_causa
+
+	annotation PBI_ResultType = Table

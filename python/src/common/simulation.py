@@ -12,6 +12,11 @@ Principios de diseño:
 - **Memoria acotada**: las filas se escriben en CSV en streaming.
 
 Todos los datos son sintéticos.
+
+El escenario ``calibracion`` añade factores de planta y perfiles persistentes
+por máquina (``dim_maquina.perfil_rendimiento``) para producir una dispersión
+visible entre plantas y outliers de máquina. El escenario ``degradado``
+original conserva sus parámetros neutros y sigue siendo reproducible.
 """
 
 from __future__ import annotations
@@ -131,6 +136,105 @@ SHIFT_FACTORS = {
 }
 
 CRITICIDAD_FACTOR = {"A": 1.35, "B": 1.00, "C": 0.75}
+
+CALIBRATION_SCENARIO = "calibracion"
+
+
+@dataclass(frozen=True)
+class FactorSet:
+    """Multiplicadores de calibración para una planta o un perfil de máquina.
+
+    Los valores por defecto (1.0) reproducen el escenario degradado original.
+    """
+
+    rendimiento: float = 1.0
+    fallas: float = 1.0
+    calidad: float = 1.0
+    energia: float = 1.0
+    reparacion: float = 1.0
+    microparadas: float = 1.0
+
+    def combine(self, other: "FactorSet") -> "FactorSet":
+        return FactorSet(
+            rendimiento=self.rendimiento * other.rendimiento,
+            fallas=self.fallas * other.fallas,
+            calidad=self.calidad * other.calidad,
+            energia=self.energia * other.energia,
+            reparacion=self.reparacion * other.reparacion,
+            microparadas=self.microparadas * other.microparadas,
+        )
+
+
+# Escenario 'calibracion': separa las plantas y añade máquinas outlier
+# persistentes. Los valores son parámetros de diseño sintéticos, no telemetría.
+PLANT_FACTORS = {
+    1: FactorSet(rendimiento=0.934, fallas=0.90, calidad=1.00, energia=1.00),
+    2: FactorSet(rendimiento=0.898, fallas=1.00, calidad=0.995, energia=1.05),
+    3: FactorSet(rendimiento=0.873, fallas=1.15, calidad=0.985, energia=1.10),
+}
+
+PROFILE_FACTORS = {
+    "estandar": FactorSet(),
+    "desgastada": FactorSet(
+        rendimiento=0.87, fallas=1.45, calidad=0.995, energia=1.05,
+        reparacion=1.10, microparadas=1.20,
+    ),
+    "critica": FactorSet(
+        rendimiento=0.76, fallas=2.20, calidad=0.990, energia=1.15,
+        reparacion=1.40, microparadas=1.50,
+    ),
+    "calidad": FactorSet(
+        rendimiento=0.97, fallas=1.05, calidad=0.94, energia=1.02,
+    ),
+    "energia": FactorSet(
+        rendimiento=0.98, fallas=1.00, calidad=0.997, energia=1.70,
+    ),
+}
+
+CALIBRATION_GLOBAL_FACTORS = FactorSet(calidad=0.98)
+CALIBRATION_QUALITY_DEGRADATION = 0.03
+CALIBRATION_PERFORMANCE_DEGRADATION = 0.15
+CALIBRATION_FAILURE_DEGRADATION = 0.40
+CALIBRATION_ENERGY_DEGRADATION = 0.01
+CALIBRATION_PERFORMANCE_FLOOR = 0.45
+
+
+def calibration_manifest() -> dict[str, Any]:
+    """Configuración serializable para el manifiesto de la corrida."""
+    return {
+        "version": "1.0.0",
+        "plantas": {
+            str(pid): {
+                "rendimiento": f.rendimiento,
+                "fallas": f.fallas,
+                "calidad": f.calidad,
+                "energia": f.energia,
+            }
+            for pid, f in PLANT_FACTORS.items()
+        },
+        "perfiles": {
+            name: {
+                "rendimiento": f.rendimiento,
+                "fallas": f.fallas,
+                "calidad": f.calidad,
+                "energia": f.energia,
+                "reparacion": f.reparacion,
+                "microparadas": f.microparadas,
+            }
+            for name, f in PROFILE_FACTORS.items()
+        },
+        "global": {
+            "rendimiento": CALIBRATION_GLOBAL_FACTORS.rendimiento,
+            "fallas": CALIBRATION_GLOBAL_FACTORS.fallas,
+            "calidad": CALIBRATION_GLOBAL_FACTORS.calidad,
+            "energia": CALIBRATION_GLOBAL_FACTORS.energia,
+            "quality_degradation": CALIBRATION_QUALITY_DEGRADATION,
+            "performance_degradation": CALIBRATION_PERFORMANCE_DEGRADATION,
+            "failure_degradation": CALIBRATION_FAILURE_DEGRADATION,
+            "energy_degradation": CALIBRATION_ENERGY_DEGRADATION,
+            "performance_floor": CALIBRATION_PERFORMANCE_FLOOR,
+        },
+    }
 
 MACHINE_KW = {
     "CNC": 18.0,
@@ -365,6 +469,15 @@ class HistoryGenerator:
             )
         return summary
 
+    # --------------------------------------------------------------- factores
+    def _factors_for(self, maquina: Maquina) -> FactorSet:
+        """Factores de calibración; el escenario degradado queda neutro."""
+        if self.params.escenario != CALIBRATION_SCENARIO:
+            return FactorSet()
+        planta = PLANT_FACTORS.get(maquina.id_planta, FactorSet())
+        perfil = PROFILE_FACTORS.get(maquina.perfil_rendimiento, FactorSet())
+        return planta.combine(perfil).combine(CALIBRATION_GLOBAL_FACTORS)
+
     # ------------------------------------------------------------------ turno
     def _shift(
         self,
@@ -377,10 +490,20 @@ class HistoryGenerator:
         shift_start = datetime.combine(fecha, turno.hora_inicio, tzinfo=UTC)
         shift_end = shift_start + timedelta(minutes=turno.duracion_min)
 
-        degradation = progress if self.params.escenario == "degradado" else progress * 0.15
+        calibracion = self.params.escenario == CALIBRATION_SCENARIO
+        degradation = (
+            progress
+            if self.params.escenario in ("degradado", CALIBRATION_SCENARIO)
+            else progress * 0.15
+        )
         perf_shift, fail_mult, quality_shift, micro_mult = SHIFT_FACTORS.get(
             turno.codigo, (0.93, 1.0, 0.993, 1.0)
         )
+        factors = self._factors_for(maquina)
+        perf_shift *= factors.rendimiento
+        fail_mult *= factors.fallas
+        quality_shift *= factors.calidad
+        micro_mult *= factors.microparadas
         weekend = fecha.weekday() >= 5
         if weekend:
             perf_shift -= 0.015
@@ -476,16 +599,20 @@ class HistoryGenerator:
             )
             unplanned += duration
 
+        failure_degradation = (
+            CALIBRATION_FAILURE_DEGRADATION if calibracion else 2.5
+        )
         failure_lambda = (
             0.055
             * self.params.intensidad
             * CRITICIDAD_FACTOR.get(maquina.criticidad, 1.0)
             * fail_mult
-            * (1 + 2.5 * degradation)
+            * (1 + failure_degradation * degradation)
         )
         failure_count = min(2, self._poisson(failure_lambda))
         for _ in range(failure_count):
             duration = int(min(180, max(5, self.rng.lognormvariate(2.7, 0.6))))
+            duration = int(duration * factors.reparacion)
             duration = min(duration, available - unplanned - MIN_RUNTIME_MIN)
             if duration < 5:
                 break
@@ -522,25 +649,40 @@ class HistoryGenerator:
 
         # --- Producción y calidad -----------------------------------------
         cycle = self._cycle_seconds(producto)
+        performance_degradation = (
+            CALIBRATION_PERFORMANCE_DEGRADATION if calibracion else 0.10
+        )
         performance = (
             perf_shift
-            * (1 - 0.10 * degradation)
+            * (1 - performance_degradation * degradation)
             * (1 + self.rng.uniform(-0.02, 0.02))
         )
-        performance = max(0.55, min(0.99, performance))
+        performance_floor = CALIBRATION_PERFORMANCE_FLOOR if calibracion else 0.55
+        performance = max(performance_floor, min(0.99, performance))
         total_count = int(runtime * 60 / cycle * performance)
 
-        quality = quality_shift * (1 - 0.05 * degradation) * (1 + self.rng.uniform(-0.002, 0.002))
+        quality_degradation = (
+            CALIBRATION_QUALITY_DEGRADATION if calibracion else 0.05
+        )
+        quality = (
+            quality_shift
+            * (1 - quality_degradation * degradation)
+            * (1 + self.rng.uniform(-0.002, 0.002))
+        )
         quality = max(0.90, min(0.999, quality))
         good_count = int(total_count * quality)
         scrap_count = total_count - good_count
 
         machine_kw = MACHINE_KW.get(maquina.tipo, 20.0)
+        energy_degradation = (
+            CALIBRATION_ENERGY_DEGRADATION if calibracion else 0.10
+        )
         energy = (
             machine_kw
             * (runtime / 60)
             * (0.75 + 0.25 * performance)
-            * (1 + 0.10 * degradation)
+            * (1 + energy_degradation * degradation)
+            * factors.energia
         )
 
         self.order_seq += 1

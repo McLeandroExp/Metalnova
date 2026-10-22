@@ -1029,7 +1029,9 @@ def build_alerts(
         max_temp = max(lecturas) if lecturas else 0.0
         mtbf = metrics["mtbf_h"]
         downtime = metrics["downtime_no_planificado_min"]
-        cumple_oee = oee is not None and oee < 0.55
+        # Misma tolerancia que la vista: un OEE exactamente en el umbral no
+        # dispara la condición (el borde aparece en la máquina crítica).
+        cumple_oee = oee is not None and round(oee, 6) < 0.55
         cumple_mtbf = mtbf is not None and mtbf < 20
         cumple_temp = altas >= 2
         cumple_downtime = downtime > 120

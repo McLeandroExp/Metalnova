@@ -1,8 +1,8 @@
 # Arquitectura — MetalNova Smart Factory BI
 
 > Estado: incrementos 001, 002, 003, 004 y 005 cerrados. El histórico sintético, la ingesta
-> continua y las 20 vistas KPI ya están disponibles en PostgreSQL; Power BI corresponde al
-> incremento 006.
+> continua y las 20 vistas KPI ya están disponibles en PostgreSQL; el 006 está en curso con el
+> histórico **calibrado** (`calibracion`) y el modelo semántico generado.
 
 ## Diagrama de componentes
 
@@ -25,7 +25,7 @@
 │                                 └───────────────────────────────┘   │
 │                                                  │                  │
 │                                                  ▼                  │
-│                                    Power BI Desktop (Import/DirectQuery)
+│                                    Power BI Desktop (DirectQuery)
 │                                      4 páginas · 9 KPIs              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -35,7 +35,9 @@
 1. `sql/apply_all.sql` crea el esquema, el catálogo de referencia y las vistas base + KPI
    (idempotente).
 2. `generate_history.py` produce 180 días de eventos sintéticos en `data/raw/` y el manifiesto en
-   `data/processed/manifest.json` (streaming, semilla explícita).
+   `data/processed/manifest.json` (streaming, semilla explícita). El escenario `calibracion`
+   aplica factores por planta y perfiles persistentes de máquina; `degradado` conserva la
+   parametrización histórica neutra.
 3. `load_history.py` carga por lotes en PostgreSQL con `COPY` + `ON CONFLICT DO NOTHING`
    (idempotente por `run_id`; exige `--reset` para reemplazar otra ejecución).
 4. `verify_history.py` y `sql/validation/02_historico.sql` comprueban volumen, cobertura,
@@ -66,6 +68,22 @@ El simulador no rellena huecos si estuvo detenido: retoma el slot actual. Las pa
 quedan marcadas con `causa_detalle = 'Ingesta 004: …'`, de modo que se distinguen del histórico
 sin añadir columnas al esquema del 002.
 
+## Calibración del histórico (006)
+
+El diagnóstico de homogeneidad mostró que las tres plantas diferían solo por ruido (~0,05 pp).
+Para que el informe tenga señal, el escenario `calibracion` aplica:
+
+- Factores de rendimiento, fallas, calidad y energía por planta.
+- `dim_maquina.perfil_rendimiento`, leído por el generador, con siete máquinas outlier
+  persistentes (no ruido diario).
+- Una curva de degradación más marcada en rendimiento y más suave en fallas/calidad/energía.
+
+La semilla sigue siendo 42 y el `run_id` incorpora el manifiesto de calibración. El escenario
+`degradado` no aplica perfiles ni factores y sigue siendo reproducible. Resultado medido:
+OEE 78,02 → 66,00 % en ventanas de 30 días; dispersión entre plantas 8,5 pp al inicio y
+7,3 pp al cierre; una máquina en 51,81 % y tres por debajo de 61 %. Detalle en D-020 y en
+`specs/006-powerbi/verification.md`.
+
 ## Modelo de datos
 
 | Grupo | Objetos |
@@ -90,6 +108,7 @@ Las vistas son el contrato único para SQL, Python y DAX. Se agrupan en:
 | Calidad/energía | `v_kpi_calidad_maquina_dia`, `v_kpi_calidad_producto_dia` | fecha × máquina/producto |
 | Loss Tree | `v_loss_tree`, `v_loss_tree_maquina_mes` | fila de producción / mes × máquina |
 | Alerta | `v_alerta_maquina_critica` | fecha × máquina × turno |
+| Dimensiones BI (006) | `v_dim_maquina`, `v_dim_producto` | una fila por máquina / producto; alimentan el modelo estrella |
 
 Regla: los porcentajes se agregan con `SUM(numerador) / SUM(denominador)`, nunca promediando
 porcentajes. Las razones indefinidas devuelven `NULL` (D-014). Los umbrales viven en

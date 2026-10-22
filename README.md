@@ -4,8 +4,9 @@ Prototipo académico de Business Intelligence que analiza el rendimiento de una 
 componentes automotrices (3 plantas, 52 máquinas) a partir de **datos sintéticos** de 180 días
 más una simulación de eventos cercanos al tiempo real.
 
-> ⚠️ **Los datos son sintéticos.** No son telemetría real de ninguna fábrica. Este repositorio no
-> reproduce necesariamente las cifras del enunciado del caso (OEE 78 %→66 %, USD 540 000/mes).
+> ⚠️ **Los datos son sintéticos.** No son telemetría real de ninguna fábrica. El escenario
+> `calibracion` se construyó como escenario declarado para que el informe tenga señal (OEE
+> ≈78 → 66 %); no pretende reproducir exactamente el caso ni el impacto de USD 540 000/mes.
 
 **Stack:** PostgreSQL en Docker · Python · Power BI Desktop (Windows) · sin nube.
 
@@ -20,7 +21,7 @@ más una simulación de eventos cercanos al tiempo real.
 | 003 · Generador histórico (180 días) | **hecho** |
 | 004 · Ingesta continua simulada | **hecho** |
 | 005 · Vistas KPI y validación | **hecho** |
-| 006 · Informe Power BI (4 páginas) | **en curso** |
+| 006 · Informe Power BI (4 páginas) | **en curso** (datos calibrados y modelo generado; faltan páginas) |
 | 007 · Integración, demo y plan de mejora | propuesto |
 
 El detalle de cada incremento vive en `specs/`. Ver también `specs/CONSTITUTION.md` (fuente de
@@ -54,6 +55,7 @@ python/src/verify_history.py    verificación post-carga
 python/src/ingest.py            inserción idempotente y métricas de ingesta (004)
 python/src/simulate_events.py   simulador de ingesta continua (004)
 python/src/validate_data.py     validación independiente de los KPI (005)
+tools/                       generación/validación del TMDL del 006
 sql/                         esquema, vistas, índices y validaciones (montado en /sql)
 sql/views/                   4 vistas base + 20 vistas KPI (005)
 data/                        CSV generados y manifiestos (no versionados)
@@ -175,8 +177,12 @@ Genera **180 días** de datos sintéticos (52 máquinas × 3 turnos) y los carga
 > `docker compose build ingestor`.
 
 ```powershell
-# 1. Generar CSV + manifiesto reproducible
+# 1. Generar CSV + manifiesto reproducible (escenario histórico 003)
 docker compose run --rm ingestor python src/generate_history.py --seed 42
+
+# 1b. Escenario calibrado usado por el informe 006
+docker compose run --rm ingestor python src/generate_history.py --seed 42 `
+  --end-date 2026-10-18 --escenario calibracion
 
 # 2. Cargar por lotes (idempotente para la misma ejecución)
 docker compose run --rm ingestor python src/load_history.py
@@ -195,7 +201,7 @@ Parámetros principales de `generate_history.py`:
 | `--seed` | `42` | Semilla; misma semilla ⇒ mismos archivos |
 | `--days` | `180` | Días de histórico |
 | `--end-date` | ayer (UTC) | Último día; el rango es `end-date − days + 1` … `end-date` |
-| `--escenario` | `degradado` | `base` (degradación leve) o `degradado` (OEE decreciente marcado) |
+| `--escenario` | `degradado` | `base` (degradación leve), `degradado` (histórico 003) o `calibracion` (factores por planta + outliers, usado por 006) |
 | `--intensidad` | `1.0` | Multiplicador de fallas, microparadas y excursiones térmicas |
 | `--plantas` | `3` | Plantas incluidas |
 | `--maquinas` | `52` | Máximo de máquinas incluidas |
@@ -208,7 +214,7 @@ Salidas:
   duración, memoria pico y serie diaria de OEE.
 - `data/processed/load_manifest.json`: filas leídas/insertadas/omitidas y tiempos de carga.
 
-Resultado observado con los valores por defecto (2026-10-19):
+Resultado observado del histórico 003 (2026-10-19):
 
 ```text
 run_id            hist-h55dac4e285
@@ -220,6 +226,25 @@ generación        16,98 s · pico 43,0 MB
 carga             75,89 s · pico 61,4 MB · CSV ≈ 98,8 MB
 OEE 7 primeros días 0,9141 → 7 últimos 0,7772
 ```
+
+Resultado observado del escenario calibrado del 006 (2026-10-21):
+
+```text
+run_id            hist-h3a58b2b659
+eventos de origen 401.787
+dim_orden         28.080     fact_produccion   28.080
+fact_parada       76.021     fact_mantenimiento 2.628
+fact_calidad      28.080     fact_evento       401.787   (+43 y +21 paradas de la ingesta 004)
+generación        21,15 s · pico 42,8 MB
+OEE 30 días       78,02 % → 66,00 %
+plantas inicio    81,98 / 78,00 / 73,44 %
+plantas cierre    69,32 / 66,07 / 62,04 %
+scrap             3,66 % → 6,08 %
+```
+
+La copia de los seis CSV regenerada con la misma semilla y escenario dio SHA-256 idéntico. Los
+factores de calibración y los perfiles outlier están en D-020, en el manifiesto y en
+`docs/DATA_DICTIONARY.md`.
 
 Reproducibilidad: dos ejecuciones con la misma semilla y parámetros producen los seis CSV con
 SHA-256 idéntico y el mismo `run_id`.
@@ -337,13 +362,18 @@ Validación independiente (recalcula los KPI desde los hechos y compara con las 
 
 ```powershell
 docker compose --profile tools run --rm ingestor python src/validate_data.py
+
+# Bandas del escenario calibrado (7 comprobaciones)
+docker compose exec -T db psql -U metalinova -d metalinova `
+  -f /sql/validation/03_calibracion.sql
 ```
 
-Resultado observado (2026-10-20): **49/49 comprobaciones OK**, diferencia máxima `4,37e-11`
-(tolerancia `1e-9`). Resumen global: disponibilidad `0,9857`, rendimiento `0,8851`, calidad
-`0,9683`, OEE `0,8447`; MTBF `49,46 h`; MTTR `17,45 min`; 23.403 turnos sin alerta, 4.528 en
-alerta y 149 críticos. El OEE de octubre (0,7811) coincide con el histórico verificado en 003.
-La validación se repitió el 2026-10-21 después de la ingesta simulada: **49/49 OK** de nuevo.
+Resultado observado con el histórico calibrado y la ingesta 004 (2026-10-21): **49/49
+comprobaciones OK**, diferencia máxima `2,22e-16` (tolerancia `1e-9`). Resumen global de 180
+días: disponibilidad `0,9879`, rendimiento `0,7655`, calidad `0,9516`, OEE `0,7196`; MTBF
+`85,71 h`; MTTR `17,84 min`; 24.569 turnos sin alerta, 3.284 en alerta y 248 críticos. El OEE
+global en ventanas de 30 días es 78,02 → 66,00 %. La base histórica anterior (OEE 0,8447) quedó
+respaldada y sus cifras se conservan como referencia en `specs/003-generador-historico/`.
 
 Reglas: los porcentajes se agregan con `SUM(numerador) / SUM(denominador)`, nunca promediando
 porcentajes; las razones indefinidas devuelven `NULL` (D-014). Umbrales y definiciones completas
@@ -395,7 +425,9 @@ Power BI Desktop se conecta a `127.0.0.1:5432` en el incremento 006.
 
 ## Backup y restauración
 
-Pendiente de implementar y probar en el incremento 007.
+Antes de reemplazar el histórico por el calibrado se generó un respaldo con `pg_dump -Fc` en
+`backups/metalinova_pre_calibracion_20261021.dump` (ignorado por Git). La prueba formal de
+restauración sigue pendiente para el incremento 007 (P-015).
 
 ---
 

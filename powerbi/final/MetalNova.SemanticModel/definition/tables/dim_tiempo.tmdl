@@ -1,0 +1,116 @@
+table dim_tiempo
+	lineageTag: 3e14e47b-92bd-4fb7-8078-ce644313de08
+	dataCategory: Time
+
+	column id_tiempo
+		dataType: int64
+		isKey
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 3b3cc6a8-7393-44af-bf74-7d71cfcc491a
+		summarizeBy: none
+		sourceColumn: id_tiempo
+
+	column fecha
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: c1b46905-a1c1-4bae-affe-7b977f88c4d7
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 2cd017d5-68af-4d1d-b25b-7d1b3f93b1bf
+		summarizeBy: none
+		sourceColumn: anio
+
+	column trimestre
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: ca7fd996-781e-408a-a70e-e92f28fbf6a1
+		summarizeBy: none
+		sourceColumn: trimestre
+
+	column mes
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: f243e433-c496-41d7-b548-5a0590da40aa
+		summarizeBy: none
+		sourceColumn: mes
+
+	column dia
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 7fbdbe30-4852-40dc-b364-817d0d9f31dc
+		summarizeBy: none
+		sourceColumn: dia
+
+	column semana_iso
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 24a5d746-585e-412a-a775-51a4a66bd39d
+		summarizeBy: none
+		sourceColumn: semana_iso
+
+	column dia_semana
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 8d38eb81-3b84-49c9-a02b-79349888d50a
+		summarizeBy: none
+		sourceColumn: dia_semana
+
+	column nombre_dia
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8b5966fd-b1b7-4ac0-be8a-66f48b3097a4
+		summarizeBy: none
+		sourceColumn: nombre_dia
+
+	column es_fin_semana
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 1fc699ff-4b72-4daa-a3ff-47d75e3e7e56
+		summarizeBy: none
+		sourceColumn: es_fin_semana
+
+	column anio_mes
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: cf28595f-b289-4a80-911e-f3c833982bfe
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	hierarchy 'Calendario'
+		lineageTag: 103fe6ee-f876-4c07-9517-72fbd230b9b5
+		level 'Año'
+			lineageTag: 3e2d0ff6-f131-4145-a8da-61524249f3a4
+			column: anio
+		level 'Trimestre'
+			lineageTag: 8890f816-6c07-4898-9e37-6e9a4b0da4b7
+			column: trimestre
+		level 'Mes'
+			lineageTag: 0a9e8710-3320-4c4c-9fcf-7428d53978c8
+			column: mes
+		level 'Día'
+			lineageTag: ae0c6926-b45f-41a8-adc2-3831df0a9ae4
+			column: fecha
+
+	partition dim_tiempo = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_dim_tiempo = Origen{[Schema="public",Item="dim_tiempo"]}[Data]
+				in
+				    public_dim_tiempo
+
+	annotation PBI_ResultType = Table

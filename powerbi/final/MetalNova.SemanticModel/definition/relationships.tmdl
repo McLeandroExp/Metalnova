@@ -1,0 +1,79 @@
+relationship 5bf22aa6-3eb2-4fc0-bb61-7f95ae4cae2a
+	fromColumn: v_loss_tree.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship f6d5e2eb-92dd-4e56-a4a5-0a917711f6be
+	fromColumn: v_loss_tree.id_turno
+	toColumn: dim_turno.id_turno
+
+relationship 8cee60e7-5a24-4a81-82a5-71d1e2b39599
+	fromColumn: v_loss_tree.fecha
+	toColumn: dim_tiempo.fecha
+
+relationship 157b19f7-e331-4727-a7d0-06207193d0b2
+	fromColumn: v_loss_tree.id_producto
+	toColumn: v_dim_producto.id_producto
+
+relationship 205c4580-6ce4-4a88-987e-a2b7b5129790
+	fromColumn: v_kpi_parada.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship 37b862cd-86ac-4a2f-b979-5799788b1397
+	fromColumn: v_kpi_parada.id_turno
+	toColumn: dim_turno.id_turno
+
+relationship 44e65e1e-9616-423f-8ad2-f5dd66490715
+	fromColumn: v_kpi_parada.id_tiempo
+	toColumn: dim_tiempo.id_tiempo
+
+relationship e56a1aa4-4122-40cf-9a05-4b4d8a95aec4
+	fromColumn: v_kpi_parada.id_causa
+	toColumn: dim_causa.id_causa
+
+relationship 51a6081a-b6f5-4d8c-b923-eef9a53fb3f7
+	fromColumn: v_kpi_mantenimiento_maquina_turno.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship 4bc052dd-e9b6-49b3-a1e1-3935cd609bdd
+	fromColumn: v_kpi_mantenimiento_maquina_turno.id_turno
+	toColumn: dim_turno.id_turno
+
+relationship 86ad2cca-fd43-456b-ba8f-a57c0148fea1
+	fromColumn: v_kpi_mantenimiento_maquina_turno.id_tiempo
+	toColumn: dim_tiempo.id_tiempo
+
+relationship b207fb05-792d-42c4-8560-ac093e232ddf
+	fromColumn: v_kpi_mantenimiento.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship 1a227360-8037-4ed2-a14b-d90bcd567f74
+	fromColumn: v_kpi_mantenimiento.id_turno
+	toColumn: dim_turno.id_turno
+
+relationship ecd5ccda-c97f-4389-bb12-8715210e8d4d
+	fromColumn: v_kpi_mantenimiento.id_tiempo
+	toColumn: dim_tiempo.id_tiempo
+
+relationship c5a0d189-d77f-400d-b1e9-9ebb49f3e231
+	fromColumn: v_kpi_mantenimiento.id_causa
+	toColumn: dim_causa.id_causa
+
+relationship ea0c4278-7fe9-4db5-98c1-b19b6cb4d4b4
+	fromColumn: v_kpi_calidad_maquina_dia.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship 8e2c86f7-0fd1-441f-aa04-5a51a7d31118
+	fromColumn: v_kpi_calidad_maquina_dia.id_tiempo
+	toColumn: dim_tiempo.id_tiempo
+
+relationship 1821a5e5-5e4b-4888-b527-a73fe6464bdc
+	fromColumn: v_alerta_maquina_critica.id_maquina
+	toColumn: v_dim_maquina.id_maquina
+
+relationship f0152f6a-58c7-4f9c-9e3f-b76b494f9bbd
+	fromColumn: v_alerta_maquina_critica.id_turno
+	toColumn: dim_turno.id_turno
+
+relationship fd0d67e2-9588-40f9-8b98-8a2ffb737fbb
+	fromColumn: v_alerta_maquina_critica.id_tiempo
+	toColumn: dim_tiempo.id_tiempo

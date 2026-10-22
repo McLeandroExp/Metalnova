@@ -1,0 +1,418 @@
+table v_loss_tree
+	lineageTag: 423867c7-ba94-49d1-a9c1-b56f9d2a076f
+
+	measure 'Disponibilidad KPI' =
+			DIVIDE ( SUM ( v_loss_tree[tiempo_operativo_min] ), SUM ( v_loss_tree[tiempo_planificado_min] ) )
+		formatString: 0.00%
+		displayFolder: 01 OEE
+		lineageTag: 7b7fd0d7-3639-4e05-bfe2-bdbc126e5f3a
+
+	measure 'Rendimiento KPI' =
+			DIVIDE ( SUM ( v_loss_tree[minutos_ideales] ), SUM ( v_loss_tree[tiempo_operativo_min] ) )
+		formatString: 0.00%
+		displayFolder: 01 OEE
+		lineageTag: a8324403-40a7-4551-827c-485d50dba96f
+
+	measure 'Calidad KPI' =
+			DIVIDE ( SUM ( v_loss_tree[good_count] ), SUM ( v_loss_tree[total_count] ) )
+		formatString: 0.00%
+		displayFolder: 01 OEE
+		lineageTag: c5848f6d-8a2f-4461-9589-35dc644f2798
+
+	measure 'OEE KPI' =
+			[Disponibilidad KPI] * [Rendimiento KPI] * [Calidad KPI]
+		formatString: 0.00%
+		displayFolder: 01 OEE
+		lineageTag: d59a6b4f-ccdc-4135-bb33-133cf7541173
+
+	measure 'OEE Meta' =
+			0.85
+		formatString: 0.00%
+		displayFolder: 01 OEE
+		lineageTag: 5a355f44-b000-43cf-9420-6dd286dbdf76
+
+	measure 'Brecha Meta (pp)' =
+			( [OEE KPI] - [OEE Meta] ) * 100
+		formatString: 0.00
+		displayFolder: 01 OEE
+		lineageTag: 9f6d2f20-38f1-4897-b30a-af065c913ccc
+
+	measure 'OEE Último Mes' =
+			VAR UltimoMes = CALCULATE ( MAX ( dim_tiempo[anio_mes] ), ALLSELECTED ( dim_tiempo ) )
+			RETURN CALCULATE ( [OEE KPI], dim_tiempo[anio_mes] = UltimoMes )
+		formatString: 0.00%
+		displayFolder: 01 OEE
+		lineageTag: 8ccea92f-010b-448b-a39d-7bdc31b3cd22
+
+	measure 'Cumple Meta OEE' =
+			IF ( [OEE KPI] >= [OEE Meta], "Sí", "No" )
+		displayFolder: 01 OEE
+		lineageTag: 7e8ef045-2bb6-42a6-ae81-457f239bba15
+
+	measure 'Pérdida Disponibilidad (min)' =
+			SUM ( v_loss_tree[minutos_perdidos_disponibilidad] )
+		formatString: #,##0
+		displayFolder: 02 Pérdidas
+		lineageTag: 009daeb2-5dd3-4fb5-8b1e-cc977ee053cc
+
+	measure 'Pérdida Rendimiento (min)' =
+			SUM ( v_loss_tree[minutos_perdidos_rendimiento] )
+		formatString: #,##0
+		displayFolder: 02 Pérdidas
+		lineageTag: 4e33efa9-5a7a-4cb1-8dde-67eeb1b75e2b
+
+	measure 'Pérdida Calidad (min)' =
+			SUM ( v_loss_tree[minutos_perdidos_calidad] )
+		formatString: #,##0
+		displayFolder: 02 Pérdidas
+		lineageTag: b757df6c-29e6-4fae-bf95-59b7cfefac4a
+
+	measure 'Pérdida Total (min)' =
+			SUM ( v_loss_tree[minutos_perdidos_total] )
+		formatString: #,##0
+		displayFolder: 02 Pérdidas
+		lineageTag: 3db79fdb-422b-45eb-be31-741a6ee4b043
+
+	measure 'Participación Pérdida Disponibilidad' =
+			DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_disponibilidad] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
+		formatString: 0.00%
+		displayFolder: 02 Pérdidas
+		lineageTag: b6e04ba5-5726-4dec-95cc-07d69326c037
+
+	measure 'Participación Pérdida Rendimiento' =
+			DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_rendimiento] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
+		formatString: 0.00%
+		displayFolder: 02 Pérdidas
+		lineageTag: 30cc81c3-466b-485a-a8fa-006acd6ac4cd
+
+	measure 'Participación Pérdida Calidad' =
+			DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_calidad] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
+		formatString: 0.00%
+		displayFolder: 02 Pérdidas
+		lineageTag: 60a8073a-b12f-4184-a07d-6743c6a5f0a2
+
+	measure 'Scrap Rate' =
+			DIVIDE ( SUM ( v_loss_tree[scrap_count] ), SUM ( v_loss_tree[total_count] ) )
+		formatString: 0.00%
+		displayFolder: 03 Calidad y energía
+		lineageTag: e23009a5-fab9-4319-b569-beab4e66280a
+
+	measure 'Unidades Buenas' =
+			SUM ( v_loss_tree[good_count] )
+		formatString: #,##0
+		displayFolder: 04 Producción
+		lineageTag: 3c8e4c6f-0d66-4132-b99f-b02dee8e2da2
+
+	measure 'Unidades Totales' =
+			SUM ( v_loss_tree[total_count] )
+		formatString: #,##0
+		displayFolder: 04 Producción
+		lineageTag: ef9d7dac-2c4c-47bd-be88-fc51a10b351f
+
+	column id_produccion
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 0550ee8f-d5b1-453f-83ff-27f42c7043d0
+		summarizeBy: none
+		sourceColumn: id_produccion
+
+	column id_orden
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 9e5ca67c-e67d-4be4-96f6-cc8c24ebad2f
+		summarizeBy: none
+		sourceColumn: id_orden
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 86c3a4fc-225f-452b-8775-7739a6f78d59
+		summarizeBy: none
+		sourceColumn: fecha
+
+	column anio_mes
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 536ebccd-29ad-4d2f-87c8-5dec67d0bfeb
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 88521404-b7d9-4183-857b-96f3bfa64f74
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: c9e519be-e63a-45c4-95d8-a34279de885e
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 3ecd9157-ea3f-46c2-b769-7441e900d651
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 56f37289-8cf3-4b58-9936-c76fd63953d3
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column id_maquina
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: f033f7fd-58ba-4e23-ae66-d1b5aa5619ef
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: df6de052-7bb2-4bfc-9921-d5bb09cd69e9
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_tipo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2266f134-e887-4bc5-8e36-ffe823a574e1
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+	column maquina_criticidad
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: c0bf9d93-2867-4ec6-8448-1fcf7e3fe478
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+	column id_turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: faf31d9f-c464-44f3-ad1b-4f5e56956ca1
+		summarizeBy: none
+		sourceColumn: id_turno
+
+	column turno_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7f4f57ea-3a69-4f10-bd61-7a73b211a823
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+	column id_producto
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: f7d8bb97-66b0-4d8f-90a5-68f903125dca
+		summarizeBy: none
+		sourceColumn: id_producto
+
+	column producto_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 10f32c05-8808-435a-949b-1bf4cf208340
+		summarizeBy: none
+		sourceColumn: producto_codigo
+
+	column id_familia
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: ca59ba06-3ec5-4215-b144-16c695b7570d
+		summarizeBy: none
+		sourceColumn: id_familia
+
+	column familia_codigo
+		dataType: string
+		isHidden
+		sourceProviderType: nvarchar(max)
+		lineageTag: 73a52f7a-69a0-4210-bfad-cee4d59f18a9
+		summarizeBy: none
+		sourceColumn: familia_codigo
+
+	column tiempo_planificado_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 98da392e-85f2-4a9f-847d-ef63159a6fc1
+		summarizeBy: none
+		sourceColumn: tiempo_planificado_min
+
+	column tiempo_operativo_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 0a1384a7-ca94-49b1-a310-dae856f75af6
+		summarizeBy: none
+		sourceColumn: tiempo_operativo_min
+
+	column total_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 4c6514e1-a7b1-4c24-81f7-3054788d118a
+		summarizeBy: none
+		sourceColumn: total_count
+
+	column good_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: aaa542f0-05a5-422f-9964-18e46e295b58
+		summarizeBy: none
+		sourceColumn: good_count
+
+	column scrap_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 67c58db7-25fd-4c2c-b4df-87bb73fb1392
+		summarizeBy: none
+		sourceColumn: scrap_count
+
+	column ciclo_ideal_segundos
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: afd4c196-7baa-45fc-ae51-3466b90ed5ca
+		summarizeBy: none
+		sourceColumn: ciclo_ideal_segundos
+
+	column minutos_ideales
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 7e5d0d03-b613-4857-be02-f81495291e45
+		summarizeBy: none
+		sourceColumn: minutos_ideales
+
+	column oee
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 6cb7a25d-16e4-4fa4-9d5a-6fab5dd399ff
+		summarizeBy: none
+		sourceColumn: oee
+
+	column minutos_perdidos_disponibilidad
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 63a6326c-9ef0-49b3-9853-a64c848751c2
+		summarizeBy: none
+		sourceColumn: minutos_perdidos_disponibilidad
+
+	column minutos_perdidos_rendimiento
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 61c0eb75-4b6e-496d-abb2-ec822733003f
+		summarizeBy: none
+		sourceColumn: minutos_perdidos_rendimiento
+
+	column minutos_perdidos_calidad
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 747b079b-e280-495c-ad26-0c2450167efc
+		summarizeBy: none
+		sourceColumn: minutos_perdidos_calidad
+
+	column unidades_potenciales
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: e89b1cac-5376-432f-ac57-9bcdf6106ac0
+		summarizeBy: none
+		sourceColumn: unidades_potenciales
+
+	column unidades_no_producidas
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 6bf9c650-c775-4ef9-8c79-33231b3bf00a
+		summarizeBy: none
+		sourceColumn: unidades_no_producidas
+
+	column unidades_scrap
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 446fa3bd-859b-4a31-bdc4-80fd367ac192
+		summarizeBy: none
+		sourceColumn: unidades_scrap
+
+	column minutos_perdidos_total
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: d6179c24-6f99-48e8-a8ab-ffeb34e2db7f
+		summarizeBy: none
+		sourceColumn: minutos_perdidos_total
+
+	column participacion_disponibilidad
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 8f2e3fef-5264-41ba-bfee-72810802db94
+		summarizeBy: none
+		sourceColumn: participacion_disponibilidad
+
+	column participacion_rendimiento
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 3f86b1ed-1157-4f57-b791-77751ba134ae
+		summarizeBy: none
+		sourceColumn: participacion_rendimiento
+
+	column participacion_calidad
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 7a57abb4-ca51-4771-9e6a-60198b4202ea
+		summarizeBy: none
+		sourceColumn: participacion_calidad
+
+	partition v_loss_tree = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_loss_tree = Origen{[Schema="public",Item="v_loss_tree"]}[Data]
+				in
+				    public_v_loss_tree
+
+	annotation PBI_ResultType = Table

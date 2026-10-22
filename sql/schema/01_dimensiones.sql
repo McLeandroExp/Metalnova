@@ -29,8 +29,27 @@ CREATE TABLE IF NOT EXISTS dim_maquina (
     fabricante  text,
     modelo      text,
     fecha_alta  date,
-    activa      boolean NOT NULL DEFAULT true
+    activa      boolean NOT NULL DEFAULT true,
+    perfil_rendimiento text NOT NULL DEFAULT 'estandar'
+        CHECK (perfil_rendimiento IN ('estandar', 'desgastada', 'critica', 'calidad', 'energia'))
 );
+
+-- Migración idempotente para bases creadas antes del incremento de calibración.
+ALTER TABLE dim_maquina
+    ADD COLUMN IF NOT EXISTS perfil_rendimiento text NOT NULL DEFAULT 'estandar';
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'dim_maquina_perfil_rendimiento_check'
+    ) THEN
+        ALTER TABLE dim_maquina
+            ADD CONSTRAINT dim_maquina_perfil_rendimiento_check
+            CHECK (perfil_rendimiento IN ('estandar', 'desgastada', 'critica', 'calidad', 'energia'));
+    END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS dim_familia (
     id_familia  smallint PRIMARY KEY,

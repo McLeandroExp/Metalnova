@@ -5,6 +5,7 @@
 data/raw/*
 data/processed/*
 data/exports/*
+data/calibracion/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/exports/.gitkeep

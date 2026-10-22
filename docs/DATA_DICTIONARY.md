@@ -54,6 +54,7 @@ Se distinguen tres marcas temporales: `event_time` (ocurrió), `generated_at` (s
 | `fabricante`, `modelo` | `text` | | |
 | `fecha_alta` | `date` | | |
 | `activa` | `boolean` | | |
+| `perfil_rendimiento` | `text` | CHECK | `estandar`, `desgastada`, `critica`, `calidad`, `energia`; solo lo aplica el escenario `calibracion` |
 
 ### `dim_familia` — grano: una familia de producto
 
@@ -377,19 +378,37 @@ con actividad de cada máquina.
 
 ## Volumen del histórico sintético (incremento 003)
 
-Ejecución canónica: semilla 42, 180 días (2026-04-22 → 2026-10-18), escenario `degradado`.
+Ejecución canónica del 003: semilla 42, 180 días (2026-04-22 → 2026-10-18), escenario
+`degradado` (405.995 eventos; OEE 84,47 % global). Se conserva como referencia histórica.
+
+La ejecución **calibrada del 006** usa la misma semilla y rango, escenario `calibracion`,
+`run_id = hist-h3a58b2b659`:
 
 | Tabla | Filas |
 |---|---:|
 | `dim_orden` | 28.080 |
 | `fact_produccion` | 28.080 |
-| `fact_parada` | 76.827 |
-| `fact_mantenimiento` | 4.400 |
+| `fact_parada` | 76.021 |
+| `fact_mantenimiento` | 2.628 |
 | `fact_calidad` | 28.080 |
-| `fact_evento` | 405.995 |
+| `fact_evento` | 401.787 |
 
-El detalle de la ejecución y sus hashes están en
-`specs/003-generador-historico/verification.md`.
+El escenario calibrado añade 43 eventos y 21 paradas de la ingesta simulada 004; los KPI
+históricos se calculan solo sobre los 180 días. El detalle de ambas ejecuciones está en
+`specs/003-generador-historico/verification.md` y `specs/006-powerbi/verification.md`.
+
+### Factores de calibración
+
+| Planta | Rendimiento | Fallas | Calidad | Energía |
+|---|---:|---:|---:|---:|
+| P-NORTE | 0,934 | 0,90 | 1,000 | 1,00 |
+| P-CENTRO | 0,898 | 1,00 | 0,995 | 1,05 |
+| P-SUR | 0,873 | 1,15 | 0,985 | 1,10 |
+
+Perfiles persistentes: `desgastada` (rendimiento 0,87; fallas 1,45; reparación 1,10;
+microparadas 1,20), `critica` (0,76; 2,20; 1,40; 1,50), `calidad` (calidad 0,94),
+`energia` (energía 1,70) y `estandar` (neutro). La configuración completa se registra en
+`data/processed/manifest.json` y en `docs/DECISIONS.md` (D-020).
 
 ---
 
@@ -416,7 +435,7 @@ El detalle de la ejecución y sus hashes están en
 | Loss Tree — rendimiento | `GREATEST(tiempo_operativo_min − minutos_ideales, 0)` | minutos equivalentes perdidos |
 | Loss Tree — calidad | `scrap_count × ciclo_ideal_segundos / 60` | minutos equivalentes perdidos |
 | Loss Tree — participación | `pérdida_categoría / minutos_perdidos_total` | `NULL` si el total es 0 |
-| Alerta de máquina crítica | OEE < 55 % **o** MTBF < 20 h **o** temperatura > 85 °C durante ≥ 15 min **o** downtime > 120 min/turno | severidad `critica` si se cumplen ≥ 2 condiciones |
+| Alerta de máquina crítica | OEE < 55 % **o** MTBF < 20 h **o** temperatura > 85 °C durante ≥ 15 min **o** downtime > 120 min/turno | severidad `critica` si se cumplen ≥ 2 condiciones; el OEE se compara redondeado a 6 decimales para estabilizar el borde exacto de 55 % |
 
 **Ventana de la alerta:** un turno (máquina × turno × fecha). La temperatura se
 muestrea cada 15 min en el histórico; se exigen al menos dos lecturas > 85 °C en

@@ -26,21 +26,29 @@ WITH turnos AS (
     FROM fact_produccion
     GROUP BY id_maquina, id_turno, id_tiempo
 ), temp AS (
+    -- LATERAL fuerza un recorrido de índice por turno. El join plano hacía
+    -- que PostgreSQL comparara todas las lecturas de una máquina contra todos
+    -- sus turnos (~10,5 M de comparaciones); este plan resuelve cada turno con
+    -- un rango acotado sobre ix_fact_evento_maquina_time.
     SELECT
         t.id_maquina,
         t.id_turno,
         t.id_tiempo,
-        COUNT(*) FILTER (WHERE e.temperatura_c > prm.temperatura_umbral_c)
-            AS lecturas_temp_alta,
-        MAX(e.temperatura_c) AS max_temperatura_c
+        x.lecturas_temp_alta,
+        x.max_temperatura_c
     FROM turnos t
-    JOIN fact_evento e
-      ON e.id_maquina = t.id_maquina
-     AND e.tipo_evento = 'lectura_proceso'
-     AND e.event_time >= t.inicio_at
-     AND e.event_time < t.fin_at
-    CROSS JOIN v_kpi_parametros prm
-    GROUP BY t.id_maquina, t.id_turno, t.id_tiempo
+    CROSS JOIN LATERAL (
+        SELECT
+            COUNT(*) FILTER (WHERE e.temperatura_c > prm.temperatura_umbral_c)
+                AS lecturas_temp_alta,
+            MAX(e.temperatura_c) AS max_temperatura_c
+        FROM fact_evento e
+        CROSS JOIN v_kpi_parametros prm
+        WHERE e.id_maquina = t.id_maquina
+          AND e.tipo_evento = 'lectura_proceso'
+          AND e.event_time >= t.inicio_at
+          AND e.event_time < t.fin_at
+    ) x
 ), eval AS (
     SELECT
         m.fecha,
@@ -79,7 +87,10 @@ WITH turnos AS (
         prm.temperatura_ventana_min,
         prm.temperatura_lecturas_min,
         prm.downtime_umbral_min,
-        COALESCE(o.oee < prm.oee_umbral, false) AS cumple_oee,
+        -- El umbral se compara con 6 decimales para evitar que un OEE
+        -- exactamente igual al 55 % caiga de un lado u otro por precisión
+        -- numérica (el caso aparece en la máquina crítica calibrada).
+        COALESCE(ROUND(o.oee, 6) < prm.oee_umbral, false) AS cumple_oee,
         (COALESCE(m.mtbf_h, 1000000000::numeric) < prm.mtbf_umbral_h) AS cumple_mtbf,
         (COALESCE(t.lecturas_temp_alta, 0) >= prm.temperatura_lecturas_min) AS cumple_temperatura,
         (m.downtime_no_planificado_min > prm.downtime_umbral_min) AS cumple_downtime

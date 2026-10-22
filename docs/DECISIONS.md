@@ -40,9 +40,9 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
 
 ## D-005 · Modo de conexión Power BI (DirectQuery vs Import)
 
-- **Decisión:** pendiente de prueba en el incremento 006.
+- **Decisión:** DirectQuery, resuelta y medida en D-019.
 - **Criterios:** ver Constitución §9.
-- **Estado:** pendiente.
+- **Estado:** sustituida por D-019 (2026-10-21).
 
 ## D-006 · pgAdmin como cliente de base de datos
 
@@ -100,8 +100,8 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
 ## D-011 · `run_id` determinista y guardia contra mezcla de ejecuciones
 
 - **Decisión:** `run_id = hist-<hash>` donde el hash cubre versión del generador, semilla, días,
-  fechas, escenario, intensidad, plantas y máquinas. La carga exige `--reset` si la base contiene
-  otro `run_id`.
+  fechas, escenario, intensidad, plantas, máquinas y —en `calibracion`— el manifiesto completo de
+  factores. La carga exige `--reset` si la base contiene otro `run_id`.
 - **Alternativas:** borrar y recargar siempre; usar un `run_id` con marca de tiempo.
 - **Motivo:** la misma semilla produce el mismo `run_id` y una recarga idempotente; una ejecución
   distinta no se mezcla en silencio con la anterior.
@@ -218,4 +218,45 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
     «referencia cíclica» al refrescar el modelo.
   - Las vistas necesitan relaciones por `id_planta`, `id_maquina` y `fecha` (o un esquema en
     estrella) para que los filtros sean coherentes entre páginas.
+- **Actualización 2026-10-21:** T-616 quedó implementado con `CROSS JOIN LATERAL` e índice
+  parcial. La consulta filtrada de los últimos 30 días midió 464 / 335 / 369 ms (antes 2.091 /
+  1.754 ms); el modelo sigue en DirectQuery. La calibración de datos no cambia esta decisión.
 - **Estado:** aceptada; revisable al cerrar el 006.
+
+## D-020 · Escenario `calibracion` con factores de planta y perfiles de máquina
+
+- **Decisión:** añadir un escenario reproducible `calibracion` (semilla 42) que aplica factores
+  persistentes por planta y perfiles persistentes por máquina. El escenario `degradado` original
+  se conserva con factores neutros para no romper su reproducibilidad histórica.
+- **Alternativas:** cambiar la semilla; dejar el histórico homogéneo; retocar CSV a mano; usar solo
+  ruido diario. El diagnóstico mostró que la homogeneidad venía del diseño (una sola secuencia
+  `random.Random(42)` y plantas sin factores), no de la semilla. El ruido diario se diluye en 180
+  días y no produce outliers persistentes.
+- **Motivo:** el informe necesita diferencias visibles entre plantas y máquinas. La medición previa
+  daba OEE por planta 84,45 / 84,47 / 84,50 % (rango 0,05 pp) y máquinas 84,47–84,50 %; no había
+  señal para comparar. El caso orientativo pide 78 → 66 % de OEE.
+- **Implementación:**
+  - `dim_maquina.perfil_rendimiento` (`estandar`, `desgastada`, `critica`, `calidad`, `energia`);
+    la migración es idempotente y `v_dim_maquina` expone la columna.
+  - Perfiles outlier (7 de 52 máquinas): M-005 `energia`; M-015, M-024, M-040 y M-049
+    `desgastada`; M-032 `calidad`; M-047 `critica`.
+  - Factores por planta (`rendimiento` / `fallas` / `calidad` / `energia`): P-NORTE
+    0,934 / 0,90 / 1,00 / 1,00; P-CENTRO 0,898 / 1,00 / 0,995 / 1,05; P-SUR
+    0,873 / 1,15 / 0,985 / 1,10.
+  - Parámetros globales de calibración: calidad 0,98; degradación de rendimiento 0,15, de fallas
+    0,40, de calidad 0,03 y de energía 0,01; piso de rendimiento 0,45.
+  - El `run_id` incluye el manifiesto de calibración; dos configuraciones distintas no comparten
+    identidad. El manifiesto de la corrida registra todos los factores.
+- **Resultado observado (2026-10-21, `hist-h3a58b2b659`):** OEE global 78,02 → 66,00 % en ventanas
+  de 30 días; plantas 81,98 / 78,00 / 73,44 % al inicio y 69,32 / 66,07 / 62,04 % al cierre
+  (dispersión 8,5 y 7,3 pp). Máquinas: M-047 51,81 %, M-049 60,37 %, M-040 60,51 %, M-024
+  62,78 %, M-015 65,81 %, M-032 66,79 %. Scrap 3,66 → 6,08 %; energía por unidad buena +12,2 %;
+  downtime no planificado +49,4 % (el caso orientativo dice +31 %, no se forzó).
+- **Consecuencias:**
+  - El histórico final del 006 usa `--escenario calibracion`; la base anterior quedó respaldada en
+    `backups/metalinova_pre_calibracion_20261021.dump` (no versionado).
+  - Se reejecutaron `verify_history.py` (17/17), `validate_data.py` (49/49) y la comprobación de
+    T-616. La evidencia de 003/004/005 se actualiza en 006.
+  - El umbral de OEE de la alerta se compara con 6 decimales para que un OEE exactamente igual a
+    55 % no cambie de lado por precisión numérica. Afecta solo al borde, no a la regla.
+- **Estado:** aceptada.

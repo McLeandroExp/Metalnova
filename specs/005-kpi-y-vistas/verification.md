@@ -87,3 +87,24 @@ una razón indefinida (D-014), no un valor perdido.
   participaciones suman 1 (o son `NULL` si no hay pérdidas).
 - `apply_all.sql` se re-ejecutó con `ON_ERROR_STOP=1`: `EXIT=0` y 20 `CREATE VIEW`; las vistas son
   idempotentes (P-020).
+
+## Actualización 2026-10-21 · histórico calibrado
+
+La base de trabajo pasó a `hist-h3a58b2b659` (calibración 006, 180 días) y recibió 43 eventos de
+la ingesta 004. `validate_data.py` volvió a dar **49/49 comprobaciones OK**:
+
+| KPI | Valor observado |
+|---|---:|
+| OEE 180 días | 0,7196 |
+| Disponibilidad | 0,9879 |
+| Rendimiento | 0,7655 |
+| Calidad | 0,9516 |
+| MTBF | 85,71 h |
+| MTTR | 17,84 min |
+| Alertas | 24.569 sin alerta · 3.284 alerta · 248 crítica |
+
+El OEE en ventanas de 30 días es 78,02 → 66,00 %; las vistas de planta, línea, máquina y turno
+siguen siendo aditivas. La diferencia máxima observada fue `2,22e-16` (límite `1e-9`). La
+corrección del borde OEE = 55 % se aplicó en `sql/views/08_alerta_maquina_critica.sql` y en
+`validate_data.py`; no cambia la definición de la regla. La evidencia anterior de esta página
+(histórico `degradado`, OEE 0,8447) se conserva como referencia.

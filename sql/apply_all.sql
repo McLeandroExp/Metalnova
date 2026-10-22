@@ -46,4 +46,7 @@
 \echo '>>> 13 alerta de máquina crítica'
 \i /sql/views/08_alerta_maquina_critica.sql
 
+\echo '>>> 14 dimensiones para Power BI'
+\i /sql/views/09_dimensiones_bi.sql
+
 \echo '>>> esquema aplicado'

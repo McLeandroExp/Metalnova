@@ -16,5 +16,16 @@
 | T-612 | Serie temporal con umbrales | FR-609 | pendiente |
 | T-613 | Navegación pérdida OEE→causa y alerta crítica | FR-612,613 | pendiente |
 | T-614 | Verificar 4 páginas y 9 KPIs; guardar `.pbix`/`.pbip` | AC-601,605,607 | pendiente |
-| T-616 | Optimizar `v_alerta_maquina_critica` (índice o materialización) | FR-601, AC-606 | pendiente |
+| T-616 | Optimizar `v_alerta_maquina_critica` (índice o materialización) | FR-601, AC-606 | hecha |
+| T-617 | Calibrar el histórico: factores por planta, perfiles y outliers | FR-615, AC-608 | hecha |
 | T-615 | Commit `feat: informe power bi` | — | pendiente |
+
+Notas de estado:
+
+- T-604: el TMDL se generó y validó (12 tablas, 20 relaciones, 45 medidas). Queda **en curso**
+  porque la página de validación aún muestra “—” en las tarjetas hasta que se pulse
+  «Actualizar ahora» en Power BI Desktop; no se marca como hecha sin esa observación.
+- T-616: `CROSS JOIN LATERAL` + índice parcial `ix_fact_evento_lectura_maquina_time`; consulta
+  filtrada 464/335/369 ms y `validate_data.py` 49/49. Evidencia en `verification.md`.
+- T-617: corrida `hist-h3a58b2b659`, OEE 78,02 → 66,00 %, dispersión 8,5 → 7,3 pp; validación
+  49/49 y reproducibilidad SHA-256 idéntica. Evidencia en `verification.md`.

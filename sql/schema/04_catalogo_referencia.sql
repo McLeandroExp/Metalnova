@@ -44,6 +44,22 @@ SELECT
 FROM generate_series(1, 52) AS g
 ON CONFLICT DO NOTHING;
 
+-- Perfiles de calibración (datos sintéticos): máquinas con desgaste, fallas
+-- crónicas, problemas de calidad o consumo energético fuera de lo normal.
+-- El generador solo aplica estos perfiles en el escenario 'calibracion'.
+UPDATE dim_maquina AS m
+SET perfil_rendimiento = v.perfil
+FROM (VALUES
+    (5,  'energia'),
+    (15, 'desgastada'),
+    (24, 'desgastada'),
+    (32, 'calidad'),
+    (40, 'desgastada'),
+    (47, 'critica'),
+    (49, 'desgastada')
+) AS v(id_maquina, perfil)
+WHERE m.id_maquina = v.id_maquina;
+
 INSERT INTO dim_familia (id_familia, codigo, nombre) VALUES
     (1, 'FAM-FRE', 'Frenos'),
     (2, 'FAM-SUS', 'Suspensión'),

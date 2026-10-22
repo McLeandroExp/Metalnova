@@ -1,0 +1,159 @@
+table v_dim_maquina
+	lineageTag: 99328c04-0027-465f-a523-bdf18376544b
+
+	column id_maquina
+		dataType: int64
+		isKey
+		isHidden
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 1478714c-72ef-4679-a504-dede59400256
+		summarizeBy: none
+		sourceColumn: id_maquina
+
+	column maquina_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: e0c7f010-afba-4e20-a34e-a1cdc9676f6b
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+	column maquina_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 32a78fbc-64dc-4f07-ad8f-92b8916f4b66
+		summarizeBy: none
+		sourceColumn: maquina_nombre
+
+	column maquina_tipo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: efb3f020-7a72-4b0f-9cf7-a4dcc66bd727
+		summarizeBy: none
+		sourceColumn: maquina_tipo
+
+	column maquina_criticidad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 6596b26c-638c-469c-9873-3d7f5d7380e8
+		summarizeBy: none
+		sourceColumn: maquina_criticidad
+
+	column fabricante
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 18324872-0f3e-45c8-ba5a-058e07318e87
+		summarizeBy: none
+		sourceColumn: fabricante
+
+	column modelo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: decdcfc2-dfa7-4e6d-a98a-a2198b957c96
+		summarizeBy: none
+		sourceColumn: modelo
+
+	column fecha_alta
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: b470c037-03fc-42c9-94f0-9e87e436113a
+		summarizeBy: none
+		sourceColumn: fecha_alta
+
+	column activa
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: d5b6932e-dd52-43de-9e35-a7d1b79ce19b
+		summarizeBy: none
+		sourceColumn: activa
+
+	column id_linea
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 8c68a750-fbb0-4f22-b614-ea92ca161011
+		summarizeBy: none
+		sourceColumn: id_linea
+
+	column linea_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: ccfddf7f-aeda-4216-b7f9-d0ba27f02b73
+		summarizeBy: none
+		sourceColumn: linea_codigo
+
+	column linea_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: a97a84ea-f342-4f7a-b8ee-a9ed33ba0b61
+		summarizeBy: none
+		sourceColumn: linea_nombre
+
+	column id_planta
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 01978f19-a6ec-494b-97ee-19bb2577b47e
+		summarizeBy: none
+		sourceColumn: id_planta
+
+	column planta_codigo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: c0e7b984-de1b-435d-a19e-4d20ed12b1ad
+		summarizeBy: none
+		sourceColumn: planta_codigo
+
+	column planta_nombre
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: c418bead-44b8-4bda-9de8-9f3a9b81dd6d
+		summarizeBy: none
+		sourceColumn: planta_nombre
+
+	column ciudad
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 3302509e-78ae-4f62-8cc8-dcf8e35bcbea
+		summarizeBy: none
+		sourceColumn: ciudad
+
+	column pais
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8175e5aa-baa9-404d-b4b1-0dafe750dd3e
+		summarizeBy: none
+		sourceColumn: pais
+
+	column perfil_rendimiento
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 520ddeda-03ff-4f57-ada2-60cdce05b871
+		summarizeBy: none
+		sourceColumn: perfil_rendimiento
+
+	hierarchy 'Ubicación'
+		lineageTag: abce8207-ebb6-438a-aed8-8f9ed6ddcc57
+		level 'Planta'
+			lineageTag: b20842b1-1128-4fcd-955e-e6a3e642ba35
+			column: planta_nombre
+		level 'Línea'
+			lineageTag: 3dad9dac-da8c-422f-9037-9c2f4bdec166
+			column: linea_nombre
+		level 'Máquina'
+			lineageTag: f0b444d7-b884-423d-ae54-fea9386c565f
+			column: maquina_nombre
+
+	partition v_dim_maquina = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_dim_maquina = Origen{[Schema="public",Item="v_dim_maquina"]}[Data]
+				in
+				    public_v_dim_maquina
+
+	annotation PBI_ResultType = Table

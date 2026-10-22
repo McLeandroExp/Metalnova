@@ -21,11 +21,12 @@
 1. Arrancar Docker Desktop (si no está activo)
 2. docker compose up -d
 3. Verificar: docker compose ps  →  db healthy
-4. (si hace falta) generar y cargar histórico:
-   generate_history.py --seed 42  →  load_history.py  →  verify_history.py
+4. (si hace falta) generar y cargar histórico calibrado:
+   generate_history.py --seed 42 --end-date 2026-10-18 --escenario calibracion
+   → load_history.py  →  verify_history.py
 5. Iniciar simulación:
    docker compose --profile tools run --rm ingestor python src/simulate_events.py
-6. Abrir powerbi/MetalNova.pbix y refrescar según el modo validado
+6. Abrir powerbi/final/MetalNova.pbip y refrescar según el modo validado
 ```
 
 ## Escenario reproducible

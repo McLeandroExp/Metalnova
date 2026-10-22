@@ -19,6 +19,9 @@ docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/01
 
 # Histórico cargado (incremento 003)
 docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/02_historico.sql
+
+# Bandas del escenario calibrado (incremento 006)
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/03_calibracion.sql
 ```
 
 Todas las filas deben mostrar `estado = OK` e `incidencias = 0`.
@@ -30,9 +33,15 @@ Todas las filas deben mostrar `estado = OK` e `incidencias = 0`.
 | 1 | `schema/01_dimensiones.sql` | 10 dimensiones con PK, FK y CHECK |
 | 2 | `schema/02_hechos.sql` | 4 hechos + evento crudo + cuarentena |
 | 3 | `schema/03_comentarios.sql` | Grano y reglas documentados en el esquema |
-| 4 | `schema/04_catalogo_referencia.sql` | Catálogo sintético base |
-| 5 | `indexes/01_indices.sql` | Índices de filtro y join |
+| 4 | `schema/04_catalogo_referencia.sql` | Catálogo sintético base + perfiles de calibración |
+| 5 | `indexes/01_indices.sql` | Índices de filtro y join (incluye el índice parcial de lecturas IoT) |
 | 6 | `views/01_vistas_base.sql` | Vistas `v_*` para Power BI |
+| 7 | `views/02..08_*.sql` | Vistas KPI y alerta de máquina crítica |
+| 8 | `views/09_dimensiones_bi.sql` | Dimensiones conformadas `v_dim_maquina` y `v_dim_producto` |
+
+La columna `dim_maquina.perfil_rendimiento` se añade con `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`
+para bases existentes. Solo la usa el escenario `calibracion`; el catálogo asigna siete outliers
+persistentes y el resto queda en `estandar`.
 
 ## Reglas
 

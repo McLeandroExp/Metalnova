@@ -149,3 +149,23 @@ La guardia de `run_id` también se probó: intentar cargar otra semilla sin `--r
   salvo calibración documentada. La tendencia se genera con perfiles de degradación explícitos.
 - `manifest.json` (generación) y `load_manifest.json` (carga) viven en `data/processed/`, que no se
   versiona. La evidencia reproducible está en este documento y en los comandos del `README.md`.
+
+## Actualización 2026-10-21 · escenario `calibracion`
+
+El incremento 006 añadió un escenario calibrado (D-020) y reemplazó el histórico de trabajo. La
+evidencia anterior de esta página corresponde a `degradado` y se conserva como referencia
+histórica. La corrida calibrada se generó con la misma semilla 42 y el mismo rango:
+
+```text
+run_id      hist-h3a58b2b659
+escenario   calibracion
+eventos     401.787
+paradas     76.021
+mantenimiento 2.628
+generación  21,15 s · pico 42,8 MB
+OEE 30 d    78,02 % → 66,00 %
+```
+
+`verify_history.py` dio 17/17 OK. Una segunda generación con los mismos parámetros produjo los
+seis CSV con SHA-256 idéntico. El detalle de los factores y perfiles está en
+`specs/006-powerbi/verification.md` y `docs/DECISIONS.md` (D-020).

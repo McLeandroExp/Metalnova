@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "MetalNova"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "1090a249-fce3-469e-9bd4-f6bf18ecebe4"
+  }
+}

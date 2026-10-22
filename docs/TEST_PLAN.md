@@ -18,7 +18,7 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-010 | No duplicación al reiniciar | 004 | reiniciar simulador | recuento estable | mismo ciclo: 0 insertados; mismo escenario: 0 insertados y 2 duplicados por `ON CONFLICT`; recuentos estables | 2026-10-21 | superada |
 | P-011 | Latencia | 004/007 | log de métricas | evidencia presente | 0,004411–0,035976 s por ejecución; registrada por `run_id` | 2026-10-21 | superada |
 | P-012 | Validación de KPI | 005 | `validate_data.py` | diferencias < tolerancia | 49/49 comprobaciones OK; diferencia máxima 4,37e-11 (< 1e-9) | 2026-10-20 | superada |
-| P-013 | DirectQuery vs Import | 006 | mediciones | decisión documentada | — | — | pendiente |
+| P-013 | DirectQuery vs Import | 006 | mediciones | decisión documentada | apertura 35,46 s; filtro 0,5 s; frescura 0,35 s; D-019 | 2026-10-21 | superada |
 | P-014 | Evento nuevo visible en informe | 007 | escenario reproducible | cambio visible | — | — | pendiente |
 | P-015 | Backup y restauración | 007 | `pg_dump` / `pg_restore` | recuentos coinciden | — | — | pendiente |
 | P-016 | pgAdmin operativo | 001 | `curl http://127.0.0.1:5050/login` + login | HTTP 200 y login OK | `/login` 200 · POST 302 · `/browser/` 200 | 2026-10-19 | superada |
@@ -33,6 +33,9 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-025 | Escenario altera un KPI | 004 | `--scenario stop M-001` + vista | downtime y fallas cambian | M-001: sin fila → 20 min y 1 falla; P-NORTE: 5 → 25 min y 0 → 1 falla | 2026-10-21 | superada |
 | P-026 | Histórico no bloqueado por ingesta | 004 | `load_history.py` tras eventos `sim-*` | 0 insertadas | 0 insertadas en las 6 tablas; `verify_history.py` 17/17 OK | 2026-10-21 | superada |
 | P-027 | KPI validan tras la ingesta | 004 | `validate_data.py` | 49/49 OK | 49/49 comprobaciones OK | 2026-10-21 | superada |
+| P-028 | Calibración del histórico | 006 | `generate_history.py --escenario calibracion` + `load_history.py --reset` + `validate_data.py` + `03_calibracion.sql` | OEE ~78→66; dispersión 5–10 pp; 49/49 y 7/7 | OEE 78,02→66,00 %; plantas 81,98/78,00/73,44 → 69,32/66,07/62,04; 49/49 y 7/7 OK | 2026-10-21 | superada |
+| P-029 | Reproducibilidad calibrada | 006 | regenerar misma semilla y escenario | seis CSV idénticos | SHA-256 idéntico en los seis CSV; mismo `run_id` | 2026-10-21 | superada |
+| P-030 | Alerta crítica optimizada | 006 | `EXPLAIN ANALYZE` filtrado + `validate_data.py` | consulta < 1 s y regla correcta | 464/335/369 ms; 28.101 filas; 49/49 OK; 13 alertas último turno | 2026-10-21 | superada |
 
 ### Evidencia del incremento 005
 
@@ -41,6 +44,17 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 - `logs/kpi_checks_005.txt`: 20 vistas, parámetros, OEE mensual, MTBF/MTTR, alertas, FPY y
   participación del Loss Tree.
 - Detalle por criterio en `specs/005-kpi-y-vistas/verification.md`.
+
+### Evidencia de calibración del 006
+
+- `data/processed/manifest.json`: `run_id = hist-h3a58b2b659`, semilla 42, 180 días, escenario
+  `calibracion`, factores por planta y perfiles.
+- `data/processed/load_manifest.json`: 28.080 órdenes, 76.021 paradas, 2.628 mantenimientos,
+  28.080 producciones, 28.080 inspecciones y 401.787 eventos.
+- `validate_data.py`: 49/49; OEE global 71,96 % en 180 días y 78,02 → 66,00 % en ventanas de
+  30 días.
+- `verify_history.py`: 17/17; 43 eventos de la ingesta 004 sobre el histórico calibrado.
+- `backups/metalinova_pre_calibracion_20261021.dump`: respaldo de la base anterior (no versionado).
 
 ### Evidencia del incremento 004
 

@@ -1,0 +1,101 @@
+table v_kpi_parametros
+	lineageTag: 4744b917-6814-4986-b92b-61e7fd46e8b8
+
+	measure 'Umbral OEE Alerta' =
+			MIN ( v_kpi_parametros[oee_umbral] )
+		formatString: 0.00%
+		displayFolder: 08 Umbrales
+		lineageTag: dea59759-79a9-468a-bbcb-060a96ef7623
+
+	measure 'Umbral MTBF (h)' =
+			MIN ( v_kpi_parametros[mtbf_umbral_h] )
+		formatString: #,##0.00
+		displayFolder: 08 Umbrales
+		lineageTag: 7c1e8f00-39d4-43bc-aeba-62ed5c56899c
+
+	measure 'Umbral Temperatura (°C)' =
+			MIN ( v_kpi_parametros[temperatura_umbral_c] )
+		formatString: 0.0
+		displayFolder: 08 Umbrales
+		lineageTag: 3b1d3cdd-ff92-4fc1-86ce-07ee5e77455f
+
+	measure 'Umbral Downtime (min)' =
+			MIN ( v_kpi_parametros[downtime_umbral_min] )
+		formatString: #,##0
+		displayFolder: 08 Umbrales
+		lineageTag: 4f49af46-244c-4443-9ad4-7eef9baa1963
+
+	column microparada_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 41e42dec-8503-41fe-bce0-8d6eccac1da8
+		summarizeBy: none
+		sourceColumn: microparada_min
+
+	column falla_corta_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 55ad1112-d6f8-4c96-9d87-9afdb4bee351
+		summarizeBy: none
+		sourceColumn: falla_corta_min
+
+	column mtbf_umbral_h
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 6cba455a-39cc-451d-8725-7dbbee12b193
+		summarizeBy: none
+		sourceColumn: mtbf_umbral_h
+
+	column oee_umbral
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 85416d4b-deb6-4124-834c-8f16125677db
+		summarizeBy: none
+		sourceColumn: oee_umbral
+
+	column downtime_umbral_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 9348a497-8aaa-4555-9ec7-6463fa9d3dbe
+		summarizeBy: none
+		sourceColumn: downtime_umbral_min
+
+	column temperatura_umbral_c
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: decimal
+		lineageTag: 0bc901a4-8281-464d-ae4c-2ed3697ccb59
+		summarizeBy: none
+		sourceColumn: temperatura_umbral_c
+
+	column temperatura_ventana_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 87202d52-a634-403a-91c7-4199cabf1be5
+		summarizeBy: none
+		sourceColumn: temperatura_ventana_min
+
+	column temperatura_lecturas_min
+		dataType: int64
+		formatString: 0
+		sourceProviderType: integer
+		lineageTag: 4a38037d-39f5-4047-920c-32f497fd5b22
+		summarizeBy: none
+		sourceColumn: temperatura_lecturas_min
+
+	partition v_kpi_parametros = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1", "metalinova"),
+				    public_v_kpi_parametros = Origen{[Schema="public",Item="v_kpi_parametros"]}[Data]
+				in
+				    public_v_kpi_parametros
+
+	annotation PBI_ResultType = Table

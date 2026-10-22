@@ -1,6 +1,9 @@
 # Power BI — Incremento 006 (en curso)
 
-Este directorio contiene el **spike de conexión** del informe, no el entregable final.
+`powerbi/MetalNova.pbip` es el **spike de conexión** y se conserva como referencia de las
+mediciones. El entregable en construcción vive en `powerbi/final/MetalNova.pbip` (modelo TMDL de
+12 tablas, 20 relaciones y 45 medidas). Las cifras de este README son las del spike con el
+histórico anterior; el informe final usa el histórico calibrado (D-020).
 
 ## Abrir
 
@@ -42,8 +45,9 @@ Analizador de rendimiento en `logs/`.
 - La tabla de M-001 no tiene filtro de fecha y devuelve 502 filas.
 - La vista `v_alerta_maquina_critica` tarda ~2,9 s en PostgreSQL.
 
-## Siguiente paso (T-604)
+## Siguiente paso (T-604 y páginas)
 
-Reconstruir el modelo semántico con nombres limpios, relaciones por `id_planta`, `id_maquina` y
-`fecha`, medidas DAX documentadas y la vista de alertas optimizada. El spike se conserva como
-referencia de las mediciones.
+El modelo de `powerbi/final/` ya se generó y validó. Falta abrirlo, pulsar **Actualizar ahora** y
+confirmar las tarjetas de la página de validación; después se montan las cuatro páginas
+definitivas. La vista de alertas ya está optimizada (T-616: 335–464 ms filtrada) y el histórico
+calibrado está cargado. El spike se conserva como referencia de las mediciones.
