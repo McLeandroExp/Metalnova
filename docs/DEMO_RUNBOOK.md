@@ -1,19 +1,20 @@
 # Runbook de demostración — MetalNova Smart Factory BI
 
-> Estado: borrador inicial. Se completa en el incremento 007.
+> Estado: borrador avanzado. Se cierra en el incremento 007. Todos los datos son **sintéticos**.
 
 ## Guion (5–10 minutos)
 
 1. Explicar el problema de MetalNova y aclarar que **los datos son sintéticos**.
 2. Mostrar el esquema: archivos históricos → Python → PostgreSQL → Power BI.
-3. Panel ejecutivo: 3 plantas y 52 máquinas.
-4. OEE & Loss Tree: identificar una pérdida relevante.
-5. Maintenance Reliability: relacionar paradas con una causa o equipo.
-6. Quality & Energy: mostrar una tendencia de scrap o energía.
-7. Iniciar la ingesta simulada y provocar un evento identificable (`--scenario stop M-001`).
-8. Mostrar el registro en PostgreSQL y cuándo se refleja en Power BI según el modo validado.
-9. Presentar 3–5 acciones priorizadas con impacto, supuesto, responsable y KPI de seguimiento.
-10. Explicar limitaciones del prototipo y qué requeriría una implantación real.
+3. Panel ejecutivo: OEE global y último mes, tendencia por planta, comparación y alertas.
+4. OEE & Loss Tree: Pareto de downtime, matriz máquina-turno y pérdida por producto.
+5. Maintenance Reliability: MTBF, MTTR, fallas cortas, microparadas y tooltip de máquina.
+6. Quality & Energy: scrap por planta/turno/producto, FPY y energía por unidad buena.
+7. Drill-through a una máquina (OEE, intervenciones y paradas) y a una causa.
+8. Iniciar la ingesta simulada y provocar un evento identificable (`--scenario stop M-001`).
+9. Mostrar un evento inválido en cuarentena (`--scenario invalid M-001`).
+10. Presentar 3–5 acciones priorizadas con impacto, supuesto, responsable y KPI de seguimiento.
+11. Explicar limitaciones del prototipo y qué requeriría una implantación real.
 
 ## Orden de arranque
 
@@ -24,12 +25,12 @@
 4. (si hace falta) generar y cargar histórico calibrado:
    generate_history.py --seed 42 --end-date 2026-10-18 --escenario calibracion
    → load_history.py  →  verify_history.py
-5. Iniciar simulación:
+5. Abrir powerbi/final/MetalNova.pbip y pulsar «Actualizar ahora»
+6. Iniciar simulación:
    docker compose --profile tools run --rm ingestor python src/simulate_events.py
-6. Abrir powerbi/final/MetalNova.pbip y refrescar según el modo validado
 ```
 
-## Escenario reproducible
+## Escenario reproducible de parada
 
 Implementado en el incremento 004. La parada de 20 min no depende del azar:
 
@@ -54,13 +55,34 @@ Antes del escenario, el turno actual de M-001 no tiene fila; después aparece co
 `downtime_no_planificado_min = 20`, `fallas = 1` y `mtbf_h = NULL`. Repetir el mismo comando con el
 mismo `--at` no duplica la parada (idempotencia por `(id_maquina, inicio_at)`).
 
-Para una demostración con más actividad, usar `--intensity 2` o dejar el bucle corriendo varios
-minutos. Todos los eventos son sintéticos.
+## Escenario de calidad IoT
+
+```powershell
+# Evento normal, evento futuro y evento anterior al rango (los dos últimos a cuarentena)
+# más un evento tardío que se marca como reordenado.
+docker compose --profile tools run --rm ingestor python src/simulate_events.py `
+  --scenario invalid M-001 --once
+```
+
+Comprobación:
+
+```powershell
+docker compose exec -T db psql -U metalinova -d metalinova -c "
+SELECT source_event_id, motivo, recibido_at
+FROM fact_evento_rechazado
+ORDER BY id_rechazo DESC LIMIT 4;"
+```
+
+Resultado esperado: dos filas en cuarentena (`timestamp_futuro` y
+`timestamp_anterior_al_rango`) y dos eventos aceptados; el tardío lleva
+`payload.calidad.tardio = true` y `payload.calidad.reordenado = true`.
 
 ## Recuperación ante errores
 
 | Síntoma | Acción |
 |---|---|
 | `db` no saludable | `docker compose logs db`; verificar puerto libre |
-| Power BI no ve datos nuevos | refrescar; confirmar modo de conexión |
+| Power BI no ve datos nuevos | refrescar; confirmar modo de conexión DirectQuery |
+| Visual vacío tras regenerar PBIR | cerrar Desktop, `python tools/validate_report.py`, reabrir |
 | Datos corruptos | restaurar desde `backups/` con `pg_restore` |
+| Evento rechazado inesperado | revisar `fact_evento_rechazado.motivo`; el rango válido es `[inicio_histórico − 1 d, ahora + 5 min]` |

@@ -21,8 +21,8 @@ más una simulación de eventos cercanos al tiempo real.
 | 003 · Generador histórico (180 días) | **hecho** |
 | 004 · Ingesta continua simulada | **hecho** |
 | 005 · Vistas KPI y validación | **hecho** |
-| 006 · Informe Power BI (4 páginas) | **en curso** (datos calibrados y modelo generado; faltan páginas) |
-| 007 · Integración, demo y plan de mejora | propuesto |
+| 006 · Informe Power BI (4 páginas) | **en curso** (modelo y páginas generados; falta verificación visual en Desktop) |
+| 007 · Integración, demo y plan de mejora | en curso (runbook y plan de mejora; faltan pruebas end-to-end) |
 
 El detalle de cada incremento vive en `specs/`. Ver también `specs/CONSTITUTION.md` (fuente de
 verdad normativa) y `AGENTS.md`.
@@ -54,10 +54,15 @@ python/src/load_history.py      carga por lotes a PostgreSQL
 python/src/verify_history.py    verificación post-carga
 python/src/ingest.py            inserción idempotente y métricas de ingesta (004)
 python/src/simulate_events.py   simulador de ingesta continua (004)
+python/src/event_quality.py     reglas de calidad IoT: rango, tardío, reordenado (G5)
 python/src/validate_data.py     validación independiente de los KPI (005)
-tools/                       generación/validación del TMDL del 006
+python/src/validate_iot.py      validación de cuarentena y cobertura de señal (G5)
+tools/generate_tmdl.py       generación del modelo semántico TMDL (006)
+tools/generate_pbir.py       generación de las páginas del informe en PBIR
+tools/validate_model.py      validación de tablas/medidas/relaciones del TMDL
+tools/validate_report.py     validación de referencias y páginas del informe
 sql/                         esquema, vistas, índices y validaciones (montado en /sql)
-sql/views/                   4 vistas base + 20 vistas KPI (005)
+sql/views/                   4 vistas base + 20 vistas KPI + 2 vistas de alerta/señal
 data/                        CSV generados y manifiestos (no versionados)
 logs/                        logs del pipeline (no versionados)
 powerbi/                     informe .pbix / .pbip
@@ -382,6 +387,57 @@ en `docs/DATA_DICTIONARY.md`; evidencia en `specs/005-kpi-y-vistas/verification.
 
 ---
 
+## Informe Power BI (incremento 006)
+
+El modelo semántico y las páginas se generan por código; Power BI Desktop solo se usa para abrir,
+refrescar y verificar.
+
+```powershell
+# 1. Regenerar el modelo TMDL (15 tablas, 27 relaciones, 60 medidas)
+python tools/generate_tmdl.py
+python tools/validate_model.py
+
+# 2. Regenerar las páginas PBIR (4 principales + detalle de máquina/causa + tooltip)
+#    Power BI Desktop debe estar CERRADO.
+python tools/generate_pbir.py
+python tools/validate_report.py
+
+# 3. Abrir powerbi/final/MetalNova.pbip y pulsar «Actualizar ahora»
+```
+
+Páginas generadas:
+
+| Página | Contenido |
+|---|---|
+| 01 Executive Plant Performance | OEE global/último mes, A/R/Q, tendencia por planta, ranking y alertas |
+| 02 OEE & Loss Tree | Pareto de downtime, matriz máquina-turno con formato condicional, pérdida por producto y por planta |
+| 03 Maintenance Reliability | MTBF, MTTR, fallas, fallas cortas, microparadas, tooltip de máquina |
+| 04 Quality & Energy | FPY, scrap por planta/turno/producto, energía por unidad buena |
+| Detalle máquina (oculta) | Drill-through por máquina: OEE, intervenciones, paradas y calidad por producto |
+| Detalle causa (oculta) | Drill-through por causa: máquinas, downtime y turnos |
+| Tooltip máquina (oculta) | MTBF, MTTR y última intervención al pasar el ratón |
+
+La página `Modelo validado (T-604)` se conserva oculta. Si un visual no renderiza, el JSON está
+versionado y se corrige en el generador; no se edita el `.pbip` a mano.
+
+## Calidad y temporalidad IoT (G5)
+
+`event_quality.py` aplica el rango válido de la Constitución §7.1 antes de insertar. Un evento
+fuera de rango queda en `fact_evento_rechazado` con su motivo; un evento tardío o reordenado se
+acepta con marcas en `payload.calidad`. La cobertura se resume en `v_calidad_senal_iot`.
+
+```powershell
+# Prueba reproducible: 2 rechazos + 2 aceptados (uno tardío/reordenado)
+docker compose --profile tools run --rm ingestor python src/simulate_events.py `
+  --scenario invalid M-001 --once
+
+# Validación de las reglas y limpieza de datos de prueba
+docker compose --profile tools run --rm ingestor python src/validate_iot.py
+
+# Validación SQL de cuarentena, rango y cobertura
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/04_iot.sql
+```
+
 ## Cliente de base de datos (pgAdmin)
 
 Con `docker compose up -d` también arranca **pgAdmin**:
@@ -463,3 +519,5 @@ restauración sigue pendiente para el incremento 007 (P-015).
 | `docs/DATA_DICTIONARY.md` | Tablas, columnas y definiciones de KPI |
 | `docs/TEST_PLAN.md` | Casos de prueba y evidencias |
 | `docs/DEMO_RUNBOOK.md` | Guion de demostración |
+| `docs/PLAN_MEJORA.md` | 5 acciones priorizadas con impacto observado/hipotético y supuestos |
+| `docs/CUMPLIMIENTO.md` | Matriz requisito del caso → evidencia |
