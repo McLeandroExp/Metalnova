@@ -63,3 +63,6 @@ Evidencia: `logs/powerbi_spike_006.txt` y exportes del Analizador de rendimiento
 - La línea de referencia de OEE en 85 % es una **meta del prototipo** (referencia habitual de
   clase mundial), no una cifra del caso. El caso orientativo habla de 78 → 66 %; esa trayectoria
   se muestra en la tendencia y se mide en `specs/006-powerbi/verification.md`.
+- Las tarjetas de calidad usan el grano máquina-día (`v_kpi_calidad_maquina_dia`), que no tiene
+  turno; el filtro de turno aplica a las vistas de producción (`v_loss_tree`) y el de producto a
+  `v_kpi_calidad_producto_dia`. Es una limitación de grano declarada, no un visual roto.
