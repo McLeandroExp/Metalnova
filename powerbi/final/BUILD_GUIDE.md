@@ -1,8 +1,10 @@
 # Guía de construcción — Informe final 006
 
-> Esta guía se ejecuta en **Power BI Desktop** sobre `powerbi/final/MetalNova.pbip`.
-> El modelo semántico y las medidas ya están generados; no se deben recrear a mano.
-> Todos los datos son **sintéticos**. Estado: guía preparada, páginas aún no construidas.
+> Esta guía se conserva como **fallback manual** de la generación automática.
+> El modelo semántico y las páginas ya se generan con `tools/generate_tmdl.py` y
+> `tools/generate_pbir.py`; `tools/validate_report.py` comprueba las referencias.
+> Úsala solo si un visual no renderiza y hay que reconstruirlo en Desktop.
+> Todos los datos son **sintéticos**.
 
 ## 0. Antes de empezar
 
