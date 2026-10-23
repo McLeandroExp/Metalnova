@@ -60,6 +60,11 @@ def literal_number(value: float, suffix: str = "D") -> dict:
     return {"expr": {"Literal": {"Value": f"{value}{suffix}"}}}
 
 
+def literal_raw(value: str) -> dict:
+    """Valor literal ya formateado (p. ej. '1D', '2L')."""
+    return {"expr": {"Literal": {"Value": value}}}
+
+
 def column_field(entity: str, prop: str) -> dict:
     return {
         "Column": {
@@ -217,17 +222,50 @@ def card(
     width: float = 300,
     height: float = 140,
     title: str | None = None,
+    precision: int = 2,
+    display_units: str = "1D",
+    subtitle: str | None = None,
 ) -> dict:
-    return visual(
+    """Tarjeta con formato explícito: sin unidades automáticas y precisión fija.
+
+    ``display_units='1D'`` desactiva el redondeo a miles/millones de Power BI.
+    ``precision`` fija los decimales: 0 para conteos, 2 para porcentajes/horas,
+    4 para energía por unidad.
+    """
+    item = visual(
         name,
-        "cardVisual",
+        "card",
         x,
         y,
         width,
         height,
-        query_state=roles(Data=[meas(entity, measure)]),
+        query_state=roles(Values=[meas(entity, measure)]),
         title=title or measure,
+        objects={
+            "labels": [
+                {
+                    "properties": {
+                        "labelDisplayUnits": literal_raw(display_units),
+                        "labelPrecision": literal_raw(f"{precision}L"),
+                        "fontSize": literal_raw("26D"),
+                    }
+                }
+            ],
+            "categoryLabels": [
+                {"properties": {"show": literal_bool(False)}}
+            ],
+        },
     )
+    if subtitle:
+        item["visual"].setdefault("visualContainerObjects", {})["subTitle"] = [
+            {
+                "properties": {
+                    "show": literal_bool(True),
+                    "text": literal_string(subtitle),
+                }
+            }
+        ]
+    return item
 
 
 def textbox(
@@ -590,8 +628,15 @@ def add_slicers(visuals: list[dict]) -> None:
     )
 
 
-def add_cards(visuals: list[dict], specs: list[tuple[str, str, str]]) -> None:
-    for index, (entity, measure, title) in enumerate(specs):
+def add_cards(
+    visuals: list[dict],
+    specs: list[tuple],
+) -> None:
+    """Añade tarjetas. Cada spec: (entidad, medida, título[, precisión])."""
+    for index, spec in enumerate(specs):
+        entity, measure, title = spec[:3]
+        precision = spec[3] if len(spec) > 3 else 2
+        subtitle = spec[4] if len(spec) > 4 else None
         visuals.append(
             card(
                 f"card_{index + 1}",
@@ -602,6 +647,8 @@ def add_cards(visuals: list[dict], specs: list[tuple[str, str, str]]) -> None:
                 290,
                 135,
                 title,
+                precision=precision,
+                subtitle=subtitle,
             )
         )
 
@@ -617,12 +664,12 @@ def page_executive() -> list[dict]:
     add_cards(
         visuals,
         [
-            ("v_loss_tree", "OEE KPI", "OEE global"),
-            ("v_loss_tree", "OEE Último Mes", "OEE último mes"),
-            ("v_loss_tree", "Disponibilidad KPI", "Disponibilidad"),
-            ("v_loss_tree", "Rendimiento KPI", "Rendimiento"),
-            ("v_loss_tree", "Calidad KPI", "Calidad"),
-            ("v_alerta_maquina_critica", "Alertas Activas", "Alertas activas"),
+            ("v_loss_tree", "OEE KPI", "OEE global", 2),
+            ("v_loss_tree", "OEE Último Mes", "OEE último mes", 2),
+            ("v_loss_tree", "Disponibilidad KPI", "Disponibilidad", 2),
+            ("v_loss_tree", "Rendimiento KPI", "Rendimiento", 2),
+            ("v_loss_tree", "Calidad KPI", "Calidad", 2),
+            ("v_alerta_maquina_critica", "Alertas Activas", "Alertas activas", 0),
         ],
     )
     visuals.append(
@@ -658,18 +705,20 @@ def page_executive() -> list[dict]:
                 col("v_dim_maquina", "maquina_codigo"),
                 col("v_dim_maquina", "planta_codigo"),
                 col("v_alerta_ultimo_turno", "severidad"),
-                col("v_alerta_ultimo_turno", "oee"),
-                col("v_alerta_ultimo_turno", "mtbf_h"),
-                col("v_alerta_ultimo_turno", "max_temperatura_c"),
+                meas("v_alerta_ultimo_turno", "OEE Alerta"),
+                meas("v_alerta_ultimo_turno", "MTBF Alerta (h)"),
+                meas("v_alerta_ultimo_turno", "Temperatura Alerta (°C)"),
                 col("v_alerta_ultimo_turno", "acciones_sugeridas"),
             ],
             40,
             710,
             1820,
             310,
-            "Alertas del último turno por máquina",
+            "Alertas del último turno · MTBF (h) = horas operativas / fallas del turno; vacío = turno sin fallas. Histórico: página 03",
             sort_definition=sort_by(
-                "v_alerta_ultimo_turno", "oee", measure=False, direction="Ascending"
+                "v_alerta_ultimo_turno",
+                "OEE Alerta",
+                direction="Ascending",
             ),
         )
     )
@@ -681,18 +730,18 @@ def page_oee() -> list[dict]:
     add_header(
         visuals,
         "02 · OEE & Loss Tree",
-        "Descomposición de pérdidas por disponibilidad, rendimiento y calidad",
+        "Descomposición de pérdidas · tarjetas en horas; tablas y matriz en minutos",
     )
     add_slicers(visuals)
     add_cards(
         visuals,
         [
-            ("v_loss_tree", "OEE KPI", "OEE"),
-            ("v_loss_tree", "Disponibilidad KPI", "Disponibilidad"),
-            ("v_loss_tree", "Rendimiento KPI", "Rendimiento"),
-            ("v_loss_tree", "Calidad KPI", "Calidad"),
-            ("v_loss_tree", "Pérdida Total (min)", "Pérdida total"),
-            ("v_loss_tree", "Brecha Meta (pp)", "Brecha vs meta"),
+            ("v_loss_tree", "OEE KPI", "OEE", 2),
+            ("v_loss_tree", "Disponibilidad KPI", "Disponibilidad", 2),
+            ("v_loss_tree", "Rendimiento KPI", "Rendimiento", 2),
+            ("v_loss_tree", "Calidad KPI", "Calidad", 2),
+            ("v_loss_tree", "Pérdida Total (h)", "Pérdida total (h)", 2),
+            ("v_loss_tree", "Brecha Meta (pp)", "Brecha vs meta (pp)", 2),
         ],
     )
     visuals.append(
@@ -763,22 +812,23 @@ def page_maintenance() -> list[dict]:
     add_header(
         visuals,
         "03 · Maintenance Reliability",
-        "MTBF, MTTR, fallas cortas y microparadas · confiabilidad por máquina",
+        "MTBF, MTTR, fallas cortas y microparadas · tarjetas en horas; tablas en minutos",
     )
     add_slicers(visuals)
     add_cards(
         visuals,
         [
-            ("v_kpi_mantenimiento_maquina_turno", "MTBF (h)", "MTBF"),
-            ("v_kpi_mantenimiento_maquina_turno", "MTTR (min)", "MTTR"),
-            ("v_kpi_mantenimiento_maquina_turno", "Fallas (conteo)", "Fallas"),
+            ("v_kpi_mantenimiento_maquina_turno", "MTBF (h)", "MTBF (h)", 2),
+            ("v_kpi_mantenimiento_maquina_turno", "MTTR (h)", "MTTR (h)", 2),
+            ("v_kpi_mantenimiento_maquina_turno", "Fallas (conteo)", "Fallas", 0),
             (
                 "v_kpi_mantenimiento_maquina_turno",
-                "Downtime Mantenimiento (min)",
-                "Downtime",
+                "Downtime Mantenimiento (h)",
+                "Downtime (h)",
+                2,
             ),
-            ("v_kpi_mantenimiento", "Intervenciones", "Intervenciones"),
-            ("v_kpi_mantenimiento", "Costo Mantenimiento (USD)", "Costo"),
+            ("v_kpi_mantenimiento", "Intervenciones", "Intervenciones", 0),
+            ("v_kpi_mantenimiento", "Costo Mantenimiento (USD)", "Costo (USD)", 2),
         ],
     )
     visuals.append(
@@ -860,16 +910,22 @@ def page_quality() -> list[dict]:
     add_cards(
         visuals,
         [
-            ("v_kpi_calidad_maquina_dia", "FPY KPI", "FPY"),
-            ("v_kpi_calidad_maquina_dia", "Scrap Rate (Calidad)", "Scrap"),
-            ("v_kpi_calidad_maquina_dia", "Tasa Defectos", "Defectos"),
-            ("v_kpi_calidad_maquina_dia", "Tasa Retrabajo", "Retrabajo"),
+            ("v_kpi_calidad_maquina_dia", "FPY KPI", "FPY", 2),
+            ("v_kpi_calidad_maquina_dia", "Scrap Rate (Calidad)", "Scrap", 2),
+            ("v_kpi_calidad_maquina_dia", "Tasa Defectos", "Defectos", 2),
+            ("v_kpi_calidad_maquina_dia", "Tasa Retrabajo", "Retrabajo", 2),
             (
                 "v_kpi_calidad_maquina_dia",
                 "Energía por Unidad Buena",
-                "kWh / unidad buena",
+                "Energía por Unidad Buena (kWh)",
+                4,
             ),
-            ("v_kpi_calidad_maquina_dia", "Energía (kWh)", "Energía total"),
+            (
+                "v_kpi_calidad_maquina_dia",
+                "Energía (kWh)",
+                "Energía total (kWh)",
+                2,
+            ),
         ],
     )
     visuals.append(
@@ -947,13 +1003,13 @@ def page_machine() -> list[dict]:
         "Historial de OEE, mantenimiento y paradas · se accede por drill-through",
     )
     specs = [
-        ("v_loss_tree", "OEE KPI", "OEE"),
-        ("v_kpi_mantenimiento_maquina_turno", "MTBF (h)", "MTBF"),
-        ("v_kpi_mantenimiento_maquina_turno", "MTTR (min)", "MTTR"),
-        ("v_kpi_calidad_maquina_dia", "Scrap Rate (Calidad)", "Scrap"),
-        ("v_kpi_calidad_maquina_dia", "FPY KPI", "FPY"),
+        ("v_loss_tree", "OEE KPI", "OEE", 2),
+        ("v_kpi_mantenimiento_maquina_turno", "MTBF (h)", "MTBF (h)", 2),
+        ("v_kpi_mantenimiento_maquina_turno", "MTTR (h)", "MTTR (h)", 2),
+        ("v_kpi_calidad_maquina_dia", "Scrap Rate (Calidad)", "Scrap", 2),
+        ("v_kpi_calidad_maquina_dia", "FPY KPI", "FPY", 2),
     ]
-    for index, (entity, measure, title) in enumerate(specs):
+    for index, (entity, measure, title, precision) in enumerate(specs):
         visuals.append(
             card(
                 f"card_{index + 1}",
@@ -964,6 +1020,7 @@ def page_machine() -> list[dict]:
                 350,
                 130,
                 title,
+                precision=precision,
             )
         )
     visuals.append(
@@ -1045,12 +1102,12 @@ def page_causa() -> list[dict]:
         "Máquinas, turnos y pérdidas asociadas a una causa del Pareto",
     )
     specs = [
-        ("v_kpi_parada", "Paradas No Planificadas", "Paradas"),
-        ("v_kpi_parada", "Downtime por Causa (min)", "Downtime"),
-        ("v_kpi_parada", "Máquinas con Paradas", "Máquinas afectadas"),
-        ("v_kpi_parada", "Participación Downtime Causa", "Participación"),
+        ("v_kpi_parada", "Paradas No Planificadas", "Paradas", 0),
+        ("v_kpi_parada", "Downtime por Causa (h)", "Downtime (h)", 2),
+        ("v_kpi_parada", "Máquinas con Paradas", "Máquinas afectadas", 0),
+        ("v_kpi_parada", "Participación Downtime Causa", "Participación", 2),
     ]
-    for index, (entity, measure, title) in enumerate(specs):
+    for index, (entity, measure, title, precision) in enumerate(specs):
         visuals.append(
             card(
                 f"card_{index + 1}",
@@ -1061,6 +1118,7 @@ def page_causa() -> list[dict]:
                 440,
                 130,
                 title,
+                precision=precision,
             )
         )
     visuals.append(

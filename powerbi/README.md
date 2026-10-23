@@ -2,7 +2,7 @@
 
 `powerbi/MetalNova.pbip` es el **spike de conexión** y se conserva como referencia de las
 mediciones. El entregable vive en `powerbi/final/MetalNova.pbip` (modelo TMDL de 15 tablas, 27
-relaciones y 60 medidas; páginas PBIR generadas por `tools/generate_pbir.py`).
+relaciones y 70 medidas; páginas PBIR generadas por `tools/generate_pbir.py`).
 
 ## Abrir
 
@@ -66,3 +66,10 @@ Evidencia: `logs/powerbi_spike_006.txt` y exportes del Analizador de rendimiento
 - Las tarjetas de calidad usan el grano máquina-día (`v_kpi_calidad_maquina_dia`), que no tiene
   turno; el filtro de turno aplica a las vistas de producción (`v_loss_tree`) y el de producto a
   `v_kpi_calidad_producto_dia`. Es una limitación de grano declarada, no un visual roto.
+- **Unidades:** las tarjetas muestran tiempos en horas (MTBF, MTTR, downtime y pérdida); las
+  tablas y matrices conservan minutos para el detalle operativo. Las tarjetas tienen
+  `labelDisplayUnits = 1D` para que Power BI no redondee a “2 mil” o “4 mill.”. Los conteos son
+  enteros, los porcentajes 2 decimales, el costo 2 decimales y la energía por unidad 4 decimales.
+- **MTBF:** `horas operativas / número de fallas` del turno. Una celda vacía en la tabla de
+  alertas significa que el turno no tiene fallas o runtime; el MTBF histórico de 180 días está en
+  la tabla de la página 03.

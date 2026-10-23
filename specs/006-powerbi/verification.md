@@ -184,8 +184,8 @@ python tools/validate_report.py
 Resultados observados:
 
 ```text
-Modelo generado: 15 tablas, 27 relaciones, 60 medidas
-OK: 60 medidas, 27 relaciones, 15 tablas; referencias y tipos coherentes.
+Modelo generado: 15 tablas, 27 relaciones, 70 medidas
+OK: 70 medidas, 27 relaciones, 15 tablas; referencias y tipos coherentes.
 Páginas generadas: 7 · Visuales: 94
 Validación del informe PBIR: 8 páginas, 105 visuales, 0 errores
 ```
@@ -212,6 +212,32 @@ AC-605 y AC-607 siguen **pendientes de observación visual**.
 Detalle: `fact_evento_rechazado` conserva motivo y payload. El rango válido es
 `[inicio_histórico − 1 d, ahora + 5 min]`. La cadencia ideal de 15 min se reporta
 en `cumple_cadencia_15min`; el feed sintético emite 2 lecturas/turno (D-022).
+
+## Corrección de tarjetas y tabla de alertas (2026-10-23)
+
+Cambios aplicados tras la revisión visual del usuario:
+
+- La tabla de alertas usa medidas de fila (`OEE Alerta`, `MTBF Alerta (h)`,
+  `Temperatura Alerta (°C)`) en lugar de columnas crudas. El OEE se formatea como
+  porcentaje y el MTBF como horas.
+- `MTBF (h) = horas operativas / número de fallas` **del turno**. Una celda vacía
+  significa que ese turno no tiene fallas o runtime; para el histórico de 180 días
+  se usa la tabla de la página 03.
+- Las tarjetas usan el visual `card` con `labelDisplayUnits = 1D` (sin unidades
+  automáticas de miles/millones) y precisión fija: 0 para conteos, 2 para
+  porcentajes/horas, 2 para USD y 4 para kWh/unidad.
+- Convención de tiempos: **tarjetas en horas** (MTBF, MTTR, downtime y pérdida);
+  **tablas y matrices en minutos** para el detalle operativo. La fórmula no exige
+  una unidad concreta; es una decisión de presentación.
+- La tarjeta de energía por unidad buena y la de energía total muestran `(kWh)`.
+- `Costo Mantenimiento (USD)` conserva dos decimales: **$1.487.567,81**.
+- La pérdida total del Loss Tree es **3.528.469 min = 58.807,82 h**; la tarjeta
+  muestra horas y la matriz por planta mantiene minutos. Es coherente con
+  OEE 71,96 %: 28,08 % del tiempo planificado (209.445 h).
+
+Verificación estática: `validate_model.py` 70 medidas/27 relaciones/15 tablas y
+`validate_report.py` 8 páginas/105 visuales, 0 errores. Falta la confirmación
+visual del usuario tras refrescar.
 
 ## Pendientes y bloqueos
 

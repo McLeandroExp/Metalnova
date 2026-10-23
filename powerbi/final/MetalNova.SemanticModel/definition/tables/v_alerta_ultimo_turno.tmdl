@@ -1,6 +1,24 @@
 table v_alerta_ultimo_turno
 	lineageTag: 1956aba7-2754-59c6-acdd-4222fa488ad0
 
+	measure 'OEE Alerta' =
+			MAX ( v_alerta_ultimo_turno[oee] )
+		formatString: 0.00%
+		displayFolder: 07 Alertas
+		lineageTag: d7e8e8f5-397d-53f0-829e-779b6178d1c4
+
+	measure 'MTBF Alerta (h)' =
+			MAX ( v_alerta_ultimo_turno[mtbf_h] )
+		formatString: #,##0.00
+		displayFolder: 07 Alertas
+		lineageTag: b602c0a9-fc44-505a-8216-1cd52c0dafaf
+
+	measure 'Temperatura Alerta (°C)' =
+			MAX ( v_alerta_ultimo_turno[max_temperatura_c] )
+		formatString: 0.0
+		displayFolder: 07 Alertas
+		lineageTag: 95ea1e51-1757-53e3-8292-fc05c434cb16
+
 	column fecha
 		dataType: dateTime
 		isHidden

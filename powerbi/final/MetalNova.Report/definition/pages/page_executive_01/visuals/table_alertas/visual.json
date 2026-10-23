@@ -59,45 +59,45 @@
             },
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
                       "Entity": "v_alerta_ultimo_turno"
                     }
                   },
-                  "Property": "oee"
+                  "Property": "OEE Alerta"
                 }
               },
-              "queryRef": "v_alerta_ultimo_turno.oee",
-              "nativeQueryRef": "oee"
+              "queryRef": "v_alerta_ultimo_turno.OEE Alerta",
+              "nativeQueryRef": "OEE Alerta"
             },
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
                       "Entity": "v_alerta_ultimo_turno"
                     }
                   },
-                  "Property": "mtbf_h"
+                  "Property": "MTBF Alerta (h)"
                 }
               },
-              "queryRef": "v_alerta_ultimo_turno.mtbf_h",
-              "nativeQueryRef": "mtbf_h"
+              "queryRef": "v_alerta_ultimo_turno.MTBF Alerta (h)",
+              "nativeQueryRef": "MTBF Alerta (h)"
             },
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
                       "Entity": "v_alerta_ultimo_turno"
                     }
                   },
-                  "Property": "max_temperatura_c"
+                  "Property": "Temperatura Alerta (°C)"
                 }
               },
-              "queryRef": "v_alerta_ultimo_turno.max_temperatura_c",
-              "nativeQueryRef": "max_temperatura_c"
+              "queryRef": "v_alerta_ultimo_turno.Temperatura Alerta (°C)",
+              "nativeQueryRef": "Temperatura Alerta (°C)"
             },
             {
               "field": {
@@ -120,13 +120,13 @@
         "sort": [
           {
             "field": {
-              "Column": {
+              "Measure": {
                 "Expression": {
                   "SourceRef": {
                     "Entity": "v_alerta_ultimo_turno"
                   }
                 },
-                "Property": "oee"
+                "Property": "OEE Alerta"
               }
             },
             "direction": "Ascending"
@@ -149,7 +149,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Alertas del último turno por máquina'"
+                  "Value": "'Alertas del último turno · MTBF (h) = horas operativas / fallas del turno; vacío = turno sin fallas. Histórico: página 03'"
                 }
               }
             }

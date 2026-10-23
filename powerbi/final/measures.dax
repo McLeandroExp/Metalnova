@@ -66,6 +66,26 @@ Pérdida Total (min) =
     SUM ( v_loss_tree[minutos_perdidos_total] )
 // formato: #,##0
 
+// [02 Pérdidas] Pérdida Disponibilidad (h)
+Pérdida Disponibilidad (h) =
+    DIVIDE ( [Pérdida Disponibilidad (min)], 60 )
+// formato: #,##0.00
+
+// [02 Pérdidas] Pérdida Rendimiento (h)
+Pérdida Rendimiento (h) =
+    DIVIDE ( [Pérdida Rendimiento (min)], 60 )
+// formato: #,##0.00
+
+// [02 Pérdidas] Pérdida Calidad (h)
+Pérdida Calidad (h) =
+    DIVIDE ( [Pérdida Calidad (min)], 60 )
+// formato: #,##0.00
+
+// [02 Pérdidas] Pérdida Total (h)
+Pérdida Total (h) =
+    DIVIDE ( [Pérdida Total (min)], 60 )
+// formato: #,##0.00
+
 // [02 Pérdidas] Participación Pérdida Disponibilidad
 Participación Pérdida Disponibilidad =
     DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_disponibilidad] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
@@ -108,6 +128,11 @@ MTTR (min) =
     DIVIDE ( SUM ( v_kpi_mantenimiento_maquina_turno[minutos_reparacion] ), SUM ( v_kpi_mantenimiento_maquina_turno[reparaciones] ) )
 // formato: #,##0.00
 
+// [05 Mantenimiento] MTTR (h)
+MTTR (h) =
+    DIVIDE ( [MTTR (min)], 60 )
+// formato: #,##0.00
+
 // [05 Mantenimiento] Fallas (conteo)
 Fallas (conteo) =
     SUM ( v_kpi_mantenimiento_maquina_turno[fallas] )
@@ -132,6 +157,11 @@ Fallas por 100 h =
 Downtime Mantenimiento (min) =
     SUM ( v_kpi_mantenimiento_maquina_turno[downtime_no_planificado_min] )
 // formato: #,##0
+
+// [05 Mantenimiento] Downtime Mantenimiento (h)
+Downtime Mantenimiento (h) =
+    DIVIDE ( [Downtime Mantenimiento (min)], 60 )
+// formato: #,##0.00
 
 // [05 Mantenimiento] Fallas cortas (conteo)
 Fallas cortas (conteo) =
@@ -168,7 +198,7 @@ Intervenciones =
 // [05 Mantenimiento] Costo Mantenimiento (USD)
 Costo Mantenimiento (USD) =
     SUM ( v_kpi_mantenimiento[costo_estimado_usd] )
-// formato: $ #,##0
+// formato: $ #,##0.00
 
 // [05 Mantenimiento] Última Intervención
 Última Intervención =
@@ -241,6 +271,11 @@ Downtime por Causa (min) =
     CALCULATE ( SUM ( v_kpi_parada[duracion_min] ), v_kpi_parada[es_planificada] = FALSE () )
 // formato: #,##0
 
+// [06 Paradas] Downtime por Causa (h)
+Downtime por Causa (h) =
+    DIVIDE ( [Downtime por Causa (min)], 60 )
+// formato: #,##0.00
+
 // [06 Paradas] Paradas No Planificadas
 Paradas No Planificadas =
     CALCULATE ( COUNTROWS ( v_kpi_parada ), v_kpi_parada[es_planificada] = FALSE () )
@@ -281,6 +316,23 @@ Máquinas en Alerta =
 // [07 Alertas] Temperatura Máxima (°C)
 Temperatura Máxima (°C) =
     CALCULATE ( MAX ( v_alerta_maquina_critica[max_temperatura_c] ), v_alerta_maquina_critica[es_ultimo_turno_maquina] = TRUE () )
+// formato: 0.0
+
+// --- v_alerta_ultimo_turno ---
+
+// [07 Alertas] OEE Alerta
+OEE Alerta =
+    MAX ( v_alerta_ultimo_turno[oee] )
+// formato: 0.00%
+
+// [07 Alertas] MTBF Alerta (h)
+MTBF Alerta (h) =
+    MAX ( v_alerta_ultimo_turno[mtbf_h] )
+// formato: #,##0.00
+
+// [07 Alertas] Temperatura Alerta (°C)
+Temperatura Alerta (°C) =
+    MAX ( v_alerta_ultimo_turno[max_temperatura_c] )
 // formato: 0.0
 
 // --- v_calidad_senal_iot ---

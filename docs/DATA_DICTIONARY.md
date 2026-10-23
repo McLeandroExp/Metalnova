@@ -448,6 +448,13 @@ aproximación, no como una medición continua. La cadencia ideal de 15 min se
 informa en `v_calidad_senal_iot.cumple_cadencia_15min` y no se oculta: el feed
 sintético no la cumple.
 
+**Unidades en el informe:** las fórmulas no exigen una unidad de presentación
+concreta. Las tarjetas muestran tiempos en **horas** (MTBF, MTTR, downtime y
+pérdida) y las tablas/matrices conservan **minutos** para el detalle operativo.
+Los conteos se muestran enteros, los porcentajes con 2 decimales, el costo con 2
+decimales y la energía por unidad buena con 4 decimales. Power BI no debe usar
+unidades automáticas de miles/millones (`labelDisplayUnits = 1D`).
+
 **Casos borde:** toda división por cero devuelve `NULL` de forma intencional y
 documentada; no se propaga `NaN`. Un turno sin producción no genera filas en las
 vistas OEE y queda excluido de los promedios ponderados. Una máquina sin fallas

@@ -9,7 +9,7 @@ table v_kpi_mantenimiento
 
 	measure 'Costo Mantenimiento (USD)' =
 			SUM ( v_kpi_mantenimiento[costo_estimado_usd] )
-		formatString: $ #,##0
+		formatString: $ #,##0.00
 		displayFolder: 05 Mantenimiento
 		lineageTag: 49a361a4-db5d-5048-a753-1f2cdf49b523
 

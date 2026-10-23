@@ -10,10 +10,10 @@
     "tabOrder": 10
   },
   "visual": {
-    "visualType": "cardVisual",
+    "visualType": "card",
     "query": {
       "queryState": {
-        "Data": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -23,15 +23,57 @@
                       "Entity": "v_kpi_mantenimiento_maquina_turno"
                     }
                   },
-                  "Property": "MTTR (min)"
+                  "Property": "MTTR (h)"
                 }
               },
-              "queryRef": "v_kpi_mantenimiento_maquina_turno.MTTR (min)",
-              "nativeQueryRef": "MTTR (min)"
+              "queryRef": "v_kpi_mantenimiento_maquina_turno.MTTR (h)",
+              "nativeQueryRef": "MTTR (h)"
             }
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "labelPrecision": {
+              "expr": {
+                "Literal": {
+                  "Value": "2L"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "26D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -47,7 +89,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'MTTR'"
+                  "Value": "'MTTR (h)'"
                 }
               }
             }

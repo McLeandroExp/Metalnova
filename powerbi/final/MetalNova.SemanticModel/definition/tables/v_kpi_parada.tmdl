@@ -7,6 +7,12 @@ table v_kpi_parada
 		displayFolder: 06 Paradas
 		lineageTag: 05121f73-e6f1-5fa6-a913-d197af7b5bda
 
+	measure 'Downtime por Causa (h)' =
+			DIVIDE ( [Downtime por Causa (min)], 60 )
+		formatString: #,##0.00
+		displayFolder: 06 Paradas
+		lineageTag: 876c1fae-6495-5331-806c-2a47ecfd96d5
+
 	measure 'Paradas No Planificadas' =
 			CALCULATE ( COUNTROWS ( v_kpi_parada ), v_kpi_parada[es_planificada] = FALSE () )
 		formatString: #,##0

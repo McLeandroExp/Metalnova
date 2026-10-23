@@ -13,6 +13,12 @@ table v_kpi_mantenimiento_maquina_turno
 		displayFolder: 05 Mantenimiento
 		lineageTag: 66c8a0b8-44bc-5a77-abea-f4dcbaede0e8
 
+	measure 'MTTR (h)' =
+			DIVIDE ( [MTTR (min)], 60 )
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: b8ebf527-74ac-53af-89ae-b1bbf7beba8d
+
 	measure 'Fallas (conteo)' =
 			SUM ( v_kpi_mantenimiento_maquina_turno[fallas] )
 		formatString: #,##0
@@ -42,6 +48,12 @@ table v_kpi_mantenimiento_maquina_turno
 		formatString: #,##0
 		displayFolder: 05 Mantenimiento
 		lineageTag: 0701bd37-1eb2-51f8-9f1f-6a8c30c87935
+
+	measure 'Downtime Mantenimiento (h)' =
+			DIVIDE ( [Downtime Mantenimiento (min)], 60 )
+		formatString: #,##0.00
+		displayFolder: 05 Mantenimiento
+		lineageTag: f4cf5938-3eaf-5750-8aff-52915001f17d
 
 	measure 'Fallas cortas (conteo)' =
 			SUM ( v_kpi_mantenimiento_maquina_turno[fallas_cortas] )

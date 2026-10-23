@@ -73,6 +73,30 @@ table v_loss_tree
 		displayFolder: 02 Pérdidas
 		lineageTag: a53b7521-b9f3-5860-878d-ba95bdaa6f45
 
+	measure 'Pérdida Disponibilidad (h)' =
+			DIVIDE ( [Pérdida Disponibilidad (min)], 60 )
+		formatString: #,##0.00
+		displayFolder: 02 Pérdidas
+		lineageTag: 46039d2b-fa2f-5563-9e36-f5787a9a6185
+
+	measure 'Pérdida Rendimiento (h)' =
+			DIVIDE ( [Pérdida Rendimiento (min)], 60 )
+		formatString: #,##0.00
+		displayFolder: 02 Pérdidas
+		lineageTag: 93a02fd0-118e-5360-af47-3140e3ee1ecb
+
+	measure 'Pérdida Calidad (h)' =
+			DIVIDE ( [Pérdida Calidad (min)], 60 )
+		formatString: #,##0.00
+		displayFolder: 02 Pérdidas
+		lineageTag: 9b1315c4-3003-584c-944f-642e73859790
+
+	measure 'Pérdida Total (h)' =
+			DIVIDE ( [Pérdida Total (min)], 60 )
+		formatString: #,##0.00
+		displayFolder: 02 Pérdidas
+		lineageTag: 0e47e589-6b23-5ec4-9453-5aeb711a90d3
+
 	measure 'Participación Pérdida Disponibilidad' =
 			DIVIDE ( SUM ( v_loss_tree[minutos_perdidos_disponibilidad] ), SUM ( v_loss_tree[minutos_perdidos_total] ) )
 		formatString: 0.00%

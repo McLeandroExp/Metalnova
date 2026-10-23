@@ -31,7 +31,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "MTBF, MTTR, fallas cortas y microparadas · confiabilidad por máquina",
+                    "value": "MTBF, MTTR, fallas cortas y microparadas · tarjetas en horas; tablas en minutos",
                     "textStyle": {
                       "fontFamily": "'Segoe UI', helvetica, sans-serif",
                       "fontSize": "10pt",

@@ -393,7 +393,7 @@ El modelo semántico y las páginas se generan por código; Power BI Desktop sol
 refrescar y verificar.
 
 ```powershell
-# 1. Regenerar el modelo TMDL (15 tablas, 27 relaciones, 60 medidas)
+# 1. Regenerar el modelo TMDL (15 tablas, 27 relaciones, 70 medidas)
 python tools/generate_tmdl.py
 python tools/validate_model.py
 
