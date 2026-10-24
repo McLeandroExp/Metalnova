@@ -420,6 +420,9 @@ Páginas generadas:
 La página `Modelo validado (T-604)` se conserva oculta. Si un visual no renderiza, el JSON está
 versionado y se corrige en el generador; no se edita el `.pbip` a mano.
 
+Capturas de las páginas verificadas el 2026-10-23 (datos sintéticos):
+[`docs/capturas/`](docs/capturas/README.md).
+
 ## Calidad y temporalidad IoT (G5)
 
 `event_quality.py` aplica el rango válido de la Constitución §7.1 antes de insertar. Un evento

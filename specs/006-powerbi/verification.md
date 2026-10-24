@@ -333,6 +333,23 @@ de la tabla de alertas.
 El informe abre correctamente; la referencia de apertura sigue siendo la mediana
 de 35,46 s de D-019 (umbral ≤ 60 s).
 
+### Capturas
+
+Guardadas en [`docs/capturas/`](../../docs/capturas/README.md) (2026-10-23,
+datos sintéticos).
+
+| Página | Captura |
+|---|---|
+| 01 Executive Plant Performance | [`01-executive.png`](../../docs/capturas/01-executive.png) |
+| 02 OEE & Loss Tree | [`02-oee-loss-tree.png`](../../docs/capturas/02-oee-loss-tree.png) |
+| 03 Maintenance Reliability | [`03-maintenance.png`](../../docs/capturas/03-maintenance.png) |
+| 04 Quality & Energy | [`04-quality-energy.png`](../../docs/capturas/04-quality-energy.png) |
+| Detalle máquina | [`detalle-maquina.png`](../../docs/capturas/detalle-maquina.png) |
+| Detalle causa | [`detalle-causa.png`](../../docs/capturas/detalle-causa.png) |
+| Tooltip máquina | [`tooltip-maquina.png`](../../docs/capturas/tooltip-maquina.png) |
+
+![Página 01 Executive Plant Performance](../../docs/capturas/01-executive.png)
+
 ## Cierre del incremento
 
-Ninguno. Incremento 006 cerrado.
+Incremento 006 cerrado. Sin pendientes.

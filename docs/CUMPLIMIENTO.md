@@ -33,6 +33,8 @@ Requisito del caso → evidencia en el prototipo → estado. Todos los datos son
 | 26 | Ranking de intervenciones por impacto económico y criticidad | `docs/PLAN_MEJORA.md` §5 | Cumplido |
 | 27 | Demostración sin internet y con datos sintéticos | Docker local + Power BI Desktop; aviso en cada página | Cumplido |
 
+Evidencia visual: capturas de las 8 páginas en [`docs/capturas/`](capturas/README.md).
+
 ## Cierre
 
 El prototipo quedó verificado visualmente el 2026-10-23. Evidencia en
