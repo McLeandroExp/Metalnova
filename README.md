@@ -45,6 +45,7 @@ compose.yaml                 servicios db (PostgreSQL) e ingestor (Python)
 .env.example                 plantilla de variables de entorno
 specs/                       especificaciones SDD (fuente de verdad)
 docs/                        arquitectura, diccionario, pruebas, runbook
+docs/verification/           verificación reproducible de bloques y solapes
 docs/reference/              insumos académicos originales (no normativos)
 docker/postgres/init/        scripts de initdb (solo corren con volumen vacío)
 docker/pgadmin/servers.json  servidor PostgreSQL pre-registrado en pgAdmin

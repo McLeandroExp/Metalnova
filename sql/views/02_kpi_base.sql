@@ -157,7 +157,147 @@ SELECT base.*
 FROM base;
 
 -- ---------------------------------------------------------------------------
--- v_kpi_parada — grano: un episodio de parada.
+-- v_parada_consolidada — grano: un episodio consolidado de parada.
+--
+-- Regla de solapes (D-023): unir únicamente intervalos ESTRICTAMENTE solapados
+-- de la misma máquina. No se unen intervalos adyacentes (fin = siguiente
+-- inicio): pueden tener causas distintas y deben seguir contando como dos
+-- episodios para MTBF/fallas.
+--
+-- La tabla cruda fact_parada se conserva intacta para trazabilidad. Esta vista
+-- es la capa analítica que usan v_kpi_parada y v_kpi_mantenimiento_*.
+--
+-- Reglas de atribución del episodio consolidado:
+--   - inicio/fin: mínimo inicio y máximo fin; si algún origen está abierto,
+--     el consolidado queda abierto y la duración se mide hasta CURRENT_TIMESTAMP.
+--   - turno/día: los del episodio que inicia primero (atribución por inicio).
+--   - causa: la del episodio no planificado de mayor duración; si todos son
+--     planificados, la del de mayor duración (empate: el más temprano).
+--   - CMMS: la primera OT no nula, priorizando la de mayor duración y, si hay
+--     un tramo no planificado, la de ese tramo.
+--   - planificada: true solo si todos los orígenes son planificados.
+--   - microparada: se recalcula con la unión y el umbral de v_kpi_parametros.
+--   - duración: minutos de la unión, no la suma de los episodios.
+-- ---------------------------------------------------------------------------
+CREATE OR REPLACE VIEW v_parada_consolidada AS
+WITH ordered AS (
+    SELECT
+        p.id_parada,
+        p.id_maquina,
+        p.id_turno,
+        p.id_tiempo,
+        p.id_causa,
+        p.id_mantenimiento,
+        p.inicio_at,
+        p.fin_at,
+        COALESCE(p.fin_at, 'infinity'::timestamptz) AS fin_efectivo,
+        p.duracion_min,
+        p.es_planificada,
+        p.causa_detalle,
+        LAG(COALESCE(p.fin_at, 'infinity'::timestamptz))
+            OVER (
+                PARTITION BY p.id_maquina
+                ORDER BY p.inicio_at, p.id_parada
+            ) AS prev_fin_efectivo
+    FROM fact_parada p
+), flags AS (
+    SELECT
+        o.*,
+        CASE
+            WHEN o.prev_fin_efectivo IS NULL
+              OR o.inicio_at >= o.prev_fin_efectivo
+            THEN 1 ELSE 0
+        END AS nuevo_grupo
+    FROM ordered o
+), groups AS (
+    SELECT
+        f.*,
+        SUM(f.nuevo_grupo) OVER (
+            PARTITION BY f.id_maquina
+            ORDER BY f.inicio_at, f.id_parada
+        ) AS grupo
+    FROM flags f
+), merged AS (
+    SELECT
+        g.id_maquina,
+        g.grupo,
+        (array_agg(g.id_parada
+            ORDER BY g.inicio_at, g.id_parada))[1] AS id_parada,
+        MIN(g.inicio_at) AS inicio_at,
+        CASE
+            WHEN bool_or(g.fin_at IS NULL) THEN NULL
+            ELSE MAX(g.fin_at)
+        END AS fin_at,
+        (array_agg(g.id_turno ORDER BY g.inicio_at, g.id_parada))[1]
+            AS id_turno,
+        (array_agg(g.id_tiempo ORDER BY g.inicio_at, g.id_parada))[1]
+            AS id_tiempo,
+        (array_agg(g.id_causa
+            ORDER BY g.es_planificada,
+                     g.duracion_min DESC, g.inicio_at, g.id_parada))[1]
+            AS id_causa,
+        (array_agg(g.id_mantenimiento
+            ORDER BY g.es_planificada,
+                     (g.id_mantenimiento IS NULL),
+                     g.duracion_min DESC, g.inicio_at, g.id_parada))[1]
+            AS id_mantenimiento,
+        bool_and(g.es_planificada) AS es_planificada,
+        COUNT(*) AS episodios_origen,
+        SUM(g.duracion_min) AS minutos_brutos,
+        string_agg(g.causa_detalle, ' | '
+            ORDER BY g.inicio_at, g.id_parada) AS causa_detalle,
+        array_agg(g.id_parada
+            ORDER BY g.inicio_at, g.id_parada) AS ids_origen
+    FROM groups g
+    GROUP BY g.id_maquina, g.grupo
+), calc AS (
+    SELECT
+        m.*,
+        CASE
+            WHEN m.fin_at IS NULL THEN
+                GREATEST(
+                    0,
+                    ROUND(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - m.inicio_at)) / 60.0)
+                )::integer
+            ELSE
+                GREATEST(
+                    0,
+                    ROUND(EXTRACT(EPOCH FROM (m.fin_at - m.inicio_at)) / 60.0)
+                )::integer
+        END AS duracion_min,
+        GREATEST(
+            0,
+            m.minutos_brutos - ROUND(
+                EXTRACT(EPOCH FROM (
+                    COALESCE(m.fin_at, CURRENT_TIMESTAMP) - m.inicio_at
+                )) / 60.0
+            )
+        )::integer AS minutos_solapados
+    FROM merged m
+)
+SELECT
+    c.id_parada,
+    c.id_maquina,
+    c.id_turno,
+    c.id_tiempo,
+    c.id_causa,
+    c.id_mantenimiento,
+    c.inicio_at,
+    c.fin_at,
+    c.duracion_min,
+    c.es_planificada,
+    (NOT c.es_planificada
+        AND c.duracion_min < parm.microparada_min
+        AND c.id_mantenimiento IS NULL) AS es_microparada,
+    c.causa_detalle,
+    c.episodios_origen,
+    c.ids_origen,
+    c.minutos_solapados
+FROM calc c
+CROSS JOIN v_kpi_parametros parm;
+
+-- ---------------------------------------------------------------------------
+-- v_kpi_parada — grano: un episodio de parada consolidado.
 -- Clasificación según Constitución §7.3 (G6):
 --   microparada = no planificada, duración < microparada_min y sin CMMS.
 --   falla       = no planificada y no microparada.
@@ -196,7 +336,7 @@ WITH base AS (
         (NOT p.es_planificada
             AND p.duracion_min < parm.microparada_min
             AND p.id_mantenimiento IS NULL) AS es_microparada_regla
-    FROM fact_parada p
+    FROM v_parada_consolidada p
     JOIN dim_maquina m  ON m.id_maquina = p.id_maquina
     JOIN dim_linea   l  ON l.id_linea   = m.id_linea
     JOIN dim_planta  pl ON pl.id_planta = l.id_planta

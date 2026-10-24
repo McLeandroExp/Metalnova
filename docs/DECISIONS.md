@@ -307,3 +307,51 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
   - La documentación de la alerta se corrigió: ya no afirma que el histórico
     muestrea cada 15 min.
 - **Estado:** aceptada.
+
+## D-023 · Consolidación de paradas solapadas en capa analítica
+
+- **Contexto:** `fact_parada` tiene unicidad `(id_maquina, inicio_at)`, que evita
+  duplicados con el mismo inicio pero no dos episodios con inicios distintos que
+  se cruzan. El generador y el simulador evitan solapes por construcción; una
+  fuente externa o un evento tardío podría introducirlos. El modelo sumaba las
+  duraciones de ambos episodios y no sabía que eran una sola parada.
+- **Decisión:** crear `v_parada_consolidada` como **unión de intervalos
+  estrictamente solapados por máquina**. `fact_parada` se conserva intacta para
+  trazabilidad; `v_kpi_parada` y `v_kpi_mantenimiento_maquina_turno` leen de la
+  vista consolidada. **No se unen intervalos adyacentes** (`fin = siguiente
+  inicio`): pueden tener causas distintas y deben seguir contando como dos
+  episodios para MTBF/fallas.
+- **Reglas de atribución:**
+  - inicio/fin: mínimo inicio y máximo fin; si algún origen está abierto, el
+    consolidado queda abierto y la duración se mide hasta `CURRENT_TIMESTAMP`;
+  - turno/día: los del episodio que inicia primero;
+  - causa: la del episodio no planificado de mayor duración; si todos son
+    planificados, la del de mayor duración (empate: el más temprano);
+  - CMMS: la primera OT no nula, priorizando la de mayor duración y, si hay un
+    tramo no planificado, la de ese tramo;
+  - `es_planificada`: `true` solo si todos los orígenes son planificados;
+  - `es_microparada`: se recalcula con la unión y `microparada_min = 5`;
+  - duración: minutos de la unión, no la suma de los episodios.
+- **Alternativas:** rechazar solapes con una constraint `EXCLUDE` (no consolida,
+  solo bloquea); corregir `fact_parada` con actualizaciones (más invasivo y
+  rompe la trazabilidad del evento crudo); materializar la vista (mejor
+  rendimiento, pero requiere orquestar refresh).
+- **Motivo:** resuelve el caso sin migrar el esquema ni tocar `fact_produccion`.
+  Con los datos actuales (0 solapes estrictos) el resultado es idéntico:
+  76.045 episodios y 1.063.948 minutos. La consolidación solo cambia los KPI de
+  paradas cuando aparecen solapes reales.
+- **Consecuencias:**
+  - El OEE, la disponibilidad y el Loss Tree siguen usando
+    `fact_produccion.downtime_no_planificado_min`; **no cambian** con esta
+    decisión. Si se exige que el OEE también refleje la consolidación, hay que
+    abrir una segunda fase de reconciliación de `fact_produccion`.
+  - Pareto, MTBF, fallas y microparadas usan la vista consolidada.
+  - Limitaciones declaradas: en un solape mixto planificado/no planificado se
+    aplica “no planificado gana”; un episodio que cruza turno se atribuye al
+    turno de inicio; si hay varias OT, se conserva una principal.
+  - La vista tarda ~245 ms sobre 76.045 filas; en DirectQuery conviene medir y,
+    si molesta, materializar en una fase posterior.
+  - Evidencia: `sql/validation/05_parada_consolidada.sql`,
+    `sql/validation/06_parada_consolidada_prueba.sql`,
+    `docs/verification/solapes-paradas.md` y `validate_data.py` 49/49.
+- **Estado:** aceptada.

@@ -187,6 +187,12 @@ good_count <= total_count  y  scrap_count <= total_count
 es falla si tiene orden CMMS o dura `>= 5 min`. Los descansos de turno se registran como parada
 planificada con causa `DESCANSO`, de modo que el downtime planificado del turno queda trazado.
 
+**Capa cruda y consolidación:** `fact_parada` conserva un episodio por evento de origen. La
+unicidad solo evita duplicados con el mismo inicio; no impide dos episodios con inicios
+distintos que se solapan. La vista `v_parada_consolidada` aplica la unión de intervalos
+estrictamente solapados por máquina (D-023) y es la que consumen `v_kpi_parada` y
+`v_kpi_mantenimiento_maquina_turno`. `v_parada_detalle` sigue mostrando el hecho crudo.
+
 ### `fact_mantenimiento` — grano: una orden de trabajo
 
 | Columna | Tipo | Clave | Notas |
@@ -285,6 +291,29 @@ El simulador inserta eventos **por transición** desde `source_system = 'iot'`:
 | `v_mantenimiento_detalle` | `fact_mantenimiento` + máquina, técnico, causa, turno, tiempo |
 | `v_calidad_detalle` | `fact_calidad` + máquina, producto, familia, turno, tiempo, causa |
 
+### `v_parada_consolidada` — grano: episodio consolidado de parada
+
+Une intervalos **estrictamente solapados** de la misma máquina. No une intervalos
+adyacentes (`fin = siguiente inicio`), porque pueden tener causas distintas y
+deben seguir contando como dos episodios para MTBF/fallas. Columnas:
+
+| Columna | Notas |
+|---|---|
+| `id_parada` | `id_parada` del episodio que inicia primero; clave representativa |
+| `id_maquina`, `id_turno`, `id_tiempo`, `id_causa`, `id_mantenimiento` | atributos del episodio consolidado |
+| `inicio_at`, `fin_at`, `duracion_min` | unión de intervalos; `fin_at` nulo si algún origen está abierto |
+| `es_planificada` | `true` solo si todos los orígenes son planificados |
+| `es_microparada` | recalculada con la duración de la unión y `microparada_min` |
+| `episodios_origen` | cuántos episodios crudos forman el consolidado |
+| `ids_origen` | array de `id_parada` crudos que cubre la vista |
+| `minutos_solapados` | minutos que se habrían contado dos veces con la suma bruta |
+
+Atribución: turno/día del inicio; causa del episodio no planificado de mayor
+duración (si todos son planificados, la del mayor); OT no nula de mayor duración;
+en un solape mixto planificado/no planificado se aplica “no planificado gana”. Si
+un episodio cruza turno, se atribuye al turno de inicio.
+El detalle de la decisión está en `docs/DECISIONS.md` D-023.
+
 ---
 
 ## Vistas KPI (incremento 005)
@@ -317,7 +346,7 @@ una planta no es el promedio de los OEE de sus máquinas.
 |---|---|---|
 | `v_kpi_produccion` | fila de `fact_produccion` | dimensiones + A/P/Q/OEE, scrap, energía/unidad buena, downtime |
 | `v_kpi_calidad` | inspección | dimensiones + tasa de defectos, retrabajo y FPY |
-| `v_kpi_parada` | parada | dimensiones + regla G6 (`es_falla`, `es_microparada_regla`, `es_falla_corta`) |
+| `v_kpi_parada` | parada consolidada | dimensiones + regla G6 (`es_falla`, `es_microparada_regla`, `es_falla_corta`) |
 | `v_kpi_mantenimiento` | orden de trabajo | dimensiones + tipo/estado + `es_correctivo_cerrado` |
 
 ### OEE
@@ -401,9 +430,10 @@ La ejecución **calibrada del 006** usa la misma semilla y rango, escenario `cal
 | `fact_calidad` | 28.080 |
 | `fact_evento` | 401.787 |
 
-El escenario calibrado añade 43 eventos y 21 paradas de la ingesta simulada 004; los KPI
-históricos se calculan solo sobre los 180 días. El detalle de ambas ejecuciones está en
-`specs/003-generador-historico/verification.md` y `specs/006-powerbi/verification.md`.
+La base actual añade 51 eventos y 24 paradas de las ejecuciones `sim-*` a la corrida
+histórica; los KPI históricos se calculan solo sobre los 180 días. El detalle de ambas
+ejecuciones está en `specs/003-generador-historico/verification.md` y
+`specs/006-powerbi/verification.md`.
 
 ### Factores de calibración
 
@@ -445,6 +475,12 @@ microparadas 1,20), `critica` (0,76; 2,20; 1,40; 1,50), `calidad` (calidad 0,94)
 | Loss Tree — participación | `pérdida_categoría / minutos_perdidos_total` | `NULL` si el total es 0 |
 | Alerta de máquina crítica | OEE < 55 % **o** MTBF < 20 h **o** temperatura > 85 °C durante ≥ 15 min **o** downtime > 120 min/turno | severidad `critica` si se cumplen ≥ 2 condiciones; el OEE se compara redondeado a 6 decimales para estabilizar el borde exacto de 55 % |
 
+**Nota sobre FPY:** la fórmula es literalmente “sin retrabajo / procesadas”. No
+descuenta el scrap que no pasó por retrabajo, por lo que no equivale a
+`good_count / total_count`. En el histórico da 97,63 % frente a una calidad de
+95,16 %. Si se adopta la lectura clásica de FPY (buenas de primera pasada), hay
+que cambiar la definición y las vistas.
+
 **Ventana de la alerta:** un turno (máquina × turno × fecha). El feed sintético
 emite **dos lecturas de proceso por turno** (minutos 90 y 300) y cinco cuando hay
 excursión térmica (minutos 300–360). Se exigen al menos dos lecturas > 85 °C en
@@ -479,6 +515,7 @@ transacción de prueba que se revierte.
 | Falla | con orden CMMS **o** duración ≥ 5 min |
 | Falla corta | falla con duración < 30 min |
 | Parada planificada | `dim_causa.es_planificada = true` (mantenimiento preventivo, cambio de producto, setup) |
+| Solape de paradas | unión de intervalos estrictamente solapados por máquina; no se unen adyacentes (D-023) |
 | Temperatura alta | lectura > 85 °C; ≥ 2 lecturas en el turno para la regla de alerta |
 
 ## Calidad y temporalidad de eventos IoT (G5)

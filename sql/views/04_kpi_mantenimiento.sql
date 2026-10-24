@@ -2,7 +2,7 @@
 -- 04_kpi_mantenimiento.sql — MTBF, MTTR, downtime y confiabilidad operativa.
 -- Fuentes de verdad (Constitución §7.2):
 --   tiempo operativo / producción -> fact_produccion (MES)
---   fallas y paradas              -> fact_parada (transiciones IoT)
+--   fallas y paradas              -> v_parada_consolidada (transiciones IoT)
 --   reparaciones                  -> fact_mantenimiento (CMMS cerrado)
 --
 -- Regla G6 (Constitución §7.3): falla = parada no planificada que no es
@@ -22,7 +22,7 @@ CREATE OR REPLACE VIEW v_kpi_mantenimiento_maquina_turno AS
 WITH claves AS (
     SELECT id_maquina, id_turno, id_tiempo FROM fact_produccion
     UNION
-    SELECT id_maquina, id_turno, id_tiempo FROM fact_parada
+    SELECT id_maquina, id_turno, id_tiempo FROM v_parada_consolidada
     UNION
     SELECT id_maquina, id_turno, id_tiempo FROM fact_mantenimiento
 ), prod AS (
@@ -79,7 +79,7 @@ WITH claves AS (
                        AND p.id_mantenimiento IS NULL)
               AND p.duracion_min < prm.falla_corta_min
         ), 0) AS minutos_fallas_cortas
-    FROM fact_parada p
+    FROM v_parada_consolidada p
     CROSS JOIN v_kpi_parametros prm
     GROUP BY p.id_maquina, p.id_turno, p.id_tiempo
 ), mant AS (

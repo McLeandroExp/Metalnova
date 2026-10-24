@@ -112,6 +112,7 @@ OEE 78,02 → 66,00 % en ventanas de 30 días; dispersión entre plantas 8,5 pp 
 | Dimensiones | `dim_planta`, `dim_linea`, `dim_maquina`, `dim_familia`, `dim_producto`, `dim_turno`, `dim_causa`, `dim_tecnico`, `dim_tiempo`, `dim_orden` |
 | Hechos | `fact_produccion`, `fact_parada`, `fact_mantenimiento`, `fact_calidad`, `fact_evento`, `fact_evento_rechazado` |
 | Vistas base | `v_produccion_detalle`, `v_parada_detalle`, `v_mantenimiento_detalle`, `v_calidad_detalle` |
+| Consolidación de paradas | `v_parada_consolidada` (D-023; usada por `v_kpi_parada` y `v_kpi_mantenimiento_*`) |
 | Vistas KPI (005) | `v_kpi_parametros`, `v_kpi_produccion`, `v_kpi_calidad`, `v_kpi_parada`, `v_kpi_mantenimiento`, 5 `v_kpi_oee_*`, 4 `v_kpi_mantenimiento_*`, 2 `v_kpi_calidad_*`, `v_kpi_confiabilidad_apoyo_maquina_dia`, 2 `v_loss_tree*`, `v_alerta_maquina_critica` |
 | Alertas y señal IoT (006) | `v_alerta_ultimo_turno`, `v_calidad_senal_iot` |
 
@@ -137,6 +138,12 @@ Regla: los porcentajes se agregan con `SUM(numerador) / SUM(denominador)`, nunca
 porcentajes. Las razones indefinidas devuelven `NULL` (D-014). Los umbrales viven en
 `v_kpi_parametros` y la evidencia de validación está en
 `specs/005-kpi-y-vistas/verification.md`.
+
+**Consolidación de paradas (D-023):** `v_kpi_parada` y
+`v_kpi_mantenimiento_maquina_turno` leen de `v_parada_consolidada`, que une
+intervalos estrictamente solapados por máquina. `fact_parada` permanece como capa
+cruda y el OEE/Loss Tree siguen usando `fact_produccion.downtime_no_planificado_min`;
+la consolidación no altera el OEE, solo Pareto, MTBF, fallas y microparadas.
 
 ## Puertos y volúmenes
 

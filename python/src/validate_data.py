@@ -30,6 +30,10 @@ from psycopg.rows import dict_row
 from common.db import connect
 
 DEFAULT_TOLERANCE = 1e-9
+# Las vistas v_kpi_oee_* y v_alerta_maquina_critica redondean oee a 6
+# decimales para que DirectQuery lo convierta a Double. La comparación de oee
+# usa este límite; el resto de métricas conserva DEFAULT_TOLERANCE.
+OEE_ROUNDING_TOLERANCE = 1e-6
 TEMPERATURA_UMBRAL_C = 85.0
 MICROPARADA_MIN = 5
 FALLA_CORTA_MIN = 30
@@ -718,6 +722,7 @@ def compare_view(
     tol: float,
     *,
     extra_checks: Callable[[dict], None] | None = None,
+    metric_tolerances: dict[str, float] | None = None,
 ) -> None:
     rows = fetch(conn, sql)
     seen: set[tuple] = set()
@@ -735,7 +740,12 @@ def compare_view(
         for metric in metrics:
             actual = row[metric]
             wanted = expected.get(metric)
-            if not close(actual, wanted, tol):
+            metric_tol = (
+                metric_tolerances.get(metric, tol)
+                if metric_tolerances
+                else tol
+            )
+            if not close(actual, wanted, metric_tol):
                 if len(mismatches) < 5:
                     mismatches.append(
                         f"{key} {metric}: vista={actual!r} python={wanted!r}"
@@ -1303,6 +1313,9 @@ def validate_oee(
             common_metrics
             + (("turnos_maquina",) if label != "maquina_turno" else ()),
             tol,
+            metric_tolerances={
+                "oee": max(tol, OEE_ROUNDING_TOLERANCE),
+            },
         )
         check_additivity(
             f"AC-503/504 {view} sumas aditivas",
@@ -1696,6 +1709,9 @@ def validate_alerts(
             "es_ultimo_turno_maquina",
         ),
         tol,
+        metric_tolerances={
+            "oee": max(tol, OEE_ROUNDING_TOLERANCE),
+        },
     )
     rows = fetch(
         conn,
@@ -1715,7 +1731,10 @@ def validate_row_counts(conn, data: dict[str, Any]) -> None:
     expectations = (
         ("v_kpi_produccion", len(data["produccion"])),
         ("v_kpi_calidad", len(data["calidad"])),
-        ("v_kpi_parada", len(data["paradas"])),
+        (
+            "v_kpi_parada",
+            fetch_one(conn, "SELECT count(*) FROM v_parada_consolidada"),
+        ),
         ("v_kpi_mantenimiento", len(data["mantenimiento"])),
         ("v_loss_tree", len(data["produccion"])),
     )
