@@ -44,4 +44,4 @@ El prototipo quedó verificado visualmente el 2026-10-23. Evidencia en
    están registrados en la verificación del 006.
 3. La referencia de apertura es la mediana de 35,46 s de D-019 (umbral ≤ 60 s); no
    se observó regresión al abrir el informe final.
-4. T-615 y T-710 cerrados con sus commits.
+4. T-615 y T-710 cerrados con el commit `c32cbd6`.

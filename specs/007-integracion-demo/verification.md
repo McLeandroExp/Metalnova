@@ -66,4 +66,4 @@ filtros, drill-through, tooltip y matriz se completó el 2026-10-23.
    con 0 fallos (`powerbi-report-author preview --all-pages`).
 2. La referencia de apertura sigue siendo la mediana de 35,46 s de D-019
    (umbral ≤ 60 s); no se observó regresión al abrir el informe final.
-3. T-614, T-615 y T-710 cerrados con sus commits.
+3. T-614, T-615 y T-710 cerrados con el commit `c32cbd6`.

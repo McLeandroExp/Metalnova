@@ -4,8 +4,8 @@ Estado: **hecho** · Última actualización: 2026-10-23 · Entorno: PostgreSQL 1
 Docker (`metalinova_db`, healthy) · Power BI Desktop 2.159.883.0 (Microsoft Store).
 
 Commits de esta etapa: `11224f9` (calibración, optimización de la alerta y TMDL), `0b2517f`
-(corrección de `OEE Último Mes`) y `ce39ae9` (páginas PBIR). El cierre visual se registró el
-2026-10-23.
+(corrección de `OEE Último Mes`), `ce39ae9` (páginas PBIR) y `c32cbd6` (OEE de alertas,
+totales y drill-through). El cierre visual se registró el 2026-10-23.
 
 ## Criterios de aceptación
 
