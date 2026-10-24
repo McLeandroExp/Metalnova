@@ -1,6 +1,6 @@
 # Incremento 007 — Integración, demo y plan de mejora
 
-Estado: propuesto · Depende de: 006 · Habilita: —
+Estado: hecho · Depende de: 006 · Habilita: —
 
 ## Contexto
 

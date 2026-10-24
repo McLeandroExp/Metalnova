@@ -1,6 +1,6 @@
 # Incremento 006 — Informe Power BI (4 páginas)
 
-Estado: en curso · Depende de: 004, 005 · Habilita: 007
+Estado: hecho · Depende de: 004, 005 · Habilita: 007
 
 ## Contexto
 

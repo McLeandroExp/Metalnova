@@ -21,8 +21,8 @@ más una simulación de eventos cercanos al tiempo real.
 | 003 · Generador histórico (180 días) | **hecho** |
 | 004 · Ingesta continua simulada | **hecho** |
 | 005 · Vistas KPI y validación | **hecho** |
-| 006 · Informe Power BI (4 páginas) | **en curso** (modelo y páginas generados; falta verificación visual en Desktop) |
-| 007 · Integración, demo y plan de mejora | en curso (runbook y plan de mejora; faltan pruebas end-to-end) |
+| 006 · Informe Power BI (4 páginas) | **hecho** (modelo, medidas y verificación visual en Desktop) |
+| 007 · Integración, demo y plan de mejora | **hecho** (runbook, pruebas end-to-end y plan de mejora) |
 
 El detalle de cada incremento vive en `specs/`. Ver también `specs/CONSTITUTION.md` (fuente de
 verdad normativa) y `AGENTS.md`.
@@ -483,8 +483,9 @@ Power BI Desktop se conecta a `127.0.0.1:5432` en el incremento 006.
 ## Backup y restauración
 
 Antes de reemplazar el histórico por el calibrado se generó un respaldo con `pg_dump -Fc` en
-`backups/metalinova_pre_calibracion_20261021.dump` (ignorado por Git). La prueba formal de
-restauración sigue pendiente para el incremento 007 (P-015).
+`backups/metalinova_pre_calibracion_20261021.dump` (ignorado por Git). La restauración se probó
+en el incremento 007 sobre una base temporal (`metalinova_restore_test`): los recuentos
+coincidieron y la base temporal se eliminó (P-038, `docs/TEST_PLAN.md`).
 
 ---
 

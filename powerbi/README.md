@@ -73,3 +73,7 @@ Evidencia: `logs/powerbi_spike_006.txt` y exportes del Analizador de rendimiento
 - **MTBF:** `horas operativas / número de fallas` del turno. Una celda vacía en la tabla de
   alertas significa que el turno no tiene fallas o runtime; el MTBF histórico de 180 días está en
   la tabla de la página 03.
+- **OEE en DirectQuery:** las vistas `v_kpi_oee_*` redondean `oee` a 6 decimales. Sin ese
+  redondeo el `numeric` resultante tiene decenas de decimales, el conector no lo convierte a
+  `Double` y la celda aparece vacía. La tabla de alertas no muestra fila de totales
+  (`objects.total[0].properties.totals = false`; el objeto `general` no aplica).

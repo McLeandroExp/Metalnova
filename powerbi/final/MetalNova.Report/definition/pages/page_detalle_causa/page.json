@@ -21,7 +21,27 @@
           }
         },
         "type": "Categorical",
-        "howCreated": "User"
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "binding_detalle_causa",
+    "type": "Drillthrough",
+    "parameters": [
+      {
+        "name": "param_detalle_causa",
+        "boundFilter": "drill_causa",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_causa"
+              }
+            },
+            "Property": "categoria"
+          }
+        }
       }
     ]
   }

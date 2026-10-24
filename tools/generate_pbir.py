@@ -431,7 +431,13 @@ def table(
     title: str,
     sort_definition: dict | None = None,
     tooltip_page: str | None = None,
+    totals: bool = True,
 ) -> dict:
+    objects = None
+    if not totals:
+        # La fila de totales no aporta en tablas de detalle por máquina.
+        # El objeto correcto es «total» y la propiedad «totals» (bool).
+        objects = {"total": [{"properties": {"totals": literal_bool(False)}}]}
     return visual(
         name,
         "tableEx",
@@ -442,6 +448,7 @@ def table(
         query_state=roles(Values=projections),
         sort_definition=sort_definition,
         title=title,
+        objects=objects,
         tooltip_page=tooltip_page,
     )
 
@@ -720,6 +727,7 @@ def page_executive() -> list[dict]:
                 "OEE Alerta",
                 direction="Ascending",
             ),
+            totals=False,
         )
     )
     return visuals
@@ -1200,6 +1208,46 @@ def page_tooltip() -> list[dict]:
 # ---------------------------------------------------------------------------
 # Escritura
 # ---------------------------------------------------------------------------
+def drillthrough_page(
+    filter_name: str,
+    binding_name: str,
+    parameter_name: str,
+    entity: str,
+    prop: str,
+) -> dict:
+    """Página oculta que recibe el contexto de drill-through de un campo.
+
+    Power BI reconoce la página por ``pageBinding`` tipo ``Drillthrough`` y por
+    el filtro con ``howCreated = "Drillthrough"``. Sin ambos, el clic derecho
+    no ofrece «Obtener detalles» (AC-604).
+    """
+    field = column_field(entity, prop)
+    return {
+        "visibility": "HiddenInViewMode",
+        "filterConfig": {
+            "filters": [
+                {
+                    "name": filter_name,
+                    "field": field,
+                    "type": "Categorical",
+                    "howCreated": "Drillthrough",
+                }
+            ]
+        },
+        "pageBinding": {
+            "name": binding_name,
+            "type": "Drillthrough",
+            "parameters": [
+                {
+                    "name": parameter_name,
+                    "boundFilter": filter_name,
+                    "fieldExpr": field,
+                }
+            ],
+        },
+    }
+
+
 PAGE_SPECS = [
     (PAGE_EXECUTIVE, "01 Executive Plant Performance", page_executive, {}),
     (PAGE_OEE, "02 OEE & Loss Tree", page_oee, {}),
@@ -1209,37 +1257,25 @@ PAGE_SPECS = [
         PAGE_MACHINE,
         "Detalle máquina",
         page_machine,
-        {
-            "visibility": "HiddenInViewMode",
-            "filterConfig": {
-                "filters": [
-                    {
-                        "name": "drill_maquina",
-                        "field": column_field("v_dim_maquina", "maquina_codigo"),
-                        "type": "Categorical",
-                        "howCreated": "User",
-                    }
-                ]
-            },
-        },
+        drillthrough_page(
+            "drill_maquina",
+            "binding_detalle_maquina",
+            "param_detalle_maquina",
+            "v_dim_maquina",
+            "maquina_codigo",
+        ),
     ),
     (
         PAGE_CAUSA,
         "Detalle causa",
         page_causa,
-        {
-            "visibility": "HiddenInViewMode",
-            "filterConfig": {
-                "filters": [
-                    {
-                        "name": "drill_causa",
-                        "field": column_field("dim_causa", "categoria"),
-                        "type": "Categorical",
-                        "howCreated": "User",
-                    }
-                ]
-            },
-        },
+        drillthrough_page(
+            "drill_causa",
+            "binding_detalle_causa",
+            "param_detalle_causa",
+            "dim_causa",
+            "categoria",
+        ),
     ),
     (
         PAGE_TOOLTIP,
@@ -1251,6 +1287,29 @@ PAGE_SPECS = [
             "width": 320,
             "height": 240,
             "visibility": "HiddenInViewMode",
+            "filterConfig": {
+                "filters": [
+                    {
+                        "name": "tooltip_maquina",
+                        "field": column_field("v_dim_maquina", "maquina_codigo"),
+                        "type": "Categorical",
+                        "howCreated": "Drillthrough",
+                    }
+                ]
+            },
+            "pageBinding": {
+                "name": "binding_tooltip_maquina",
+                "type": "Tooltip",
+                "parameters": [
+                    {
+                        "name": "param_tooltip_maquina",
+                        "boundFilter": "tooltip_maquina",
+                        "fieldExpr": column_field(
+                            "v_dim_maquina", "maquina_codigo"
+                        ),
+                    }
+                ],
+            },
         },
     ),
 ]

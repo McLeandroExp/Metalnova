@@ -1,8 +1,8 @@
 # Arquitectura — MetalNova Smart Factory BI
 
-> Estado: incrementos 001, 002, 003, 004 y 005 cerrados. El histórico sintético, la ingesta
-> continua y las 20 vistas KPI ya están disponibles en PostgreSQL; el 006 está en curso con el
-> histórico **calibrado** (`calibracion`) y el modelo semántico generado.
+> Estado: incrementos 001–007 cerrados. El histórico sintético, la ingesta continua, las 20
+> vistas KPI, el informe Power BI verificado y la demo end-to-end están disponibles; el
+> histórico base es el **calibrado** (`calibracion`).
 
 ## Diagrama de componentes
 

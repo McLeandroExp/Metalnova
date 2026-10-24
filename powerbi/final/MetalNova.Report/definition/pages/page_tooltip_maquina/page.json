@@ -5,6 +5,45 @@
   "displayOption": "ActualSize",
   "visibility": "HiddenInViewMode",
   "type": "Tooltip",
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "tooltip_maquina",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_dim_maquina"
+              }
+            },
+            "Property": "maquina_codigo"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "binding_tooltip_maquina",
+    "type": "Tooltip",
+    "parameters": [
+      {
+        "name": "param_tooltip_maquina",
+        "boundFilter": "tooltip_maquina",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_dim_maquina"
+              }
+            },
+            "Property": "maquina_codigo"
+          }
+        }
+      }
+    ]
+  },
   "width": 320,
   "height": 240
 }

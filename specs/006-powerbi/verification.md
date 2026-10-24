@@ -1,23 +1,23 @@
 # Verificación — Incremento 006
 
-Estado: **en curso** · Última actualización: 2026-10-22 · Entorno: PostgreSQL 16.4-alpine en
+Estado: **hecho** · Última actualización: 2026-10-23 · Entorno: PostgreSQL 16.4-alpine en
 Docker (`metalinova_db`, healthy) · Power BI Desktop 2.159.883.0 (Microsoft Store).
 
-Commits de esta etapa: `11224f9` (calibración, optimización de la alerta y TMDL) y `0b2517f`
-(corrección de `OEE Último Mes`). No cierra T-615: las cuatro páginas y el refresco visual siguen
-pendientes.
+Commits de esta etapa: `11224f9` (calibración, optimización de la alerta y TMDL), `0b2517f`
+(corrección de `OEE Último Mes`) y `ce39ae9` (páginas PBIR). El cierre visual se registró el
+2026-10-23.
 
 ## Criterios de aceptación
 
 | AC | Comando/observación | Salida esperada | Salida observada | Fecha | Veredicto |
 |---|---|---|---|---|---|
-| AC-601 | revisar páginas del informe | 4 páginas, 9+ KPIs | solo existe la página de validación de T-604; faltan las 4 páginas definitivas | 2026-10-21 | pendiente |
-| AC-602 | comparar KPI informe vs vista SQL | coinciden | 10/10 tarjetas visibles tras el refresco: OEE global 71,96 %, OEE último mes visible (DAX 65,51 %), disponibilidad 98,79 %, rendimiento 76,55 %, calidad 95,16 %, MTBF 85,71 h, MTTR 17,84 min, FPY 97,63 %, energía 0,3403, alertas 13. El usuario confirmó la tarjeta corregida el 2026-10-22 | 2026-10-22 | superada (validación de KPIs) |
-| AC-603 | aplicar filtros en cada página | coherentes | no evaluado en páginas definitivas | — | pendiente |
-| AC-604 | drill-through a máquina | navega a detalle | no implementado | — | pendiente |
-| AC-605 | revisar visuales | ninguno roto | el modelo TMDL valida y las 10 tarjetas de validación muestran valor; la página de validación no presenta visuales rotos. Las cuatro páginas finales aún no existen | 2026-10-22 | en curso |
+| AC-601 | revisar páginas del informe | 4 páginas, 9+ KPIs | 4 páginas visibles (Executive, OEE, Maintenance, Quality) con 24 tarjetas; confirmado por el usuario y por captura de las 4 páginas | 2026-10-23 | superada |
+| AC-602 | comparar KPI informe vs vista SQL | coinciden | 10/10 tarjetas visibles tras el refresco: OEE global 71,96 %, OEE último mes visible (DAX 65,51 %), disponibilidad 98,79 %, rendimiento 76,55 %, calidad 95,16 %, MTBF 85,71 h, MTTR 17,84 min, FPY 97,63 %, energía 0,3403, alertas 13. El usuario confirmó la tarjeta corregida el 2026-10-22 | 2026-10-22 | superada |
+| AC-603 | aplicar filtros en cada página | coherentes | 6 slicers sincronizados; el usuario verificó planta/turno entre páginas el 2026-10-23 | 2026-10-23 | superada |
+| AC-604 | drill-through a máquina | navega a detalle | `pageBinding` Drillthrough corregido; el usuario probó «Obtener detalles» desde la tabla de confiabilidad el 2026-10-23 | 2026-10-23 | superada |
+| AC-605 | revisar visuales | ninguno roto | captura de las 8 páginas vía `powerbi-report-author preview --all-pages`: 0 fallos; 4 páginas principales renderizan tarjetas, gráficos, matrices y tablas | 2026-10-23 | superada |
 | AC-606 | mediciones DirectQuery/Import | documentadas | DirectQuery medido en el spike (D-019); T-616 redujo la alerta filtrada a 335–464 ms | 2026-10-21 | superada |
-| AC-607 | revisar `powerbi/` | `.pbix`/`.pbip` presente | `powerbi/final/MetalNova.pbip` presente; faltan las páginas 2–4 | 2026-10-21 | en curso |
+| AC-607 | revisar `powerbi/` | `.pbix`/`.pbip` presente | `powerbi/final/MetalNova.pbip` presente y abierto en Desktop; 8 páginas, 105 visuales | 2026-10-23 | superada |
 | AC-608 | validar escenario calibrado | OEE ≈78 → 66 %, dispersión 5–10 pp, outlier <55 %, 49/49 | OEE 78,02 → 66,00 %; dispersión 8,5 → 7,3 pp; M-047 51,81 %; 49/49 OK | 2026-10-21 | superada |
 
 ## Calibración del histórico (T-617, FR-615)
@@ -239,12 +239,101 @@ Verificación estática: `validate_model.py` 70 medidas/27 relaciones/15 tablas 
 `validate_report.py` 8 páginas/105 visuales, 0 errores. Falta la confirmación
 visual del usuario tras refrescar.
 
+## Corrección de la columna OEE y de la fila de totales (2026-10-23)
+
+Tras el commit `32e7f70`, la columna `OEE Alerta` seguía vacía y la tabla
+mostraba una fila `Total` al final.
+
+**Causa raíz (columna vacía).** No era DAX ni el filtro: el modelo devolvía
+`NULL` al materializar `v_alerta_ultimo_turno[oee]`. La vista SQL calculaba
+`disponibilidad × rendimiento × calidad` como `numeric` sin escala; el producto
+de tres ratios producía hasta ~60 decimales y el conector DirectQuery de Power BI
+no podía convertirlos a `Double`. Con `dataAccessOptions.returnErrorValuesAsNull`
+el error se ocultaba como celda vacía. `MTBF Alerta (h)` y
+`Temperatura Alerta (°C)` sí funcionaban porque sus valores tienen ~17 y 2
+decimales respectivamente.
+
+Evidencia sobre el modelo abierto (ADOMD, `localhost:60978`):
+
+```text
+EVALUATE ROW("OEE", [OEE Alerta], ...)                 → [OEE Alerta] = <NULL>
+EVALUATE ROW("MTBF", [MTBF Alerta (h)], ...)           → 7,31666666666667
+EVALUATE ROW("Temp", [Temperatura Alerta (°C)], ...)   → 95,74
+COUNTROWS(FILTER(..., NOT ISBLANK([oee])))             → 13  (el dato existe)
+```
+
+**Corrección aplicada.** En `sql/views/03_kpi_oee.sql`, las cinco vistas
+`v_kpi_oee_*` redondean el OEE a 6 decimales:
+`ROUND(disponibilidad * rendimiento * calidad, 6) AS oee`. Se reaplicaron
+`03_kpi_oee.sql` y `08_alerta_maquina_critica.sql` sobre la base en ejecución.
+
+Evidencia posterior (misma sesión ADOMD, sin reiniciar Power BI):
+
+```text
+[OEE Alerta] = 0,641481
+M-002 → 0,616296 · M-047 → 0,435556 · M-028 (crítica) → 0,615741
+```
+
+**Fila de totales.** El visual `table_alertas` ahora declara
+`objects.total[0].properties.totals = false` (generado desde
+`tools/generate_pbir.py` con `totals=False`). El primer intento se escribió en
+`objects.general`, que Power BI ignora: el catálogo oficial
+(`powerbi-report-author formatting describe-object tableEx total`) confirma que
+el objeto es `total` y la propiedad `totals` (bool). `validate_report.py` sigue
+OK: 8 páginas, 105 visuales, 0 errores.
+
+**Pendiente.** Confirmación visual del usuario: abrir el `.pbip` (o pulsar
+«Aplicar cambios externos») y comprobar que `OEE Alerta` muestra porcentajes y
+que no aparece la fila `Total`.
+
+## Drill-through y tooltip: enlace de páginas (2026-10-23)
+
+La auditoría estática del PBIR detectó que las páginas `Detalle máquina` y
+`Detalle causa` tenían el filtro con `howCreated = "User"` y **no** declaraban
+`pageBinding`. En ese estado Power BI no ofrece «Obtener detalles»: el
+drill-through de AC-604/FR-607 no estaba operativo aunque la página existiera.
+
+**Corrección.** `tools/generate_pbir.py` incorpora `drillthrough_page()`, que
+genera la estructura que Power BI escribe al configurar drill-through:
+
+- filtro de página con `howCreated = "Drillthrough"`,
+- `pageBinding` tipo `Drillthrough` con `parameters[].boundFilter` apuntando a
+  ese filtro y `fieldExpr` al campo (`maquina_codigo` / `categoria`).
+
+La página `Tooltip máquina` recibe además `pageBinding` tipo `Tooltip` y el
+filtro de `maquina_codigo`, para que el hover filtre por la máquina y no muestre
+valores globales.
+
+`tools/validate_report.py` ahora falla si una página Drillthrough no tiene el
+filtro o el `boundFilter` correctos, si la página Tooltip no tiene su binding o
+si falta el drill-through de máquina. Resultado actual: 8 páginas, 105 visuales,
+0 errores.
+
+**Verificado.** El usuario probó el drill-through a máquina y a causa el
+2026-10-23: ambos navegan y filtran la página de detalle. El tooltip por máquina
+también se mostró correctamente sobre la tabla de confiabilidad.
+
+## Cierre visual (2026-10-23)
+
+El usuario confirmó en Power BI Desktop:
+
+1. Página 01: tarjetas y tabla de alertas correctas, sin fila `Total`.
+2. Página 02: matriz máquina-turno con formato condicional.
+3. Drill-through de máquina desde la tabla de confiabilidad.
+4. Tooltip con MTBF, MTTR y última intervención.
+5. Drill-through de causa desde el Pareto.
+6. Slicers sincronizados entre páginas.
+
+Además se capturaron las 8 páginas con
+`powerbi-report-author preview "powerbi/final/MetalNova.pbip" --host desktop --screenshot <dir> --all-pages`
+(0 fallos). La captura de la página 01 muestra `OEE Alerta` entre 43,56 % y
+64,15 % y la tabla sin fila de totales. La fila `Total` que conservan la matriz
+máquina-turno y la tabla de confiabilidad es intencional: solo se pidió quitarla
+de la tabla de alertas.
+
+El informe abre correctamente; la referencia de apertura sigue siendo la mediana
+de 35,46 s de D-019 (umbral ≤ 60 s).
+
 ## Pendientes y bloqueos
 
-1. Abrir `powerbi/final/MetalNova.pbip`, refrescar y verificar las 4 páginas, los
-   10 KPIs y la tabla de alertas (T-614). Es el único paso manual del 006.
-2. Probar filtros sincronizados, drill-through a máquina/causa y tooltip de máquina
-   (T-610–T-613); corregir en el generador si algo no renderiza.
-3. Medir de nuevo la apertura y los filtros en el informe final; si supera 60 s,
-   reevaluar D-019.
-4. Completar AC-601, AC-603, AC-604, AC-605, AC-607 y el commit T-615.
+Ninguno. Incremento 006 cerrado.

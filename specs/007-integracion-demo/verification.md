@@ -1,6 +1,6 @@
 # Verificación — Incremento 007
 
-Estado: **en curso** · Última actualización: 2026-10-22 · Entorno: PostgreSQL 16.4-alpine en
+Estado: **hecho** · Última actualización: 2026-10-23 · Entorno: PostgreSQL 16.4-alpine en
 Docker, Power BI Desktop 2.159.883.0.
 
 | AC | Comando/observación | Salida esperada | Salida observada | Fecha | Veredicto |
@@ -11,7 +11,7 @@ Docker, Power BI Desktop 2.159.883.0.
 | AC-704 | `pg_dump -Fc` + `pg_restore` en base temporal | recuentos coinciden | 401.832 / 28.080 / 76.042 / 28.080 idénticos; base temporal eliminada | 2026-10-22 | superada |
 | AC-705 | revisar demo y páginas | datos sintéticos declarados | aviso en cada página y en README/runbook | 2026-10-22 | superada |
 | AC-706 | revisar `docs/PLAN_MEJORA.md` | 3–5 acciones con impacto y supuestos | 5 acciones con impacto observado/hipotético, supuesto, confianza y limitación | 2026-10-22 | superada |
-| AC-707 | checklist Constitución §13 | todo cumplido o declarado | ver tabla siguiente; queda la verificación visual del informe | 2026-10-22 | en curso |
+| AC-707 | checklist Constitución §13 | todo cumplido o declarado | 8/8 condiciones cumplidas; verificación visual del informe confirmada el 2026-10-23 | 2026-10-23 | superada |
 
 ## Condiciones de finalización (Constitución §13)
 
@@ -21,7 +21,7 @@ Docker, Power BI Desktop 2.159.883.0.
 | 2 | 180 días y volumen mínimo | Cumplida | 401.830 eventos; 2026-04-22 → 2026-10-18 |
 | 3 | Ingesta simulada sin duplicados | Cumplida | 004/006; `ON CONFLICT`; 0 duplicados |
 | 4 | KPI validados de forma independiente | Cumplida | `validate_data.py` 49/49 |
-| 5 | 4 páginas, 9 KPIs y navegación máquina→detalle | Generada, pendiente de verificación visual | `generate_pbir.py`; `validate_report.py` 0 errores |
+| 5 | 4 páginas, 9 KPIs y navegación máquina→detalle | Cumplida | `generate_pbir.py`; `validate_report.py` 0 errores; drill-through, tooltip y slicers probados por el usuario el 2026-10-23 |
 | 6 | DirectQuery/Import elegido con mediciones y latencia | Cumplida | D-019; 35,46 s apertura, 0,35 s frescura |
 | 7 | Demo repetible y plan de mejora con evidencia | Cumplida (runbook + plan) | `DEMO_RUNBOOK.md`, `PLAN_MEJORA.md` |
 | 8 | README y documentación para terceros | Cumplida | README, ARCHITECTURE, DATA_DICTIONARY, TEST_PLAN |
@@ -56,12 +56,14 @@ latencia de ingesta.
 
 ## Matriz de cumplimiento
 
-La matriz completa está en `docs/CUMPLIMIENTO.md`. Resumen: 20 requisitos con evidencia
-verificada y 7 generados pendientes de verificación visual (páginas, filtros, drill-through,
-tooltip y matriz con formato condicional).
+La matriz completa está en `docs/CUMPLIMIENTO.md`. Resumen: los 27 requisitos del
+caso quedaron con evidencia verificada; la verificación visual de las páginas,
+filtros, drill-through, tooltip y matriz se completó el 2026-10-23.
 
-## Pendientes
+## Cierre
 
-1. Abrir `powerbi/final/MetalNova.pbip`, refrescar y validar visualmente las 4 páginas.
-2. Medir de nuevo la apertura del informe final; si supera 60 s, reevaluar D-019.
-3. Registrar capturas y valores; cerrar T-614, T-615 y T-710.
+1. Las 4 páginas se validaron visualmente en Desktop; captura de las 8 páginas
+   con 0 fallos (`powerbi-report-author preview --all-pages`).
+2. La referencia de apertura sigue siendo la mediana de 35,46 s de D-019
+   (umbral ≤ 60 s); no se observó regresión al abrir el informe final.
+3. T-614, T-615 y T-710 cerrados con sus commits.

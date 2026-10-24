@@ -91,6 +91,7 @@ def main() -> int:
     page_names: set[str] = set()
     slicer_groups: dict[str, tuple[str, str]] = {}
     tooltip_pages: set[str] = set()
+    drillthrough_pages: set[str] = set()
     visual_count_total = 0
 
     for page_id in order:
@@ -108,6 +109,29 @@ def main() -> int:
             errors.append(f"{page_id}: nombre de página > 50 caracteres")
         if page.get("type") == "Tooltip":
             tooltip_pages.add(name)
+
+        binding = page.get("pageBinding") or {}
+        filters = page.get("filterConfig", {}).get("filters", [])
+        filter_names = {item.get("name") for item in filters}
+        if binding.get("type") == "Drillthrough":
+            drillthrough_pages.add(name)
+            if not any(
+                item.get("howCreated") == "Drillthrough" for item in filters
+            ):
+                errors.append(
+                    f"{page_id}: pageBinding Drillthrough sin filtro "
+                    "howCreated=Drillthrough"
+                )
+            for parameter in binding.get("parameters", []):
+                if parameter.get("boundFilter") not in filter_names:
+                    errors.append(
+                        f"{page_id}: parámetro {parameter.get('name')!r} "
+                        "apunta a un filtro inexistente"
+                    )
+        if page.get("type") == "Tooltip" and binding.get("type") != "Tooltip":
+            errors.append(f"{page_id}: página Tooltip sin pageBinding Tooltip")
+        if binding.get("type") == "Tooltip" and page.get("type") != "Tooltip":
+            errors.append(f"{page_id}: pageBinding Tooltip sin type Tooltip")
 
         width = float(page.get("width", 1920))
         height = float(page.get("height", 1080))
@@ -198,6 +222,10 @@ def main() -> int:
 
     if "page_tooltip_maquina" not in tooltip_pages:
         errors.append("la página de tooltip no está marcada como Tooltip")
+    if "page_detalle_maquina" not in drillthrough_pages:
+        errors.append(
+            "la página de detalle de máquina no tiene pageBinding Drillthrough"
+        )
 
     print("Validación del informe PBIR")
     print("=" * 72)

@@ -21,7 +21,27 @@
           }
         },
         "type": "Categorical",
-        "howCreated": "User"
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "binding_detalle_maquina",
+    "type": "Drillthrough",
+    "parameters": [
+      {
+        "name": "param_detalle_maquina",
+        "boundFilter": "drill_maquina",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "v_dim_maquina"
+              }
+            },
+            "Property": "maquina_codigo"
+          }
+        }
       }
     ]
   }

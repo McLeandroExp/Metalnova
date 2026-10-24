@@ -5,6 +5,9 @@
 --
 -- Granos cubiertos (FR-501): planta, línea, máquina, máquina-turno, producto.
 -- El periodo se resuelve con fecha / anio_mes en cada vista.
+-- El OEE se redondea a 6 decimales: el producto de tres ratios genera un
+-- numeric con decenas de decimales que el conector DirectQuery de Power BI
+-- no puede convertir a Double y devuelve NULL (verificado 2026-10-23).
 -- Idempotente: CREATE OR REPLACE VIEW.
 -- ============================================================================
 
@@ -47,7 +50,7 @@ WITH base AS (
 )
 SELECT
     calc.*,
-    (disponibilidad * rendimiento * calidad) AS oee
+    ROUND(disponibilidad * rendimiento * calidad, 6) AS oee
 FROM calc;
 
 -- ---------------------------------------------------------------------------
@@ -93,7 +96,7 @@ WITH base AS (
 )
 SELECT
     calc.*,
-    (disponibilidad * rendimiento * calidad) AS oee
+    ROUND(disponibilidad * rendimiento * calidad, 6) AS oee
 FROM calc;
 
 -- ---------------------------------------------------------------------------
@@ -145,7 +148,7 @@ WITH base AS (
 )
 SELECT
     calc.*,
-    (disponibilidad * rendimiento * calidad) AS oee
+    ROUND(disponibilidad * rendimiento * calidad, 6) AS oee
 FROM calc;
 
 -- ---------------------------------------------------------------------------
@@ -201,7 +204,7 @@ WITH base AS (
 )
 SELECT
     calc.*,
-    (disponibilidad * rendimiento * calidad) AS oee
+    ROUND(disponibilidad * rendimiento * calidad, 6) AS oee
 FROM calc;
 
 -- ---------------------------------------------------------------------------
@@ -247,5 +250,5 @@ WITH base AS (
 )
 SELECT
     calc.*,
-    (disponibilidad * rendimiento * calidad) AS oee
+    ROUND(disponibilidad * rendimiento * calidad, 6) AS oee
 FROM calc;

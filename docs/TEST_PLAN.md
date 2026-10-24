@@ -19,8 +19,8 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-011 | Latencia | 004/007 | log de métricas | evidencia presente | 0,004411–0,035976 s por ejecución; registrada por `run_id` | 2026-10-21 | superada |
 | P-012 | Validación de KPI | 005 | `validate_data.py` | diferencias < tolerancia | 49/49 comprobaciones OK; diferencia máxima 4,37e-11 (< 1e-9) | 2026-10-20 | superada |
 | P-013 | DirectQuery vs Import | 006 | mediciones | decisión documentada | apertura 35,46 s; filtro 0,5 s; frescura 0,35 s; D-019 | 2026-10-21 | superada |
-| P-014 | Evento nuevo visible en informe | 007 | escenario reproducible | cambio visible | — | — | pendiente |
-| P-015 | Backup y restauración | 007 | `pg_dump` / `pg_restore` | recuentos coinciden | — | — | pendiente |
+| P-014 | Evento nuevo visible en informe | 007 | escenario reproducible | cambio visible | `--scenario stop M-001 --once`: M-001 turno B con 20 min de downtime y 1 falla | 2026-10-22 | superada |
+| P-015 | Backup y restauración | 007 | `pg_dump` / `pg_restore` | recuentos coinciden | 401.832 / 28.080 / 76.042 / 28.080 idénticos en base temporal; base eliminada | 2026-10-22 | superada |
 | P-016 | pgAdmin operativo | 001 | `curl http://127.0.0.1:5050/login` + login | HTTP 200 y login OK | `/login` 200 · POST 302 · `/browser/` 200 | 2026-10-19 | superada |
 | P-017 | Carga idempotente del histórico | 003 | re-ejecutar `load_history.py` | 0 insertadas y recuentos estables | 0 insertadas en las 6 tablas; recuentos idénticos | 2026-10-19 | superada |
 | P-018 | Integridad del histórico | 003 | `sql/validation/02_historico.sql` | todos los chequeos OK | 24 chequeos con `estado = OK` | 2026-10-19 | superada |
@@ -46,7 +46,7 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-038 | Backup y restauración | 007 | `pg_dump -Fc` + `pg_restore` en base temporal | recuentos idénticos | 401.832 / 28.080 / 76.042 / 28.080; base temporal eliminada | 2026-10-22 | superada |
 | P-039 | Latencia end-to-end | 007 | eventos `run_id LIKE 'sim-%'` | < 10 min | 0,7–55 ms; frescura DirectQuery 0,35 s | 2026-10-22 | superada |
 | P-040 | Evento visible tras la ingesta | 007 | `--scenario stop M-001 --once` + vista | cambio observable | M-001 turno B: 20 min de downtime y 1 falla | 2026-10-22 | superada |
-| P-041 | Tarjetas sin redondeo automático y tabla de alertas con medidas | 006 | `generate_pbir.py` + `validate_report.py` + revisión visual | conteos exactos, OEE visible, unidades explícitas | 70 medidas; tarjetas con `labelDisplayUnits=1D`; tabla de alertas con `OEE Alerta`/`MTBF Alerta (h)`; pendiente confirmación visual | 2026-10-23 | en curso |
+| P-041 | Tarjetas sin redondeo automático y tabla de alertas con medidas | 006 | `generate_pbir.py` + `validate_report.py` + ADOMD + revisión visual | conteos exactos, OEE visible, unidades explícitas | 70 medidas; tarjetas con `labelDisplayUnits=1D`; OEE de alertas corregido al redondear `oee` a 6 decimales; tabla sin fila de totales (`total.totals = false`); confirmación visual del usuario y captura de las 8 páginas | 2026-10-23 | superada |
 
 ### Evidencia del incremento 005
 

@@ -12,8 +12,8 @@ Estados: `propuesto` · `en curso` · `hecho` · `bloqueado`.
 | 003 | Generador histórico (180 días) | 002 | hecho |
 | 004 | Ingesta continua simulada | 003 | hecho |
 | 005 | Vistas KPI y validación | 003 | hecho |
-| 006 | Informe Power BI (4 páginas) | 004, 005 | en curso · modelo TMDL y 7 páginas PBIR generadas; falta verificación visual |
-| 007 | Integración, demo y plan de mejora | 006 | en curso · runbook y plan de mejora; faltan pruebas end-to-end |
+| 006 | Informe Power BI (4 páginas) | 004, 005 | hecho · modelo TMDL, 8 páginas PBIR y verificación visual completados |
+| 007 | Integración, demo y plan de mejora | 006 | hecho · runbook, pruebas end-to-end y verificación visual completados |
 
 ## Grafo de dependencias
 

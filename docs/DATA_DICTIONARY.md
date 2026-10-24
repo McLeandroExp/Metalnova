@@ -336,6 +336,11 @@ Todas exponen `tiempo_planificado_min`, `tiempo_operativo_min`,
 `scrap_rate`, `energia_por_unidad_buena` y
 `downtime_no_planificado_pct`.
 
+`oee` se calcula como `A × P × Q` y se **redondea a 6 decimales**. Sin ese
+redondeo, el producto de tres `numeric` genera decenas de decimales que el
+conector DirectQuery de Power BI no puede convertir a `Double` y devuelve
+`NULL` (incidente del 2026-10-23 en la tabla de alertas).
+
 ### Mantenimiento y confiabilidad
 
 | Vista | Grano | Contenido |
