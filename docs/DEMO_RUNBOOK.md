@@ -1,6 +1,6 @@
 # Runbook de demostración — MetalNova Smart Factory BI
 
-> Estado: borrador avanzado. Se cierra en el incremento 007. Todos los datos son **sintéticos**.
+> Estado: cerrado y verificado el 2026-10-23. Todos los datos son **sintéticos**.
 
 ## Guion (5–10 minutos)
 

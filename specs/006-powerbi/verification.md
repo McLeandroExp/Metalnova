@@ -130,9 +130,8 @@ OK: 45 medidas, 20 relaciones, 12 tablas; referencias y tipos coherentes.
 ```
 
 `v_dim_maquina` incluye la nueva columna `perfil_rendimiento`. El TMDL se regeneró después de la
-calibración. La página de validación de T-604 sigue pendiente de que el usuario pulse
-«Actualizar ahora» en Power BI Desktop: las tarjetas mostraban “—” aunque las medidas calculan por
-ADOMD. No se marca T-604 como hecha sin esa observación visual.
+calibración. La página de validación de T-604 se confirmó visualmente más tarde (2026-10-22):
+las 10 tarjetas muestran valor.
 
 ### Incidencia T-604 · OEE último mes vacío
 
@@ -196,10 +195,10 @@ Páginas generadas: `01 Executive Plant Performance`, `02 OEE & Loss Tree`,
 oculta. `v_alerta_ultimo_turno` alimenta la tabla de alertas sin filtros
 visuales; `v_kpi_calidad_producto_dia` hace coherente el filtro por producto.
 
-**Verificación pendiente:** el agente no puede abrir la GUI. El usuario debe
-abrir `powerbi/final/MetalNova.pbip`, pulsar «Actualizar ahora» y confirmar que
-las 4 páginas y los visuales renderizan. Hasta entonces AC-601, AC-603, AC-604,
-AC-605 y AC-607 siguen **pendientes de observación visual**.
+**Verificación visual completada (2026-10-23):** el usuario abrió
+`powerbi/final/MetalNova.pbip` y confirmó las 4 páginas, los filtros, el
+drill-through y el tooltip. AC-601, AC-603, AC-604, AC-605 y AC-607 quedan
+superadas; el detalle está en «Cierre visual».
 
 ## Calidad IoT (G5, 2026-10-22)
 
@@ -236,8 +235,8 @@ Cambios aplicados tras la revisión visual del usuario:
   OEE 71,96 %: 28,08 % del tiempo planificado (209.445 h).
 
 Verificación estática: `validate_model.py` 70 medidas/27 relaciones/15 tablas y
-`validate_report.py` 8 páginas/105 visuales, 0 errores. Falta la confirmación
-visual del usuario tras refrescar.
+`validate_report.py` 8 páginas/105 visuales, 0 errores. La confirmación visual
+del usuario se registró el 2026-10-23.
 
 ## Corrección de la columna OEE y de la fila de totales (2026-10-23)
 
@@ -282,9 +281,9 @@ M-002 → 0,616296 · M-047 → 0,435556 · M-028 (crítica) → 0,615741
 el objeto es `total` y la propiedad `totals` (bool). `validate_report.py` sigue
 OK: 8 páginas, 105 visuales, 0 errores.
 
-**Pendiente.** Confirmación visual del usuario: abrir el `.pbip` (o pulsar
-«Aplicar cambios externos») y comprobar que `OEE Alerta` muestra porcentajes y
-que no aparece la fila `Total`.
+**Verificado.** El usuario confirmó el 2026-10-23 que `OEE Alerta` muestra
+porcentajes y que la fila `Total` desapareció; la captura de la página 01 lo
+muestra.
 
 ## Drill-through y tooltip: enlace de páginas (2026-10-23)
 
@@ -334,6 +333,6 @@ de la tabla de alertas.
 El informe abre correctamente; la referencia de apertura sigue siendo la mediana
 de 35,46 s de D-019 (umbral ≤ 60 s).
 
-## Pendientes y bloqueos
+## Cierre del incremento
 
 Ninguno. Incremento 006 cerrado.
