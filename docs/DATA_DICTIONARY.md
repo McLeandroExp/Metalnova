@@ -541,6 +541,76 @@ turno, no una cada 15 min. Por eso la vista de señal usa como mínimo
 `senal_lecturas_turno_min = 2` y reporta la cadencia ideal por separado. Esta
 diferencia está documentada en D-022 y no se presenta como telemetría real.
 
+## Análisis estadístico (incremento 008)
+
+El incremento 008 añade una capa de análisis descriptivo e inferencial **sin crear tablas ni
+vistas nuevas**. Consume las vistas KPI como contrato y los hechos como fuente de
+distribuciones y casos individuales. Todo el insumo es sintético.
+
+### Ventana y niveles
+
+| Nivel | n canónico | Fuente | Uso |
+|---|---:|---|---|
+| Fila de producción | 28.080 | `v_kpi_produccion` | conteos, energía y ratios por orden |
+| Máquina-día | 9.360 | `v_kpi_oee_maquina_dia` | distribuciones, atípicos y comparaciones |
+| Máquina-turno | 28.080 | `v_kpi_oee_maquina_turno` + `v_kpi_mantenimiento_maquina_turno` | correlación con MTBF/MTTR y turnos |
+| Planta-día | 540 | `v_kpi_oee_planta_dia` | serie temporal y ventanas de 30 días |
+| Máquina agregada | 52 | agregado de `v_kpi_oee_maquina_dia` | estabilidad (media vs CV) |
+| Episodio de parada | 76.021 | `v_parada_consolidada` | duración y Pareto por causa |
+| Evento IoT | 401.787 | `fact_evento` (`hist-%`) | temperatura y latencia |
+
+Ventana canónica: `2026-04-22 → 2026-10-18` (180 días). Para el análisis principal se excluyen
+las 24 paradas `Ingesta 004:%` y los 51 eventos `sim-%` (2026-10-22, fuera de ventana); los
+eventos `sim-%` se usan solo para latencia y calidad IoT. Los 2 rechazos son pruebas G5.
+
+### Variables derivadas
+
+| Variable | Fórmula | Nota |
+|---|---|---|
+| Coeficiente de variación (CV) | `sd / media` | adimensional; mide estabilidad relativa |
+| Cerca IQR | `Q1 − 1,5·IQR`, `Q3 + 1,5·IQR` | atípico moderado; con factor 3, extremo |
+| z-score | `(x − media) / sd` | umbral `|z| > 3` |
+| z-score modificado | `0,6745·(x − mediana) / MAD` | umbral `3,5`; robusto a la cola |
+| Distancia de Mahalanobis | `√((x−μ)ᵀ Σ⁻¹ (x−μ))` sobre A, P, Q | umbral `χ²(0,975; 3) = 3,06` |
+| IC de Fisher | `tanh(atanh(r) ± 1,96/√(n−3))` | IC 95 % de Pearson |
+| p ajustado FDR | Benjamini–Hochberg | sobre todos los pares de correlación |
+| η² | `SS_entre / SS_total` | tamaño de efecto de ANOVA |
+| ε² | `(H − k + 1) / (n − k)` | tamaño de efecto de Kruskal–Wallis |
+| τ de Mann–Kendall | `S / (n(n−1)/2)` | tendencia monotónica |
+| Autocorrelación | `corr(x_t, x_{t−k})` | persistencia temporal |
+| IC de Wilson | proporción ± error con corrección | IC 95 % de scrap por producto |
+
+### Reglas de lectura
+
+1. Los KPI de porcentaje se agregan con `SUM(numerador) / SUM(denominador)`. La media y la
+   mediana de la tabla descriptiva describen **filas**, no el KPI ponderado.
+2. Con n grande, un p-valor pequeño no implica relación fuerte: se reportan r, IC, FDR y
+   tamaño de efecto.
+3. El MTBF de máquina-turno es de **corto plazo** (runtime del turno / fallas del turno). El
+   MTBF agregado de 180 días (~85,7 h) usa `SUM(runtime) / SUM(fallas)`.
+4. `disponibilidad` está cerca de su techo (media 0,9879; sd 0,0096): su baja varianza limita
+   cualquier correlación.
+5. Las correlaciones `disponibilidad–downtime % ≈ −1` y `calidad–scrap ≈ −1` son identidades
+   contables, no hallazgos empíricos.
+6. Un atípico es una observación a revisar, no un error. M-047 (`perfil_rendimiento = 'critica'`)
+   concentra los casos extremos por diseño del escenario.
+7. Las correlaciones son descriptivas y **no implican causalidad**.
+
+### Salidas
+
+| Artefacto | Contenido |
+|---|---|
+| `docs/ANALISIS_DATOS.md` | informe con T01–T17 y F01–F18 |
+| `docs/analysis/figures/F01..F18.png` | figuras versionadas |
+| `docs/analysis/manifest.json` | copia versionada del manifiesto |
+| `data/analysis/<run_id>/*.csv` | tablas completas (no versionadas) |
+| `data/analysis/<run_id>/manifest.json` | versión, semilla, filtros, recuentos y SHA-256 |
+| `logs/analyze_data_<run_id>.log` | log UTC de la corrida |
+
+La validación independiente (`python src/validate_analysis.py`) recalcula en SQL recuentos,
+medias, medianas, desviaciones y correlaciones y las compara con los CSV (tolerancia `1e-9`).
+`sql/validation/08_analisis.sql` comprueba estructura, cobertura y señal.
+
 ## Trazabilidad KPI ↔ vista (AC-505)
 
 | KPI / regla | Vista de contrato | Fuente primaria |

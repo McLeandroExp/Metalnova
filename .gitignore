@@ -6,9 +6,11 @@ data/raw/*
 data/processed/*
 data/exports/*
 data/calibracion/*
+data/analysis/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/exports/.gitkeep
+!data/analysis/.gitkeep
 
 # --- Logs ---
 logs/*

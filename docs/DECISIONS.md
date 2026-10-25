@@ -355,3 +355,60 @@ Formato: decisión, alternativas consideradas, motivo, consecuencias y estado.
     `sql/validation/06_parada_consolidada_prueba.sql`,
     `docs/verification/solapes-paradas.md` y `validate_data.py` 49/49.
 - **Estado:** aceptada.
+
+## D-024 — Niveles de análisis y ratios ponderados
+
+- **Decisión:** el análisis del incremento 008 se calcula en cinco niveles explícitos (fila,
+  máquina-día, máquina-turno, planta-día y máquina agregada). Los KPI se leen de las vistas
+  `v_kpi_*`; la media/mediana descriptiva se calcula sobre filas, y el agregado de negocio
+  siempre usa `SUM(numerador) / SUM(denominador)`.
+- **Alternativas:** analizar solo la tabla de producción; promediar los porcentajes por fila;
+  recalcular todos los KPI en pandas.
+- **Motivo:** evitar falacia ecológica y el error de promediar porcentajes. Reutiliza las
+  reglas ya validadas (D-014) y conserva la trazabilidad vista → KPI.
+- **Consecuencias:** el informe declara el nivel de cada tabla y figura. La media de OEE por
+  máquina-día (71,92 %) no es el OEE ponderado (71,96 %), y ambos se reportan por separado.
+- **Estado:** aceptada.
+
+## D-025 — Reglas de detección de valores atípicos
+
+- **Decisión:** aplicar cuatro criterios complementarios: IQR 1,5× (moderado), IQR 3×
+  (extremo), z-score `|z| > 3` y z-score modificado `|MAD| > 3,5`; para el plano multivariante
+  (A, P, Q), distancia de Mahalanobis con umbral `χ²(0,975; 3) = 3,06`.
+- **Alternativas:** usar solo z-score; eliminar automáticamente los atípicos; usar Isolation
+  Forest (requiere una dependencia adicional y no aporta interpretabilidad).
+- **Motivo:** la distribución del OEE tiene cola izquierda y la de paradas cola derecha; un
+  único método sesga el recuento. MAD y Mahalanobis reducen el efecto de los extremos.
+- **Consecuencias:** los atípicos **no se eliminan**: se cuantifican y se contextualizan con
+  fecha, máquina, planta, tipo y perfil. M-047 (`critica`) es un caso de diseño, no un error.
+  Evidencia: `docs/ANALISIS_DATOS.md` §6 y `data/analysis/<run_id>/outliers.csv`.
+- **Estado:** aceptada.
+
+## D-026 — Correlación e inferencia sin afirmar causalidad
+
+- **Decisión:** reportar Pearson y Spearman por pares, con n efectivo, p-valor, IC 95 % de
+  Fisher y corrección de Benjamini–Hochberg; acompañar con tamaño de efecto (`η²`, `ε²`) en
+  las comparaciones. Las correlaciones se calculan en dos niveles (máquina-turno y máquina
+  agregada).
+- **Alternativas:** reportar solo p-valores; usar solo Pearson; no corregir por comparaciones
+  múltiples.
+- **Motivo:** con n = 28.080, diferencias triviales resultan significativas. El p-valor solo no
+  informa magnitud ni relevancia.
+- **Consecuencias:** el informe advierte que las asociaciones son descriptivas y que las
+  correlaciones `A–downtime` y `calidad–scrap` son identidades contables. No se usa el análisis
+  para atribuir causalidad ni para justificar inversiones por sí solo.
+- **Estado:** aceptada.
+
+## D-027 — Dependencias de análisis en el contenedor y montaje de `docs/`
+
+- **Decisión:** instalar pandas, numpy, scipy y matplotlib con versión fija
+  (`python/requirements-analysis.txt`) en la misma imagen del ingestor, y montar `./docs` en
+  `/app/docs` para que el análisis escriba el informe y las figuras.
+- **Alternativas:** ejecutar el análisis con Python local (dependencias no reproducibles);
+  crear un servicio aparte (más contenedores y configuración); generar SVG sin dependencias
+  (sin pruebas inferenciales).
+- **Motivo:** una sola imagen mantiene el flujo `docker compose` y permite regenerar todo con
+  los mismos comandos. Las dependencias adicionales no afectan a la demo en ejecución.
+- **Consecuencias:** la imagen del ingestor crece ~200 MB; el build requiere internet una vez.
+  La corrida tarda ~23 s y usa ~661 MB de pico. Evidencia: `specs/008-analisis-datos/verification.md`.
+- **Estado:** aceptada.

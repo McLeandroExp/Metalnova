@@ -14,12 +14,14 @@ Estados: `propuesto` · `en curso` · `hecho` · `bloqueado`.
 | 005 | Vistas KPI y validación | 003 | hecho |
 | 006 | Informe Power BI (4 páginas) | 004, 005 | hecho · modelo TMDL, 8 páginas PBIR y verificación visual completados |
 | 007 | Integración, demo y plan de mejora | 006 | hecho · runbook, pruebas end-to-end y verificación visual completados |
+| 008 | Análisis estadístico exploratorio | 003, 005 | hecho · 18 figuras, informe y validación SQL/Python completados |
 
 ## Grafo de dependencias
 
 ```text
 001 ──▶ 002 ──┬──▶ 003 ──┬──▶ 004 ──┐
               │          └──▶ 005 ──┴──▶ 006 ──▶ 007
+              │                     └──▶ 008
 ```
 
 ## Regla de avance (gate)

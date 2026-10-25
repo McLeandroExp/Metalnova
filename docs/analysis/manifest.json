@@ -1,0 +1,248 @@
+{
+  "run_id": "eda-20261025T172443-9ba731",
+  "version": "1.0.0",
+  "generated_at": "2026-10-25T17:25:07.027108+00:00",
+  "seed": 42,
+  "ventana": {
+    "inicio": "2026-04-22",
+    "fin": "2026-10-18",
+    "dias": 180
+  },
+  "filtros": {
+    "eventos": "run_id LIKE 'hist-%'",
+    "paradas_excluidas": "causa_detalle NOT LIKE 'Ingesta 004:%'",
+    "eventos_sim": "solo latencia y calidad IoT",
+    "rechazados": "reportados aparte"
+  },
+  "niveles": {
+    "maquina_dia": 9360,
+    "maquina_turno": 28080,
+    "planta_dia": 540,
+    "maquinas": 52,
+    "paradas_consolidadas": 76021,
+    "eventos_hist": 401787
+  },
+  "python": "3.13.17",
+  "plataforma": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+  "paquetes": {
+    "pandas": "2.2.3",
+    "numpy": "2.1.3",
+    "scipy": "1.14.1",
+    "matplotlib": "3.9.2",
+    "psycopg": "3.2.9"
+  },
+  "duracion_s": 22.75,
+  "memoria_pico_mb": 660.9,
+  "salidas": [
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/inventario.csv",
+      "bytes": 511,
+      "sha256": "4b059b5574e17b0f2fad24ba3617cb455cb49fb33234534554fcc0eeb3acdcd1"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/controles.csv",
+      "bytes": 431,
+      "sha256": "90837eff2a35ae0846d223330b6de767d601744da867af57dbe052d0810a69a9"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/nulos.csv",
+      "bytes": 434,
+      "sha256": "70b1036de0fcbf5eeb886ef958856e77a414d5fbce2823c69d70766799c19a1c"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/descriptivos_global.csv",
+      "bytes": 4790,
+      "sha256": "5da145634812d13cac951403672b13b4a9d2a3bd3ac7f0647ccd1b199593c12d"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/descriptivos_planta.csv",
+      "bytes": 6163,
+      "sha256": "95230c238e5dd98341cb2c7fdf6b3704842ddc7cfb67c9e29314166f22b32785"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/normalidad.csv",
+      "bytes": 1452,
+      "sha256": "f370b0f725153cd0594437f63badd69725b8bcecbf3dc447869a287b7c3d10ee"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/outliers.csv",
+      "bytes": 1740,
+      "sha256": "e449e9d970aa77b397a76d426e22778e540ab4fceceddba959c62919dedd9109"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/outliers_top.csv",
+      "bytes": 2386,
+      "sha256": "1f9d2c8d5698fe439ec281ef12552c681d388eb56c0651b4f249d493c43524f5"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/mahalanobis_top.csv",
+      "bytes": 910,
+      "sha256": "a9d65fbc72e3068ce2a2840cf8720f8a289af32acc07e03450ee83b3f55d9a3a"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/correlaciones.csv",
+      "bytes": 10010,
+      "sha256": "7c3e40e7bbad263fa4d6942635b4954576e644d8757c78ca714ba52e044a29d1"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/correlaciones_maquina.csv",
+      "bytes": 1328,
+      "sha256": "12ed93eafcb1c9376607a1af898452b220e07b7f04235b3f682713fbd90ebfdd"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/pruebas_grupo.csv",
+      "bytes": 3641,
+      "sha256": "d194a0e0d1954f12b06d518df5d8cde78cd543e94f25896e19b08df54a549804"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/asociaciones.csv",
+      "bytes": 429,
+      "sha256": "9cf3dec85b545dd1b3abe61524358609a9f19d6fadd958d991e5809a8b576878"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/tendencia.csv",
+      "bytes": 939,
+      "sha256": "e53d7018d36409f616e26c41585f75de5d9a876d01160cc6633c82b789a68b63"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/autocorrelacion.csv",
+      "bytes": 304,
+      "sha256": "cb801abfb62a784e269277594954f38a2091b879afd3d7c761d9e055fab48ce7"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/ventanas_30d.csv",
+      "bytes": 697,
+      "sha256": "07e2b5971fc717a7a6e30f3bdd15a766e359d30eeef78460cd75907a32a00369"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/categorias_parada.csv",
+      "bytes": 467,
+      "sha256": "e7d2d294392ecef79244d091f3bf8bb373a1b5b6c11f77d0925b158a55d693cf"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/mantenimiento_tipo.csv",
+      "bytes": 209,
+      "sha256": "9c0eab3c72a08a5f60a3b9600f5d1d377049845f97124ccfb996f9d996eefcb7"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/scrap_producto.csv",
+      "bytes": 1431,
+      "sha256": "93b570182ab250f4445ca1ad348a0f8adaef850c1af93cc03bcad3bdcb2954eb"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/senal_iot.csv",
+      "bytes": 82,
+      "sha256": "d2e7d4e85fa6c7f6cfba4026ff3b80d1141beb1067e68d0580e347243bf0cd96"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/latencia.csv",
+      "bytes": 114,
+      "sha256": "cbffaabe4fe431fcc1a6134c29375ec7da63ef626d63319e8777572b983020dc"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/inventario_maquinas.csv",
+      "bytes": 11241,
+      "sha256": "bc2793c45a48dd94ac8afa46037b047eef6c118b0d6b448f0284a5ba59f4dd7f"
+    },
+    {
+      "archivo": "/app/data/analysis/eda-20261025T172443-9ba731/resumen.json",
+      "bytes": 908,
+      "sha256": "9e845476d0acdce588dacd6d481c17df6576c3488e52ac787e0f483fe70cd6dd"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F01_histograma_oee.png",
+      "bytes": 63893,
+      "sha256": "6aba399790add406ffd115cc84ee4eddc44c79e0fa9a4af3f09c648d56ba497f"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F02_oee_por_planta.png",
+      "bytes": 140070,
+      "sha256": "ec3e3998fb6e279f31829f1e8dc647b44238648741b5bdffa833eaf5d023e766"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F03_componentes_por_planta.png",
+      "bytes": 64226,
+      "sha256": "59d0f3f1f0afe78a8de6fdebecf38ce4e89c6fd0eb47645c0e4d0f4bdf32e863"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F04_serie_oee.png",
+      "bytes": 136178,
+      "sha256": "8e086526d3fbff8b46bf150f0cfa970916cd3199e591f48925176f78f5d19743"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F05_correlaciones.png",
+      "bytes": 189338,
+      "sha256": "45b46ec6d5125b7459b5defd80b146b36a68b8b381b9f9d72b7dc19059f79e41"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F06_dispersion_oee.png",
+      "bytes": 359974,
+      "sha256": "77d49e65dab54909acecc3b6cf25079a95039f962ffa884a3b55a2ea7ff697a6"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F07_qq_oee.png",
+      "bytes": 53861,
+      "sha256": "7277dbf920f85a9d4483ea0040b34964e3ab3317b51ab90089413d0fda6a534d"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F08_paradas_por_causa.png",
+      "bytes": 38722,
+      "sha256": "1af36a2bf4da8201d3e29f4564b6d36d72403a368743fcb4ede5ba0de798ab24"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F09_estabilidad_maquinas.png",
+      "bytes": 74855,
+      "sha256": "b3567d7f533250331b6a94d7cebbb0aef9572cc09ea0ebca2d91eccf37d16700"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F10_turno_dia_semana.png",
+      "bytes": 45812,
+      "sha256": "a2a1d11e0a3640dae6c2dca16229a83f60a16b2692d71a8848bcd9a8776c2edd"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F11_scrap_producto.png",
+      "bytes": 55817,
+      "sha256": "df94209f12a84be01d646eaca4bc87d2f3550a697f4feabd9b20f0cb05efac1e"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F12_temperatura.png",
+      "bytes": 40538,
+      "sha256": "56f66fe00ceb437813b7bcd530fa0f22ec177c6f7b391496d4b7f6c9f431756d"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F13_mantenimiento.png",
+      "bytes": 108927,
+      "sha256": "b7fde257c4324b39713a895418cb784c1b5e50421b33512d22784c72c5465f1f"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F14_atipicos.png",
+      "bytes": 78005,
+      "sha256": "ec0e2ec84074792599453a19bb8c6f7877ff85dd48cb8e3a4704b92c81bf6bc7"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F15_latencia_senal.png",
+      "bytes": 59294,
+      "sha256": "07a2012a454b499f2226cd33087736d605ed450f79c12c54ec766e9f8b01b322"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F16_pareto_causas.png",
+      "bytes": 56154,
+      "sha256": "3dab9d92c31c90b87208b8d0b8f4d699efdc95894642aa3809c860d064bd1959"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F17_energia_perfil.png",
+      "bytes": 47944,
+      "sha256": "fd9ca222ec8d82e7ee9c99ab6dbbd96da01675233f533c2d3347d6ad716311c5"
+    },
+    {
+      "archivo": "/app/docs/analysis/figures/F18_ventanas_30d.png",
+      "bytes": 83274,
+      "sha256": "5ee1db9df2f05bfc856b6b4de9759bbe5c91d8b5bd1ee6b0cdc15d89e5bd63e3"
+    },
+    {
+      "archivo": "/app/docs/ANALISIS_DATOS.md",
+      "bytes": 31853,
+      "sha256": "4c8017e1585a580b0be07f6c03f09767d0842090d9cdccf70964ae8f7e520e26"
+    }
+  ]
+}

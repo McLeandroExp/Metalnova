@@ -77,6 +77,8 @@ services:
       - ./data:/app/data
       - ./logs:/app/logs
       - ./sql:/app/sql:ro
+      # El análisis del incremento 008 escribe el informe y las figuras aquí.
+      - ./docs:/app/docs
     depends_on:
       db:
         condition: service_healthy

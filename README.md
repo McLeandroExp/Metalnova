@@ -23,6 +23,7 @@ más una simulación de eventos cercanos al tiempo real.
 | 005 · Vistas KPI y validación | **hecho** |
 | 006 · Informe Power BI (4 páginas) | **hecho** (modelo, medidas y verificación visual en Desktop) |
 | 007 · Integración, demo y plan de mejora | **hecho** (runbook, pruebas end-to-end y plan de mejora) |
+| 008 · Análisis estadístico exploratorio | **hecho** (18 figuras, informe y validación SQL/Python) |
 
 El detalle de cada incremento vive en `specs/`. Ver también `specs/CONSTITUTION.md` (fuente de
 verdad normativa) y `AGENTS.md`.
@@ -45,6 +46,8 @@ compose.yaml                 servicios db (PostgreSQL) e ingestor (Python)
 .env.example                 plantilla de variables de entorno
 specs/                       especificaciones SDD (fuente de verdad)
 docs/                        arquitectura, diccionario, pruebas, runbook
+docs/ANALISIS_DATOS.md       informe estadístico del incremento 008
+docs/analysis/               figuras, índice y manifiesto del análisis 008
 docs/verification/           verificación reproducible de bloques y solapes
 docs/reference/              insumos académicos originales (no normativos)
 docker/postgres/init/        scripts de initdb (solo corren con volumen vacío)
@@ -58,6 +61,8 @@ python/src/simulate_events.py   simulador de ingesta continua (004)
 python/src/event_quality.py     reglas de calidad IoT: rango, tardío, reordenado (G5)
 python/src/validate_data.py     validación independiente de los KPI (005)
 python/src/validate_iot.py      validación de cuarentena y cobertura de señal (G5)
+python/src/analyze_data.py      análisis estadístico exploratorio (008)
+python/src/validate_analysis.py validación SQL vs Python del análisis (008)
 tools/generate_tmdl.py       generación del modelo semántico TMDL (006)
 tools/generate_pbir.py       generación de las páginas del informe en PBIR
 tools/validate_model.py      validación de tablas/medidas/relaciones del TMDL
@@ -424,6 +429,51 @@ versionado y se corrige en el generador; no se edita el `.pbip` a mano.
 Capturas de las páginas verificadas el 2026-10-23 (datos sintéticos):
 [`docs/capturas/`](docs/capturas/README.md).
 
+## Análisis estadístico (incremento 008)
+
+Capa descriptiva e inferencial sobre el histórico de 180 días. **No cambia el modelo
+dimensional ni las definiciones de KPI**: lee las vistas KPI como contrato y los hechos como
+fuente de distribuciones y casos individuales.
+
+```powershell
+# 1. Dependencias de análisis dentro del contenedor
+docker compose build ingestor
+
+# 2. Análisis completo: tablas, 18 figuras y docs/ANALISIS_DATOS.md
+docker compose --profile tools run --rm ingestor python src/analyze_data.py --seed 42
+
+# 3. Validación independiente SQL vs Python y controles estructurales
+docker compose --profile tools run --rm ingestor python src/validate_analysis.py
+docker compose exec -T db psql -U metalinova -d metalinova -f /sql/validation/08_analisis.sql
+```
+
+Incluye: descriptivos por nivel (fila, máquina-día, máquina-turno, planta-día, máquina),
+distribuciones y normalidad, atípicos por IQR/z/MAD y Mahalanobis, correlación Pearson y
+Spearman con IC y FDR, comparaciones por planta/turno/tipo, tendencia, Mann–Kendall,
+autocorrelación, ventanas de 30 días y análisis categórico.
+
+Salidas:
+
+- [`docs/ANALISIS_DATOS.md`](docs/ANALISIS_DATOS.md): informe completo con T01–T17 y F01–F18.
+- `docs/analysis/figures/`: 18 figuras PNG versionadas.
+- `data/analysis/<run_id>/`: CSV completos, `resumen.json` y `manifest.json` (no versionados).
+
+Resultado observado (2026-10-25, corrida `eda-20261025T172443-9ba731`):
+
+```text
+duración           22,8 s · pico 660,9 MB
+validación         54/54 comprobaciones OK (SQL vs Python, tolerancia 1e-9)
+controles SQL      22/22 OK
+reproducibilidad   41/41 archivos con SHA-256 idéntico entre dos corridas
+OEE ponderado      71,96 % · media máquina-día 71,92 % · mediana 72,28 %
+P-SUR vs P-NORTE   mediana 68,40 % vs 75,67 % (Kruskal–Wallis p < 1e-300, ε² 0,234)
+atípicos OEE       184 máquina-día (1,97 %) fuera de IQR 1,5×
+tendencia OEE      -2,40 pp / 30 días (R² 0,976)
+```
+
+La validación y la interpretación están en `specs/008-analisis-datos/verification.md`. Las
+correlaciones son descriptivas: **no implican causalidad**.
+
 ## Calidad y temporalidad IoT (G5)
 
 `event_quality.py` aplica el rango válido de la Constitución §7.1 antes de insertar. Un evento
@@ -523,6 +573,8 @@ coincidieron y la base temporal se eliminó (P-038, `docs/TEST_PLAN.md`).
 | `docs/DECISIONS.md` | Registro de decisiones |
 | `docs/DATA_DICTIONARY.md` | Tablas, columnas y definiciones de KPI |
 | `docs/TEST_PLAN.md` | Casos de prueba y evidencias |
+| `docs/ANALISIS_DATOS.md` | Análisis estadístico, figuras y tablas (008) |
+| `docs/analysis/README.md` | Índice de figuras y tablas del análisis |
 | `docs/DEMO_RUNBOOK.md` | Guion de demostración |
 | `docs/PLAN_MEJORA.md` | 5 acciones priorizadas con impacto observado/hipotético y supuestos |
 | `docs/CUMPLIMIENTO.md` | Matriz requisito del caso → evidencia |

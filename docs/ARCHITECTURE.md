@@ -145,6 +145,30 @@ intervalos estrictamente solapados por máquina. `fact_parada` permanece como ca
 cruda y el OEE/Loss Tree siguen usando `fact_produccion.downtime_no_planificado_min`;
 la consolidación no altera el OEE, solo Pareto, MTBF, fallas y microparadas.
 
+## Capa de análisis estadístico (incremento 008)
+
+El análisis es una capa de solo lectura sobre PostgreSQL. No crea tablas, vistas ni cambios de
+esquema; consume las vistas KPI y los hechos, calcula en Python y escribe artefactos:
+
+```text
+PostgreSQL ──▶ analyze_data.py ──┬──▶ docs/ANALISIS_DATOS.md
+  (vistas + hechos)              ├──▶ docs/analysis/figures/F01..F18.png
+                                 ├──▶ docs/analysis/manifest.json
+                                 ├──▶ data/analysis/<run_id>/*.csv
+                                 └──▶ logs/analyze_data_<run_id>.log
+```
+
+- **Dependencias:** pandas, numpy, scipy y matplotlib con versión fija en
+  `python/requirements-analysis.txt`; se instalan en la imagen del ingestor.
+- **Montaje:** `compose.yaml` monta `./docs` en `/app/docs` para que el contenedor escriba el
+  informe y las figuras.
+- **Niveles:** fila, máquina-día, máquina-turno, planta-día y máquina agregada (D-024).
+- **Validación:** `validate_analysis.py` recalcula en SQL y compara con los CSV (`1e-9`);
+  `sql/validation/08_analisis.sql` comprueba estructura y cobertura.
+- **Reproducibilidad:** semilla 42, filtros declarados y SHA-256 de 42 archivos en el
+  manifiesto (D-027).
+- **Alcance:** descriptivo e inferencial; no causal, no predictivo y sin cambios en Power BI.
+
 ## Puertos y volúmenes
 
 | Elemento | Valor |

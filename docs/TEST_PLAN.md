@@ -47,6 +47,24 @@ Resultados reproducibles. Una prueba solo se marca como superada con evidencia o
 | P-039 | Latencia end-to-end | 007 | eventos `run_id LIKE 'sim-%'` | < 10 min | 0,7–55 ms; frescura DirectQuery 0,35 s | 2026-10-22 | superada |
 | P-040 | Evento visible tras la ingesta | 007 | `--scenario stop M-001 --once` + vista | cambio observable | M-001 turno B: 20 min de downtime y 1 falla | 2026-10-22 | superada |
 | P-041 | Tarjetas sin redondeo automático y tabla de alertas con medidas | 006 | `generate_pbir.py` + `validate_report.py` + ADOMD + revisión visual | conteos exactos, OEE visible, unidades explícitas | 70 medidas; tarjetas con `labelDisplayUnits=1D`; OEE de alertas corregido al redondear `oee` a 6 decimales; tabla sin fila de totales (`total.totals = false`); confirmación visual del usuario y captura de las 8 páginas | 2026-10-23 | superada |
+| P-042 | Análisis estadístico completo | 008 | `python src/analyze_data.py --seed 42` | código 0, todas las salidas, < 5 min y < 1 GB | 22,8 s; pico 660,9 MB; 23 CSV/JSON; 18 figuras; informe generado | 2026-10-25 | superada |
+| P-043 | Validación SQL vs Python | 008 | `python src/validate_analysis.py` | n, media, mediana, sd y correlaciones con tolerancia 1e-9 | 54/54 OK; 42 SHA-256 del manifiesto coinciden | 2026-10-25 | superada |
+| P-044 | Controles estructurales | 008 | `sql/validation/08_analisis.sql` | todas las filas con incidencias = 0 | 22/22 chequeos OK | 2026-10-25 | superada |
+| P-045 | Reproducibilidad del análisis | 008 | dos corridas con la misma semilla + SHA-256 | CSV y PNG idénticos | 41/41 archivos idénticos; 0 diferencias | 2026-10-25 | superada |
+| P-046 | Coherencia de cifras clave | 008 | `resumen.json` + vistas KPI | OEE ponderado y ventanas consistentes con 005/006 | OEE 71,96 %; 78,02 → 66,00 %; P-SUR 68,40 % vs P-NORTE 75,67 % | 2026-10-25 | superada |
+
+### Evidencia del incremento 008
+
+- `logs/analyze_008_final_a.txt` y `logs/analyze_008_final_b.txt`: dos corridas completas con
+  `--seed 42`; 41 archivos (23 CSV/JSON y 18 PNG) con SHA-256 idéntico y 0 diferencias.
+- `logs/analyze_008_final_validate.txt`: **54/54** comprobaciones SQL vs Python; 42 archivos del
+  manifiesto con hash correcto.
+- `logs/analyze_008_final_sql.txt`: **22/22** controles estructurales OK (cobertura,
+  granularidad, fórmula OEE, nulos, rangos, señal y cuarentena).
+- `docs/analysis/manifest.json`: versión, semilla, filtros, recuentos, versiones de paquetes y
+  SHA-256 de la corrida `eda-20261025T172443-9ba731`.
+- `docs/ANALISIS_DATOS.md`: informe con T01–T17 y F01–F18; `docs/analysis/figures/`.
+- Detalle por criterio en `specs/008-analisis-datos/verification.md`.
 
 ### Evidencia del incremento 005
 

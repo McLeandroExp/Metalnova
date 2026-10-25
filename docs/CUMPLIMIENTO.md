@@ -54,3 +54,11 @@ El prototipo quedó verificado visualmente el 2026-10-23. Evidencia en
 3. La referencia de apertura es la mediana de 35,46 s de D-019 (umbral ≤ 60 s); no
    se observó regresión al abrir el informe final.
 4. T-615 y T-710 cerrados con el commit `c32cbd6`.
+
+## Análisis estadístico complementario (008)
+
+El incremento 008 **no corresponde a un requisito explícito del caso**: se añade como evidencia
+analítica sobre los mismos datos sintéticos. No cambia KPI, modelo ni informe de Power BI.
+Aporta descriptivos, atípicos, correlación, comparaciones y tendencia, con validación SQL vs
+Python (54/54) y controles estructurales (22/22). Informe: `docs/ANALISIS_DATOS.md`; evidencia:
+`specs/008-analisis-datos/verification.md`.
