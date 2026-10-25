@@ -20,7 +20,7 @@
 | T-816 | `sql/validation/08_analisis.sql` | FR-812 | hecha |
 | T-817 | Documentación transversal | FR-813 | hecha |
 | T-818 | `verification.md` con evidencia real | AC-807 | hecha |
-| T-819 | Commit de cierre | — | pendiente |
+| T-819 | Commit de cierre | — | hecha (`a49bebf`) |
 
 Notas de ejecución:
 
@@ -37,4 +37,4 @@ Notas de ejecución:
 - **T-817:** `README.md`, `specs/README.md`, `docs/DATA_DICTIONARY.md`, `docs/DECISIONS.md`
   (D-024…D-027), `docs/TEST_PLAN.md` (P-042…P-046) y `docs/analysis/README.md`.
 - **T-818:** `verification.md` con comandos, salidas y fecha.
-- **T-819:** pendiente del commit de cierre.
+- **T-819:** commit de cierre `a49bebf`; el estado de la tarea queda registrado en este archivo.
